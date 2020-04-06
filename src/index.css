@@ -5,9 +5,28 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: var(--gradient-background);
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/*
+TODO --colors with chosen ones
+ */
+:root {
+  --gradient-background: linear-gradient(90deg, rgba(95,190,135,1) 20%, rgba(90,170,161,1) 53%, rgba(130,155,215,1) 99%);
+  --color-primary: green;
+  --color-primary-light: lightgreen;
+  --color-primary-dark: darkgreen;
+  --color-secondary-light: lightblue;
+  --color-secondary-dark: navy;
+  --color-secondary: skyblue;
+  --color-accent: pink;
+  --color-warning: red;
+  --color-success: #4CAF50;
+  --color-disabled-background: lightgrey;
+  --color-disabled-font: grey;
 }
