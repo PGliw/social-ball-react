@@ -1,4 +1,5 @@
 import React from "react";
+import {Link} from "react-router-dom";
 import './RegistrationForm.css'
 
 export class RegistrationForm extends React.Component {
@@ -85,7 +86,9 @@ export class RegistrationForm extends React.Component {
 
     renderErrorMessage = (message) => !message ? null : (<div className="error-message">{message}</div>);
 
-    onSubmit = () => alert("Cześć "+this.state.fields.firstName); // placeholder - will be removed by api call
+    onSubmit = () => {
+        alert("Cześć "+this.state.fields.firstName);
+    }; // placeholder - will be removed by api call
 
     render() {
         return (
@@ -163,6 +166,7 @@ export class RegistrationForm extends React.Component {
                         {this.renderErrorMessage(this.state.errors.hasAccepted)}
                     </label>
                     <input type="submit" value="Zarejestruj się" disabled={!this.state.isSubmitButtonEnabled}/>
+                    <p>Masz już konto? <Link to="/">Przejdź do logowania</Link></p>
                 </form>
             </div>
         );
