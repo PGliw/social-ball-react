@@ -5,7 +5,11 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: var(--gradient-background);
+
+  background: url("background.png") no-repeat center center fixed;
+  background-size: cover;
+  height: 100%;
+  overflow: hidden;
 }
 
 code {
@@ -17,7 +21,7 @@ code {
 TODO --colors with chosen ones
  */
 :root {
-  --gradient-background: linear-gradient(90deg, rgba(95,190,135,1) 20%, rgba(90,170,161,1) 53%, rgba(130,155,215,1) 99%);
+  /*--gradient-background: linear-gradient(90deg, rgb(2, 190, 78) 20%, rgb(0, 170, 3) 53%, rgb(57, 215, 78) 99%);*/
   --color-primary: green;
   --color-primary-light: lightgreen;
   --color-primary-dark: darkgreen;
