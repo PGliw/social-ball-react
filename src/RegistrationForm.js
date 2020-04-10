@@ -1,5 +1,5 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import './RegistrationForm.css'
 
 export class RegistrationForm extends React.Component {
@@ -10,7 +10,8 @@ export class RegistrationForm extends React.Component {
                 hasAccepted: false
             },
             errors: {},
-            isSubmitButtonEnabled: false
+            isSubmitButtonEnabled: false,
+            isRegistrationSuccessful: false
         }
     }
 
@@ -86,12 +87,42 @@ export class RegistrationForm extends React.Component {
 
     renderErrorMessage = (message) => !message ? null : (<div className="error-message">{message}</div>);
 
-    onSubmit = () => {
-        alert("Cześć "+this.state.fields.firstName);
-    }; // placeholder - will be removed by api call
+    onSubmit = (e) => {
+        e.preventDefault();
+        const fields = this.state.fields;
+        fetch("http://localhost:8091/users", {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: Math.floor((1000) * Math.random()), // TODO replace
+                firstName: fields.firstName,
+                lastName: fields.lastName,
+                dateOfBirth: new Date(fields.birthday).toISOString().split('T')[0],
+                password: fields.password,
+                email: fields.email,
+                username: fields.email
+            })
+        }).then((response) => {
+            if (response.status === 200) {
+                this.setState({
+                    isRegistrationSuccessful: true
+                })
+            }
+            return response.json();
+        }).then((data => {
+            if (data.message) {
+                alert(data.message)
+            }
+        }))
+    };
 
     render() {
-        return (
+        if (this.state.isRegistrationSuccessful === true) {
+            return <Redirect to='/login'/>
+        } else return (
             <div className="registration-card">
                 <h1>Rejestracja</h1>
                 <form onSubmit={this.onSubmit}>
