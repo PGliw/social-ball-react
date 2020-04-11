@@ -1,6 +1,8 @@
 import React from "react";
 import {Link, Redirect} from "react-router-dom";
-import "./LoginForm.css";
+import "./CommonForm.css";
+import "./FormInput"
+import {FormInput} from "./FormInput";
 
 export class LoginForm extends React.Component {
     constructor(props) {
@@ -49,9 +51,6 @@ export class LoginForm extends React.Component {
         });
     };
 
-    renderErrorMessage = (message) =>
-        !message ? null : <div className="error-message">{message}</div>;
-
     onSubmit = (e) => {
         e.preventDefault();
         fetch("http://localhost:8091/token/generate-token", {
@@ -83,26 +82,22 @@ export class LoginForm extends React.Component {
             <div className="registration-card">
                 <h1>Logowanie</h1>
                 <form onSubmit={this.onSubmit}>
-                    <label>
-                        Adres e-mail
-                        <input
-                            type="email"
-                            name="email"
-                            value={this.state.fields.email || ""}
-                            onChange={this.handleInputChange}
-                        />
-                        {this.renderErrorMessage(this.state.errors.email)}
-                    </label>
-                    <label>
-                        Hasło
-                        <input
-                            type="password"
-                            name="password"
-                            value={this.state.fields.password || ""}
-                            onChange={this.handleInputChange}
-                        />
-                        {this.renderErrorMessage(this.state.errors.password)}
-                    </label>
+                    <FormInput
+                        label="Adres e-mail"
+                        type="email"
+                        name="email"
+                        value={this.state.fields.email || ""}
+                        onChange={this.handleInputChange}
+                        error={this.state.errors.email}
+                    />
+                    <FormInput
+                        label="Hasło"
+                        type="password"
+                        name="password"
+                        value={this.state.fields.password || ""}
+                        onChange={this.handleInputChange}
+                        error={this.state.errors.password}
+                    />
                     <label>
                         <input
                             type="checkbox"

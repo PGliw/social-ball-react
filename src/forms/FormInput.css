@@ -1,0 +1,21 @@
+/* Style the label to display next to the inputs */
+label {
+    padding: 12px 12px 12px 0;
+    display: block;
+    text-align: left;
+}
+
+/* Style inputs, select elements and textareas */
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+/* Error message to the input*/
+.error-message {
+    color: var(--color-warning);
+}

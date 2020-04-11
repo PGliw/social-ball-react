@@ -1,6 +1,7 @@
 import React from "react";
 import {Link, Redirect} from "react-router-dom";
-import './RegistrationForm.css'
+import './CommonForm.css'
+import {FormInput} from "./FormInput";
 
 export class RegistrationForm extends React.Component {
     constructor(props) {
@@ -126,66 +127,54 @@ export class RegistrationForm extends React.Component {
             <div className="registration-card">
                 <h1>Rejestracja</h1>
                 <form onSubmit={this.onSubmit}>
-                    <label>
-                        Imię
-                        <input
-                            type="text"
-                            name="firstName"
-                            value={this.state.fields.firstName || ''} // initially undefined
-                            onChange={this.handleInputChange}
-                        />
-                        {this.renderErrorMessage(this.state.errors.firstName)}
-                    </label>
-                    <label>
-                        Nazwisko
-                        <input
-                            type="text"
-                            name="lastName"
-                            value={this.state.fields.lastName || ''}
-                            onChange={this.handleInputChange}
-                        />
-                        {this.renderErrorMessage(this.state.errors.lastName)}
-                    </label>
-                    <label>
-                        Data urodzenia
-                        <input
-                            type="date"
-                            name="birthday"
-                            value={this.state.fields.birthday || ''}
-                            onChange={this.handleInputChange}
-                        />
-                        {this.renderErrorMessage(this.state.errors.birthday)}
-                    </label>
-                    <label>
-                        Adres e-mail
-                        <input
-                            type="email"
-                            name="email"
-                            value={this.state.fields.email || ''}
-                            onChange={this.handleInputChange}
-                        />
-                        {this.renderErrorMessage(this.state.errors.email)}
-                    </label>
-                    <label>
-                        Hasło
-                        <input
-                            type="password"
-                            name="password"
-                            value={this.state.fields.password || ''}
-                            onChange={this.handleInputChange}
-                        />
-                        {this.renderErrorMessage(this.state.errors.password)}
-                    </label>
-                    <label>
-                        Powtórz hasło
-                        <input
-                            type="password"
-                            name="replyPassword"
-                            value={this.state.fields.replyPassword || ''}
-                            onChange={this.handleInputChange}
-                        />
-                        {this.renderErrorMessage(this.state.errors.replyPassword)}
-                    </label>
+                    <FormInput
+                        label="Imię"
+                        name="firstName"
+                        type="text"
+                        value={this.state.fields.firstName || ''}
+                        onChange={this.handleInputChange}
+                        error={this.state.errors.firstName}
+                    />
+                    <FormInput
+                        label="Nazwisko"
+                        name="lastName"
+                        type="text"
+                        value={this.state.fields.lastName || ''}
+                        onChange={this.handleInputChange}
+                        error={this.state.errors.lastName}
+                    />
+                    <FormInput
+                        label="Data urodzenia"
+                        name="birthday"
+                        type="date"
+                        value={this.state.fields.birthday || ''}
+                        onChange={this.handleInputChange}
+                        error={this.state.errors.birthday}
+                    />
+                    <FormInput
+                        label="Adres e-mail"
+                        name="email"
+                        type="email"
+                        value={this.state.fields.email || ''}
+                        onChange={this.handleInputChange}
+                        error={this.state.errors.email}
+                    />
+                    <FormInput
+                        label="Hasło"
+                        name="password"
+                        type="password"
+                        value={this.state.fields.password || ''}
+                        onChange={this.handleInputChange}
+                        error={this.state.errors.password}
+                    />
+                    <FormInput
+                        label="Powtórz hasło"
+                        name="replyPassword"
+                        type="replyPassword"
+                        value={this.state.fields.replyPassword || ''}
+                        onChange={this.handleInputChange}
+                        error={this.state.errors.replyPassword}
+                    />
                     <label>
                         <input
                             type="checkbox"
