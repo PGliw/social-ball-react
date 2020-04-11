@@ -1,14 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import "./LoginForm.css";
+import {Link, Redirect} from "react-router-dom";
+import "./CommonForm.css";
+import "./FormInput"
+import {FormInput} from "./FormInput";
 
 export class LoginForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            fields: {},
+            fields: {
+                keepLoggedIn: false
+            },
             errors: {},
             isSubmitButtonEnabled: false,
+            isLoginSuccessful: false
         };
     }
 
@@ -21,11 +26,11 @@ export class LoginForm extends React.Component {
 
         const errors = this.state.errors;
         switch (name) {
-            case "login":
+            case "email":
                 const validEmailRegex = RegExp(
                     /^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i
                 );
-                errors.login = validEmailRegex.test(value)
+                errors.email = validEmailRegex.test(value)
                     ? null
                     : "To nie jest poprawny adres email";
                 break;
@@ -42,42 +47,57 @@ export class LoginForm extends React.Component {
             fields: fields,
             errors: errors,
             isSubmitButtonEnabled:
-                errors.login === null && errors.password === null,
+                errors.email === null && errors.password === null,
         });
     };
 
-    renderErrorMessage = (message) =>
-        !message ? null : <div className="error-message">{message}</div>;
-
-    onSubmit = () => {
-        alert("Cześć " + this.state.fields.login);
-    }; // placeholder - will be removed by api call
+    onSubmit = (e) => {
+        e.preventDefault();
+        fetch("http://localhost:8091/token/generate-token", {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(this.state.fields)
+        }).then((response) => {
+            if (response.status === 200) {
+                this.setState({
+                    isLoginSuccessful: true
+                });
+            }
+            console.log(response.status);
+            return response.json();
+        }).then((data => {
+            if (data.message) {
+                alert(data.message);
+            }
+        }))
+    };
 
     render() {
-        return (
+        if (this.state.isLoginSuccessful === true) {
+            return <Redirect to='/profile'/>
+        } else return (
             <div className="registration-card">
                 <h1>Logowanie</h1>
                 <form onSubmit={this.onSubmit}>
-                    <label>
-                        Adres e-mail
-                        <input
-                            type="email"
-                            name="login"
-                            value={this.state.fields.login || ""}
-                            onChange={this.handleInputChange}
-                        />
-                        {this.renderErrorMessage(this.state.errors.login)}
-                    </label>
-                    <label>
-                        Hasło
-                        <input
-                            type="password"
-                            name="password"
-                            value={this.state.fields.password || ""}
-                            onChange={this.handleInputChange}
-                        />
-                        {this.renderErrorMessage(this.state.errors.password)}
-                    </label>
+                    <FormInput
+                        label="Adres e-mail"
+                        type="email"
+                        name="email"
+                        value={this.state.fields.email || ""}
+                        onChange={this.handleInputChange}
+                        error={this.state.errors.email}
+                    />
+                    <FormInput
+                        label="Hasło"
+                        type="password"
+                        name="password"
+                        value={this.state.fields.password || ""}
+                        onChange={this.handleInputChange}
+                        error={this.state.errors.password}
+                    />
                     <label>
                         <input
                             type="checkbox"
