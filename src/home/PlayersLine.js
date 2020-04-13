@@ -4,10 +4,9 @@ import styles from "./PlayersLine.module.css";
 export function PlayersLine(props) {
     const drop = (e) => {
         e.preventDefault();
-        const playerId = e.dataTransfer.getData('draggable_id');
-        const player = document.getElementById(playerId);
-        player.style.display = "block";
-        e.target.appendChild(player);
+        const draggableId = e.dataTransfer.getData('draggable_id');
+        const draggable = document.getElementById(draggableId);
+        e.target.appendChild(draggable);
     };
 
     const dragOver = (e) => {
