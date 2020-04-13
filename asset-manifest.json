@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/social-ball-react/static/css/main.47e42611.chunk.css",
-    "main.js": "/social-ball-react/static/js/main.4f39c208.chunk.js",
-    "main.js.map": "/social-ball-react/static/js/main.4f39c208.chunk.js.map",
+    "main.js": "/social-ball-react/static/js/main.72523800.chunk.js",
+    "main.js.map": "/social-ball-react/static/js/main.72523800.chunk.js.map",
     "runtime-main.js": "/social-ball-react/static/js/runtime-main.a145b8d3.js",
     "runtime-main.js.map": "/social-ball-react/static/js/runtime-main.a145b8d3.js.map",
     "static/js/2.c11c7243.chunk.js": "/social-ball-react/static/js/2.c11c7243.chunk.js",
     "static/js/2.c11c7243.chunk.js.map": "/social-ball-react/static/js/2.c11c7243.chunk.js.map",
     "index.html": "/social-ball-react/index.html",
-    "precache-manifest.8518d7ca5bf9078c2c38e333b05a692c.js": "/social-ball-react/precache-manifest.8518d7ca5bf9078c2c38e333b05a692c.js",
+    "precache-manifest.bf4a360979d9255cf9866820d9173c1d.js": "/social-ball-react/precache-manifest.bf4a360979d9255cf9866820d9173c1d.js",
     "service-worker.js": "/social-ball-react/service-worker.js",
     "static/css/main.47e42611.chunk.css.map": "/social-ball-react/static/css/main.47e42611.chunk.css.map",
     "static/js/2.c11c7243.chunk.js.LICENSE.txt": "/social-ball-react/static/js/2.c11c7243.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.a145b8d3.js",
     "static/js/2.c11c7243.chunk.js",
     "static/css/main.47e42611.chunk.css",
-    "static/js/main.4f39c208.chunk.js"
+    "static/js/main.72523800.chunk.js"
   ]
 }
