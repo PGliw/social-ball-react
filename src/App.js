@@ -3,7 +3,7 @@ import {RegistrationForm} from './forms/RegistrationForm';
 import {LoginForm} from './forms/LoginForm';
 import {UserProfile} from './UserProfile';
 import './App.css';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {HashRouter as Router, Route} from 'react-router-dom';
 
 function App() {
     return (

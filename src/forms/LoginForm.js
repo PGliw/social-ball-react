@@ -3,6 +3,7 @@ import {Link, Redirect} from "react-router-dom";
 import "./CommonForm.css";
 import "./FormInput"
 import {FormInput} from "./FormInput";
+import {SERVER_URL} from "../config";
 
 export class LoginForm extends React.Component {
     constructor(props) {
@@ -53,7 +54,7 @@ export class LoginForm extends React.Component {
 
     onSubmit = (e) => {
         e.preventDefault();
-        fetch("http://localhost:8091/token/generate-token", {
+        fetch(`${SERVER_URL}/token/generate-token`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

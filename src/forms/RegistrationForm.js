@@ -2,6 +2,7 @@ import React from "react";
 import {Link, Redirect} from "react-router-dom";
 import './CommonForm.css'
 import {FormInput} from "./FormInput";
+import {SERVER_URL} from "../config";
 
 export class RegistrationForm extends React.Component {
     constructor(props) {
@@ -91,7 +92,7 @@ export class RegistrationForm extends React.Component {
     onSubmit = (e) => {
         e.preventDefault();
         const fields = this.state.fields;
-        fetch("http://localhost:8091/users", {
+        fetch(`${SERVER_URL}/users`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
