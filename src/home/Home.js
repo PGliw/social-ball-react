@@ -15,18 +15,48 @@ export function Home() {
     const [equalTeams, setEqualTeams] = useState(true);
     const [samePositions, setSamePostitions] = useState(true);
 
+    const handlePlayersChange = (e) => {
+        const target = e.target;
+        const nextValue = parseInt(target.value);
+        if (equalTeams === true) {
+            setPlayers1(nextValue);
+            setPlayers2(nextValue);
+        } else {
+            if (target.name === "players1") {
+                setPlayers1(nextValue);
+            } else if (target.name === "players2") {
+                setPlayers2(nextValue);
+            } else {
+                console.error(`Unknown team ${target.name}`);
+            }
+        }
+    };
+
+    const handleEqualTeamsChange = (e) => {
+        if (players1 !== players2) {
+            const max = Math.max(players1, players2);
+            setPlayers1(max);
+            setPlayers2(max);
+        }
+        setEqualTeams(prevState => !prevState);
+    };
 
     return (
         <div className={styles.teamBuilderContainer}>
             <p>
-                <input value={color1} onChange={e => setColor1(e.target.value)} type="color"/>Gospodarze
-                Goście <input value={color2} onChange={e => setColor2(e.target.value)} type="color"/>
+                <input value={color1} onChange={e => setColor1(e.target.value)} type="color"/> {name1} {" - "}
+                {name2} <input value={color2} onChange={e => setColor2(e.target.value)} type="color"/>
             </p>
-            <input value={players1} min={1} max={11} onChange={e => setPlayers1(parseInt(e.target.value))}
+            <input name="players1" value={players1} min={1} max={11} onChange={handlePlayersChange}
                    type="number"/>
-            vs
-            <input value={players2} min={1} max={11} onChange={e => setPlayers2(parseInt(e.target.value))}
+             vs
+            <input name="players2" value={players2} min={1} max={11} onChange={handlePlayersChange}
                    type="number"/>
+            <br/>
+            <label>
+                <input type="checkbox" checked={equalTeams} onChange={handleEqualTeamsChange}/>
+                Równe składy drużyn
+            </label>
             <div className={styles.pitchContainer}>
                 <img className={styles.responsivePitch} draggable="false" src={Soccer_field} alt="Soccer field"/>
                 <div className={styles.pitchHalf}>
@@ -39,7 +69,7 @@ export function Home() {
                     </PlayersLine>
                     <PlayersLine className={styles.playersLine} id={"line-2"}>
                         <Draggable id={"player-2"} className={styles.draggable} draggable={true}>
-                        <Player playerName="Maciek" color={color2}/>
+                            <Player playerName="Maciek" color={color2}/>
                         </Draggable>
                     </PlayersLine>
 
