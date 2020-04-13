@@ -4,7 +4,7 @@ import {LoginForm} from './forms/LoginForm';
 import {UserProfile} from './UserProfile';
 import './App.css';
 import {HashRouter as Router, Route} from 'react-router-dom';
-import {Home} from "./Home";
+import {Home} from "./home/Home";
 
 function App() {
     return (
