@@ -6,6 +6,6 @@ import {Player} from "./Player"
 export function Home() {
     return (<div className="pitch-container">
         <img className="selectDisable" draggable="false" src={SoccerField} alt="Soccer field"/>
-        <Player />
+        <Player playerName="Piotrek"/>
     </div>);
 }
