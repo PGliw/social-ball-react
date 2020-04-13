@@ -1,0 +1,21 @@
+.pitch-container {
+    position: relative;
+}
+
+.t-shirt path[id="path3072"] {
+    fill: white;
+}
+
+.t-shirt {
+    width: 10%;
+    height: 10%;
+    position: absolute;
+    top: 45%;
+    left: 10%;
+}
+
+.selectDisable {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}

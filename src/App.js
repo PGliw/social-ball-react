@@ -4,6 +4,7 @@ import {LoginForm} from './forms/LoginForm';
 import {UserProfile} from './UserProfile';
 import './App.css';
 import {HashRouter as Router, Route} from 'react-router-dom';
+import {Home} from "./Home";
 
 function App() {
     return (
@@ -13,6 +14,7 @@ function App() {
                     <Route exact path="/" component={LoginForm}/>
                     <Route path="/login" component={LoginForm}/>
                     <Route path="/register" component={RegistrationForm}/>
+                    <Route path="/home" component={Home}/>
                     <Route path="/profile" component={UserProfile}/>
                 </div>
             </Router>

@@ -78,7 +78,7 @@ export class LoginForm extends React.Component {
 
     render() {
         if (this.state.isLoginSuccessful === true) {
-            return <Redirect to='/profile'/>
+            return <Redirect to='/home'/>
         } else return (
             <div className="registration-card">
                 <h1>Logowanie</h1>
