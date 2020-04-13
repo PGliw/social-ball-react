@@ -1,7 +1,6 @@
 import React from "react";
 import {Link, Redirect} from "react-router-dom";
-import "./CommonForm.css";
-import "./FormInput"
+import styles from "./CommonForm.module.css";
 import {FormInput} from "./FormInput";
 import {SERVER_URL} from "../config";
 
@@ -80,7 +79,7 @@ export class LoginForm extends React.Component {
         if (this.state.isLoginSuccessful === true) {
             return <Redirect to='/home'/>
         } else return (
-            <div className="registration-card">
+            <div className={styles.registrationCard}>
                 <h1>Logowanie</h1>
                 <form onSubmit={this.onSubmit}>
                     <FormInput

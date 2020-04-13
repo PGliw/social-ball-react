@@ -1,6 +1,6 @@
 import React from "react";
 
-export const TShirtComponent = (
+export const TShirtCsv = (
     {
         color = "white",
         width = "100%",
