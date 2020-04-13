@@ -1,9 +1,7 @@
 .pitch-container {
     position: relative;
-}
-
-.t-shirt path[id="path3072"] {
-    fill: white;
+    width: fit-content;
+    margin: auto;
 }
 
 .t-shirt {
