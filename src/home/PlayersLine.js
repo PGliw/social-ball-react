@@ -2,11 +2,16 @@ import React from "react";
 import styles from "./PlayersLine.module.css";
 
 export function PlayersLine(props) {
+
     const drop = (e) => {
-        e.preventDefault();
-        const draggableId = e.dataTransfer.getData('draggable_id');
-        const draggable = document.getElementById(draggableId);
-        e.target.appendChild(draggable);
+        const groupId = e.dataTransfer.getData('group_id');
+        if (groupId == props.groupId) {
+            console.log("dropping!");
+            e.preventDefault();
+            const draggableId = e.dataTransfer.getData('draggable_id');
+            const draggable = document.getElementById(draggableId);
+            e.target.appendChild(draggable);
+        }
     };
 
     const dragOver = (e) => {

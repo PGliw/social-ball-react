@@ -5,19 +5,22 @@ import {Draggable} from "./Draggable";
 import {Player} from "./Player";
 
 export function PitchHalf(props) {
-    const lines = props.lines;
+    const isLeftSide = props.isLeftSide;
     const color = props.color;
-    const players = props.players;
+    const players = isLeftSide === true ? props.players : [...props.players].reverse();
+    const pitchHalfStyle = isLeftSide === true ? {left: "7%"} : {right: "7%"};
+    const teamId = isLeftSide === true ? 1 : 2;
 
     const renderPlayers = (lineId, players) => {
         const playersDraggables = players.map((playerNumber) =>
             (
-                <Draggable key={playerNumber} id={`player-${playerNumber}`} className={styles.draggable} draggable={true}>
+                <Draggable key={playerNumber} id={"player-" + teamId + "-" + playerNumber} className={styles.draggable}
+                           draggable={true} groupId={teamId}>
                     <Player playerName="Piotrek" color={color}/>
                 </Draggable>)
         );
         return (
-            <PlayersLine key={lineId} id={lineId} className={styles.playersLine}>
+            <PlayersLine key={lineId} id={lineId} className={styles.playersLine} groupId={teamId}>
                 {playersDraggables}
             </PlayersLine>
         );
@@ -36,15 +39,12 @@ export function PitchHalf(props) {
         }
     };
 
-    const pitchLines = () => {
-        const pitchLines = players.map((players, index) => renderPlayers(index, players));
-        return (
-            <div className={styles.pitchHalf}>
-                {pitchLines}
-            </div>
-        );
+    const pitchLines = players.map((players, index) => renderPlayers("line-" + teamId + "-" + index, players));
+    return (
+        <div className={styles.pitchHalf} style={pitchHalfStyle}>
+            {pitchLines}
+        </div>
+    );
 
-    };
 
-    return pitchLines();
 }

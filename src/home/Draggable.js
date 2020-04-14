@@ -4,6 +4,7 @@ export function Draggable(props) {
     const dragStart = e => {
         const target = e.target;
         e.dataTransfer.setData('draggable_id', target.id);
+        e.dataTransfer.setData('group_id', props.groupId);
     };
 
     const dragOver  = e => {

@@ -65,7 +65,8 @@ export function Home() {
             </label>
             <div className={styles.pitchContainer}>
                 <img className={styles.responsivePitch} draggable="false" src={Soccer_field} alt="Soccer field"/>
-                <PitchHalf players={[[1], [2, 3], [4, 5]]} color={color1}/>
+                <PitchHalf players={[[1], [2, 3], [4, 5]]} color={color1} isLeftSide={true}/>
+                <PitchHalf players={[[1], [2, 3], [4, 5]]} color={color2} isLeftSide={false}/>
             </div>
         </div>);
 }
