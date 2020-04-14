@@ -4,6 +4,7 @@ import Soccer_field from "../assets/Soccer_field.png"
 import {Player} from "./Player"
 import {PlayersLine} from "./PlayersLine";
 import {Draggable} from "./Draggable";
+import {PitchHalf} from "./PitchHalf";
 
 export function Home() {
     const [color1, setColor1] = useState("#f54242");
@@ -12,8 +13,13 @@ export function Home() {
     const [name2, setName2] = useState("Goście");
     const [players1, setPlayers1] = useState(5);
     const [players2, setPlayers2] = useState(5);
+    const [lines1, setLines1] = useState(4);
+    const [lines2, setLines2] = useState(4);
     const [equalTeams, setEqualTeams] = useState(true);
     const [samePositions, setSamePostitions] = useState(true);
+
+
+    const pitchLines1 = Array(lines1).map((el) => <PlayersLine className={styles.playersLine} id={"line-"+el}/>);
 
     const handlePlayersChange = (e) => {
         const target = e.target;
@@ -32,7 +38,7 @@ export function Home() {
         }
     };
 
-    const handleEqualTeamsChange = (e) => {
+    const handleEqualTeamsChange = () => {
         if (players1 !== players2) {
             const max = Math.max(players1, players2);
             setPlayers1(max);
@@ -49,7 +55,7 @@ export function Home() {
             </p>
             <input name="players1" value={players1} min={1} max={11} onChange={handlePlayersChange}
                    type="number"/>
-             vs
+            vs
             <input name="players2" value={players2} min={1} max={11} onChange={handlePlayersChange}
                    type="number"/>
             <br/>
@@ -59,21 +65,7 @@ export function Home() {
             </label>
             <div className={styles.pitchContainer}>
                 <img className={styles.responsivePitch} draggable="false" src={Soccer_field} alt="Soccer field"/>
-                <div className={styles.pitchHalf}>
-
-                    <PlayersLine className={styles.playersLine} id={"line-1"}>
-                        <Draggable id={"player-1"} className={styles.draggable} draggable={true}>
-                            <Player playerName="Piotrek" color={color1}/>
-                        </Draggable>
-
-                    </PlayersLine>
-                    <PlayersLine className={styles.playersLine} id={"line-2"}>
-                        <Draggable id={"player-2"} className={styles.draggable} draggable={true}>
-                            <Player playerName="Maciek" color={color2}/>
-                        </Draggable>
-                    </PlayersLine>
-
-                </div>
+                <PitchHalf players={[[1], [2, 3], [4, 5]]} color={color1}/>
             </div>
         </div>);
 }

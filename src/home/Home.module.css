@@ -29,39 +29,6 @@
     height: auto;
 }
 
-.draggable {
-    display: block;
-    margin: auto;
-    cursor: move;
-}
-
-.flexbox {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-}
-
-.playersLine {
-    composes: flexbox;
-    padding: 2px;
-    border:2px solid green;
-    display: flex;
-    justify-content: center;
-}
-
-.pitchHalf {
-    position: absolute;
-    border: dashed saddlebrown 2px;
-    margin: 5% 7% 5% 7%;
-    height: 85%;
-    width: 43%;
-    top: 0;
-    left: 0;
-
-
-    display: inline-grid;
-    grid-template-columns: 25% 25% 25% 25%;
-}
 
 
 

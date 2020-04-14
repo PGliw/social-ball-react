@@ -1,0 +1,33 @@
+.draggable {
+    display: block;
+    margin: auto;
+    cursor: move;
+}
+
+.flexbox {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.playersLine {
+    composes: flexbox;
+    padding: 2px;
+    border:2px solid green;
+    display: flex;
+    justify-content: center;
+    flex-basis: 100%;
+}
+
+
+.pitchHalf {
+    position: absolute;
+    border: dashed saddlebrown 2px;
+    height: 82%;
+    width: 43%;
+    top: 8%;
+    left: 7%;
+
+    display: flex;
+    display: -webkit-flex;
+}
