@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="63e16165-1ea8-44da-bc93-18e7196993ad" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/LoginForm.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/LoginForm.js" afterDir="false" />
+    <list default="true" id="5fa66748-b014-444d-a9ea-4d533d879568" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/Piotr.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RegistrationForm.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/RegistrationForm.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/RegistrationForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/RegistrationForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/NavDrawer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/NavDrawer.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +33,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -80,25 +78,25 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1897" height="204" key="GridCell.Tab.0.bottom" timestamp="1586177729065">
+    <state width="1897" height="285" key="GridCell.Tab.0.bottom" timestamp="1586957871095">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1897" height="204" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586177729065" />
-    <state width="1897" height="204" key="GridCell.Tab.0.center" timestamp="1586177729065">
+    <state width="1897" height="285" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586957871095" />
+    <state width="1897" height="285" key="GridCell.Tab.0.center" timestamp="1586957871094">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1897" height="204" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586177729065" />
-    <state width="1897" height="204" key="GridCell.Tab.0.left" timestamp="1586177729064">
+    <state width="1897" height="285" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586957871094" />
+    <state width="1897" height="285" key="GridCell.Tab.0.left" timestamp="1586957871094">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1897" height="204" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586177729064" />
-    <state width="1897" height="204" key="GridCell.Tab.0.right" timestamp="1586177729065">
+    <state width="1897" height="285" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586957871094" />
+    <state width="1897" height="285" key="GridCell.Tab.0.right" timestamp="1586957871095">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1897" height="204" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586177729065" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1586170117337">
+    <state width="1897" height="285" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586957871094" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1586954898634">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586170117337" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586954898634" />
   </component>
 </project>
