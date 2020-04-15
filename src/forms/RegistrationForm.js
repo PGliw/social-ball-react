@@ -1,7 +1,8 @@
 import React from "react";
 import {Link, Redirect} from "react-router-dom";
-import './CommonForm.css'
+import styles from './CommonForm.module.css'
 import {FormInput} from "./FormInput";
+import {errorMessage} from "./FormInput.module.css"
 import {SERVER_URL} from "../config";
 
 export class RegistrationForm extends React.Component {
@@ -87,7 +88,7 @@ export class RegistrationForm extends React.Component {
             });
     };
 
-    renderErrorMessage = (message) => !message ? null : (<div className="error-message">{message}</div>);
+    renderErrorMessage = (message) => !message ? null : (<div className={errorMessage}>{message}</div>);
 
     onSubmit = (e) => {
         e.preventDefault();
@@ -125,7 +126,7 @@ export class RegistrationForm extends React.Component {
         if (this.state.isRegistrationSuccessful === true) {
             return <Redirect to='/login'/>
         } else return (
-            <div className="registration-card">
+            <div className={styles.registrationCard}>
                 <h1>Rejestracja</h1>
                 <form onSubmit={this.onSubmit}>
                     <FormInput
