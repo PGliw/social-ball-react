@@ -3,6 +3,7 @@ import {RegistrationForm} from './RegistrationForm';
 import {LoginForm} from './LoginForm';
 import './App.css';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {NavDrawerTest} from './NavDrawerTest';
 
 function App() {
     return (
@@ -11,6 +12,7 @@ function App() {
                 <div className="container">
                     <Route exact path="/" component={LoginForm}/>
                     <Route path="/register" component={RegistrationForm}/>
+                    <Route path="/navdrawertest" component={NavDrawerTest}/>
                 </div>
             </Router>
         </div>
