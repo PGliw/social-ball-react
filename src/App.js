@@ -1,6 +1,7 @@
 import React from 'react';
 import {RegistrationForm} from './forms/RegistrationForm';
 import {LoginForm} from './forms/LoginForm';
+import {NewMatchForm} from './forms/NewMatchForm';
 import {UserProfile} from './UserProfile';
 import './App.css';
 import {HashRouter as Router, Route} from 'react-router-dom';
@@ -14,6 +15,7 @@ function App() {
                     <Route exact path="/" component={LoginForm}/>
                     <Route path="/login" component={LoginForm}/>
                     <Route path="/register" component={RegistrationForm}/>
+                    <Route path="/NewMatchForm" component={NewMatchForm}/>
                     <Route path="/home" component={Home}/>
                     <Route path="/profile" component={UserProfile}/>
                 </div>

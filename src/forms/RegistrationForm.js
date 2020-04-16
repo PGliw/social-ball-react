@@ -189,6 +189,7 @@ export class RegistrationForm extends React.Component {
                     </label>
                     <input type="submit" value="Zarejestruj się" disabled={!this.state.isSubmitButtonEnabled}/>
                     <p>Masz już konto? <Link to="/">Przejdź do logowania</Link></p>
+                    <p> Chcesz sprawdzić formularz nowego meczu? <Link to="/NewMatchForm">Kliknij tutaj!</Link></p>
                 </form>
             </div>
         );
