@@ -97,17 +97,17 @@ const NavDrawer = ({children}) => {
         <div className={classes.root}>
             <CssBaseline/>
             <Appbar position="fixed" className={classes.appBar}>
-                <IconButton
-                    color="inherit"
-                    aria-label="open drawer"
-                    onClick={handleDrawerOpen}
-                    edge="start"
-                    className={clsx(classes.menuButton, open && classes.hide)}
-                >
-                    <MenuIcon/>
-                </IconButton>
                 <Toolbar>
-                    <Typography variant="h6" noWrap>
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerOpen}
+                        edge="start"
+                        className={classes.menuButton}
+                    >
+                        <MenuIcon/>
+                    </IconButton>
+                    <Typography variant="h6" className={classes.title}>
                         Social-ball
                     </Typography>
                 </Toolbar>
