@@ -1,8 +1,4 @@
-
-import DateFnsUtils from '@date-io/date-fns';
-import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -17,6 +13,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
+import DateFnsUtils from '@date-io/date-fns';
+import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -40,93 +38,55 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RegistrationForm() {
     const classes = useStyles();
-    const [fields, setFields] = React.useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        repeatPassword: '',
-        hasAccepted: false,
-    });
-    const [errors, setErrors] = React.useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        repeatPassword: '',
-        hasAccepted: false,
-    });
-    const [submitButtonEnabled, setSubmitButtonEnabled] = React.useState(false);
 
-    const handleInputChange = (event) => {
-        // const fields = this.state.fields;
-        // const target = event.target;
-        // const name = target.name;
-        // const value = name === "hasAccepted" ? target.checked : target.value;
-        // fields[name] = value;
-        //
-        // const errors = this.state.errors;
-        // switch (name) {
-        //     case 'firstName':
-        //         errors.firstName =
-        //             value.length < 1
-        //                 ? 'Imię nie moze być puste!'
-        //                 : null;
-        //         break;
-        //     case 'lastName':
-        //         errors.lastName =
-        //             value.length < 1
-        //                 ? 'Nazwisko nie może być puste!'
-        //                 : null;
-        //         break;
-        //     case 'email':
-        //         const validEmailRegex =
-        //             RegExp(/^(([^<>()\\[\]\\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
-        //         errors.email =
-        //             validEmailRegex.test(value)
-        //                 ? null
-        //                 : 'To nie jest poprawny adres email';
-        //         break;
-        //     case 'birthday':
-        //         const dateEntry = new Date(value);
-        //         const date13yearsAgo = new Date();
-        //         date13yearsAgo.setFullYear(date13yearsAgo.getFullYear() - 13);
-        //         errors.birthday =
-        //             dateEntry < date13yearsAgo
-        //                 ? null
-        //                 : 'Żeby samodzielnie się zarejestrować musisz mieć ukończone 13 lat';
-        //         break;
-        //     case 'password':
-        //         errors.password =
-        //             value.length < 8
-        //                 ? 'Hasło musi mieć przynajmniej 8 znaków'
-        //                 : null;
-        //         break;
-        //     case 'repeatPassword':
-        //         errors.repeatPassword =
-        //             value === fields.password ? null : 'Hasła muszą być identyczne';
-        //         break;
-        //     case 'hasAccepted':
-        //         errors.hasAccepted =
-        //             value ? null : 'Zgoda jest wymagana';
-        //         break;
-        //     default:
-        //         break;
-        // }
-        // this.setState(
-        //     {
-        //         fields: fields,
-        //         errors: errors,
-        //         isSubmitButtonEnabled:
-        //             errors.firstName === null
-        //             && errors.lastName === null
-        //             && errors.email === null
-        //             && errors.password === null
-        //             && errors.birthday === null
-        //             && errors.repeatPassword === null
-        //             && errors.hasAccepted === null
-        //     });
-    };
+    const [firstName, setFirstName]           = useState(null);
+    const [lastName, setLastName]             = useState(null);
+    const [email, setEmail]                   = useState(null);
+    const [birthday, setBirthday]             = useState(null);
+    const [password, setPassword]             = useState(null);
+    const [repeatPassword, setRepeatPassword] = useState(null);
+    const [accepted, setAccepted]             = useState(false);
+    
+    const [firstNameError, setFirstNameError]           = useState(null);
+    const [lastNameError, setLastNameError]             = useState(null);
+    const [emailError, setEmailError]                   = useState(null);
+    const [birthdayError, setBirthdayError]             = useState(null);
+    const [passwordError, setPasswordError]             = useState(null);
+    const [repeatPasswordError, setRepeatPasswordError] = useState(null);
+    const [acceptedError, setAcceptedError]             = useState(null);
+
+    const [submitButtonEnabled, setSubmitButtonEnabled] = useState(false);
+
+    useEffect(() => {
+        setSubmitButtonEnabled(
+            firstName !== null
+            && firstNameError === null
+            && lastName !== null
+            && lastNameError === null
+            && email !== null
+            && emailError === null
+            && birthday !== null
+            && birthdayError === null
+            && password !== null
+            && passwordError === null
+            && repeatPassword !== null
+            && repeatPasswordError === null
+            && accepted === true);
+    }, [
+        firstName,
+        firstNameError,
+        lastName,
+        lastNameError,
+        email,
+        emailError,
+        birthday,
+        birthdayError,
+        password,
+        passwordError,
+        repeatPassword,
+        repeatPasswordError,
+        accepted
+    ]);
 
     const onSubmit = () => {
         alert("Cześć "+this.state.fields.firstName);
@@ -146,43 +106,56 @@ export default function RegistrationForm() {
                                 <TextField
                                     label="Imię"
                                     id="firstName"
-                                    name="firstName"
                                     fullWidth
                                     required
                                     autoFocus
                                     variant="outlined"
-                                    value={fields.firstName || ''}
-                                    onChange={handleInputChange}
-                                    error={errors.firstName}
-                                    helperText={errors.firstName}
+                                    value={firstName || ''}
+                                    onChange={event => {
+                                        setFirstName(event.target.value);
+                                        setFirstNameError(event.target.value.length < 1
+                                            ? 'Imię nie moze być puste!'
+                                            : null);
+                                    }}
+                                    error={firstNameError !== null}
+                                    helperText={firstNameError}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Nazwisko"
                                     id="lastName"
-                                    name="lastName"
                                     fullWidth
                                     required
                                     variant="outlined"
-                                    value={fields.lastName || ''}
-                                    onChange={handleInputChange}
-                                    error={errors.lastName}
-                                    helperText={errors.lastName}
+                                    value={lastName || ''}
+                                    onChange={event => {
+                                        setLastName(event.target.value);
+                                        setLastNameError(event.target.value.length < 1
+                                            ? 'Nazwisko nie moze być puste!'
+                                            : null);
+                                    }}
+                                    error={lastNameError !== null}
+                                    helperText={lastNameError}
                                 />
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
                                     label="Adres e-mail"
                                     id="email"
-                                    name="email"
                                     fullWidth
                                     required
                                     variant="outlined"
-                                    value={fields.email || ''}
-                                    onChange={handleInputChange}
-                                    error={errors.email}
-                                    helperText={errors.email}
+                                    value={email || ''}
+                                    onChange={event => {
+                                        const validEmailRegex = RegExp(/^(([^<>()\\[\]\\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
+                                        setEmail(event.target.value);
+                                        setEmailError(validEmailRegex.test(event.target.value)
+                                            ? null
+                                            : 'To nie jest poprawny adres email');
+                                    }}
+                                    error={emailError !== null}
+                                    helperText={emailError}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -190,14 +163,22 @@ export default function RegistrationForm() {
                                     <KeyboardDatePicker
                                         label="Data urodzenia"
                                         id="birthday"
-                                        name="birthday"
                                         disableToolbar
                                         variant="inline"
                                         fullWidth
                                         format="dd/MM/yyyy"
                                         inputVariant="outlined"
-                                        value={fields.birthday}
-                                        onChange={handleInputChange}
+                                        value={birthday}
+                                        onChange={date => {
+                                            setBirthday(date);
+                                            const date13yearsAgo = new Date();
+                                            date13yearsAgo.setFullYear(date13yearsAgo.getFullYear() - 13);
+                                            setBirthdayError(date < date13yearsAgo
+                                                ? null
+                                                : 'Żeby samodzielnie się zarejestrować musisz mieć ukończone 13 lat');
+                                        }}
+                                        error={birthdayError !== null}
+                                        helperText={birthdayError}
                                         KeyboardButtonProps={{
                                             'aria-label': 'change date',
                                         }}
@@ -208,51 +189,64 @@ export default function RegistrationForm() {
                                 <TextField
                                     label="Hasło"
                                     id="password"
-                                    name="password"
                                     type="password"
                                     autoComplete="current-password"
                                     required
                                     fullWidth
                                     variant="outlined"
-                                    value={fields.password || ''}
-                                    onChange={handleInputChange}
-                                    error={errors.password}
-                                    helperText={errors.password}
+                                    value={password || ''}
+                                    onChange={event => {
+                                        setPassword(event.target.value);
+                                        setPasswordError(event.target.value.length < 8
+                                            ? 'Hasło musi mieć przynajmniej 8 znaków'
+                                            : null);
+                                    }}
+                                    error={passwordError !== null}
+                                    helperText={passwordError}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     label="Powtórz hasło"
                                     id="repeatPassword"
-                                    name="repeatPassword"
                                     type="password"
                                     autoComplete="current-password"
                                     required
                                     fullWidth
                                     variant="outlined"
-                                    value={fields.repeatPassword || ''}
-                                    onChange={handleInputChange}
-                                    error={errors.repeatPassword}
-                                    helperText={errors.repeatPassword}
+                                    value={repeatPassword || ''}
+                                    onChange={event => {
+                                        setRepeatPassword(event.target.value);
+                                        setRepeatPasswordError(event.target.value === password
+                                            ? null
+                                            : 'Hasła muszą być identyczne');
+                                    }}
+                                    error={repeatPasswordError !== null}
+                                    helperText={repeatPasswordError}
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <FormControl required error={errors.hasAccepted} component="fieldset">
+                                <FormControl required error={acceptedError !== null} component="fieldset">
                                     <FormGroup>
                                         <FormControlLabel
                                             control={
                                                 <Checkbox
-                                                    checked={fields.hasAccepted}
-                                                    onChange={handleInputChange}
-                                                    name="hasAccepted"
-                                                    error={errors.hasAccepted}
+                                                    checked={accepted}
+                                                    onChange={event => {
+                                                        setAccepted(event.target.checked);
+                                                        setAcceptedError(event.target.checked == true
+                                                            ? null
+                                                            : 'Zgoda jest wymagana');
+                                                    }}
+                                                    id="hasAccepted"
+                                                    error={acceptedError}
                                                 />
                                             }
                                             label="Akceptuję warunki regulaminu"
                                         />
                                     </FormGroup>
-                                    {!errors.hasAccepted ? null : (
-                                        <FormHelperText>{errors.hasAccepted}</FormHelperText>
+                                    {acceptedError === null ? null : (
+                                        <FormHelperText>{acceptedError}</FormHelperText>
                                     )}
                                 </FormControl>
                             </Grid>
