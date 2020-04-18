@@ -15,7 +15,7 @@ import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import DateFnsUtils from '@date-io/date-fns';
 import {KeyboardDatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
-import {SERVER_URL} from "../config";
+import {SERVER_URL} from "../../config";
 import {Redirect} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({

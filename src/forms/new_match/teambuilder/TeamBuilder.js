@@ -1,12 +1,12 @@
 import React, {useState} from "react";
 import styles from "./Home.module.css";
-import Soccer_field from "../assets/Soccer_field.png"
+import Soccer_field from "../../../assets/Soccer_field.png"
 import {Player} from "./Player"
 import {PlayersLine} from "./PlayersLine";
 import {Draggable} from "./Draggable";
 import {PitchHalf} from "./PitchHalf";
 
-export function Home() {
+export function TeamBuilder() {
     const [color1, setColor1] = useState("#f54242");
     const [color2, setColor2] = useState("#ffffff");
     const [name1, setName1] = useState("Gospodarze");

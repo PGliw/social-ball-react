@@ -1,10 +1,10 @@
 import React from 'react';
-import {RegistrationForm} from './forms/RegistrationForm';
-import {LoginForm} from './forms/LoginForm';
+import {RegistrationForm} from './forms/login_registration/RegistrationForm';
+import {LoginForm} from './forms/login_registration/LoginForm';
 import {UserProfile} from './UserProfile';
 import './App.css';
 import {HashRouter as Router, Route} from 'react-router-dom';
-import {Home} from "./home/Home";
+import {Home} from "./Home";
 
 function App() {
     return (
