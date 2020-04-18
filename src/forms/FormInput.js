@@ -1,9 +1,9 @@
 import React from "react"
-import styles from "./FormInput.module.css"
+import styles from "./login_registration/FormInput.module.css"
 
 export function FormInput(props) {
     return (
-        <label className={styles.textInputLabel}>
+        <label classsName={styles.textInputLabel}>
             {props.label}
             <input className={styles.textInput}
                 value={props.value}

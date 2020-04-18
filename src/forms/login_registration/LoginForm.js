@@ -1,8 +1,8 @@
 import React from "react";
 import {Link, Redirect} from "react-router-dom";
-import styles from "./CommonForm.module.css";
-import {FormInput} from "./FormInput";
-import {SERVER_URL} from "../config";
+import styles from "../CommonForm.module.css";
+import {FormInput} from "../FormInput";
+import {SERVER_URL} from "../../config";
 
 export class LoginForm extends React.Component {
     constructor(props) {

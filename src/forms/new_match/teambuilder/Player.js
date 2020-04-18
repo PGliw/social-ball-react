@@ -1,6 +1,6 @@
 import React from "react";
 //import {ReactComponent as TShirt} from "./assets/t_shirt.svg"
-import {TShirtCsv} from '../assets/TShirtCsv'
+import {TShirtCsv} from '../../../assets/TShirtCsv'
 import styles from "./Player.module.css"
 
 export function Player(props) {
