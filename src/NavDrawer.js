@@ -16,6 +16,7 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+import logo from './assets/logo.svg';
 
 
 const drawerWidth = 240;
@@ -107,6 +108,7 @@ const NavDrawer = ({children}) => {
                     >
                         <MenuIcon/>
                     </IconButton>
+                    <img src={logo} width="50" height="50" />
                     <Typography variant="h6" className={classes.title}>
                         Social-ball
                     </Typography>
