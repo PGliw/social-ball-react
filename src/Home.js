@@ -1,9 +1,9 @@
 import React from "react";
 import NavDrawer from "./NavDrawer";
-import MatchContent from "./MatchContent";
+import {TeamBuilder} from "./forms/new_match/teambuilder/TeamBuilder";
 
 export const Home = () => (
   <NavDrawer>
-      <MatchContent />
+      <TeamBuilder/>
   </NavDrawer>
 );
