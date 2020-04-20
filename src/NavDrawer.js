@@ -65,12 +65,13 @@ const useStyles = makeStyles((theme) => ({
     toolbar: (theme.mixins.toolbar),
     content: {
         flexGrow: 1,
-        padding: theme.spacing(3),
+        padding: "86px 24px 24px",
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
         marginLeft: -drawerWidth,
+        height: "100vh"
     },
     contentShift: {
         transition: theme.transitions.create('margin', {
