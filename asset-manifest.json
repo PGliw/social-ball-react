@@ -1,24 +1,25 @@
 {
   "files": {
-    "main.css": "/social-ball-react/static/css/main.a543aead.chunk.css",
-    "main.js": "/social-ball-react/static/js/main.773bec06.chunk.js",
-    "main.js.map": "/social-ball-react/static/js/main.773bec06.chunk.js.map",
+    "main.css": "/social-ball-react/static/css/main.f31a1d10.chunk.css",
+    "main.js": "/social-ball-react/static/js/main.4e5ba399.chunk.js",
+    "main.js.map": "/social-ball-react/static/js/main.4e5ba399.chunk.js.map",
     "runtime-main.js": "/social-ball-react/static/js/runtime-main.a145b8d3.js",
     "runtime-main.js.map": "/social-ball-react/static/js/runtime-main.a145b8d3.js.map",
-    "static/js/2.292464c1.chunk.js": "/social-ball-react/static/js/2.292464c1.chunk.js",
-    "static/js/2.292464c1.chunk.js.map": "/social-ball-react/static/js/2.292464c1.chunk.js.map",
+    "static/js/2.bd8d4bda.chunk.js": "/social-ball-react/static/js/2.bd8d4bda.chunk.js",
+    "static/js/2.bd8d4bda.chunk.js.map": "/social-ball-react/static/js/2.bd8d4bda.chunk.js.map",
     "index.html": "/social-ball-react/index.html",
-    "precache-manifest.a1d708aad4f4b13fe4f147adb4e3e8ba.js": "/social-ball-react/precache-manifest.a1d708aad4f4b13fe4f147adb4e3e8ba.js",
+    "precache-manifest.823805733d70ba38be2a79f7f25fd517.js": "/social-ball-react/precache-manifest.823805733d70ba38be2a79f7f25fd517.js",
     "service-worker.js": "/social-ball-react/service-worker.js",
-    "static/css/main.a543aead.chunk.css.map": "/social-ball-react/static/css/main.a543aead.chunk.css.map",
-    "static/js/2.292464c1.chunk.js.LICENSE.txt": "/social-ball-react/static/js/2.292464c1.chunk.js.LICENSE.txt",
+    "static/css/main.f31a1d10.chunk.css.map": "/social-ball-react/static/css/main.f31a1d10.chunk.css.map",
+    "static/js/2.bd8d4bda.chunk.js.LICENSE.txt": "/social-ball-react/static/js/2.bd8d4bda.chunk.js.LICENSE.txt",
     "static/media/Soccer_field.png": "/social-ball-react/static/media/Soccer_field.5e784b82.png",
-    "static/media/index.css": "/social-ball-react/static/media/background.31f32a28.png"
+    "static/media/index.css": "/social-ball-react/static/media/background.31f32a28.png",
+    "static/media/logo.svg": "/social-ball-react/static/media/logo.9d8bc298.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.a145b8d3.js",
-    "static/js/2.292464c1.chunk.js",
-    "static/css/main.a543aead.chunk.css",
-    "static/js/main.773bec06.chunk.js"
+    "static/js/2.bd8d4bda.chunk.js",
+    "static/css/main.f31a1d10.chunk.css",
+    "static/js/main.4e5ba399.chunk.js"
   ]
 }
