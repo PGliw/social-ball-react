@@ -82,7 +82,9 @@ const MatchContent = () => {
         [startTime, setStartTime] = useState(null),
         [endTime, setEndTime] = useState(null),
         [open, setOpen] = useState(false),
-        [coach, setCoach] = useState(null);
+        [coach, setCoach] = useState(null),
+        [equalTeams, setEqualTeams] = useState(true),
+        [samePositions, setSamePositions] = useState(true);
 
     const handleCityChange = (e) => setSelectedCity(e.target.value);
 
@@ -93,6 +95,20 @@ const MatchContent = () => {
             setSelectedField("");
             setOpen(true);
         } else setSelectedField(value);
+    };
+
+    const handleEqualTeamsChange = (e) => {
+        const equal = e.target.checked;
+        setEqualTeams(equal);
+        if (equal === false) {
+            setSamePositions(false);
+        }
+    };
+
+    const handleSamePositionsChange = (e) => {
+        const checked = e.target.checked;
+        const theSame = equalTeams !== false && checked;
+        setSamePositions(theSame);
     };
 
     const onDialogClose = () => setOpen(false);
@@ -169,12 +185,26 @@ const MatchContent = () => {
                             <MenuItem value={null}>Obojętne</MenuItem>
                         </Select>
                     </FormControl>
+                    <label>
+                        <input type="checkbox" checked={equalTeams} onChange={handleEqualTeamsChange}/>
+                        Równe składy drużyn
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="checkbox" checked={samePositions}
+                               onChange={handleSamePositionsChange}/>
+                        Takie samo rozstawienie drużyn
+                    </label>
+                    <br/>
                     <Button className={classes.submitButton} variant="contained" color="primary">
                         Opublikuj
                     </Button>
                 </Grid>
                 <Grid item sm={12} md={8}>
-                    <TeamBuilder/>
+                    <TeamBuilder
+                        equalTeams={equalTeams}
+                        samePositions={samePositions}
+                    />
 
                 </Grid>
             </Grid>
