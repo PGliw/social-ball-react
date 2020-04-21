@@ -16,7 +16,7 @@ export function PitchHalf(props) {
             (
                 <Draggable key={playerNumber} id={"player-" + teamId + "-" + playerNumber} className={styles.draggable}
                            draggable={true} groupId={teamId}>
-                    <Player playerName="Piotrek" color={color}/>
+                    <Player color={color}/>
                 </Draggable>)
         );
         return (
