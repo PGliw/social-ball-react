@@ -1,12 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:deployment" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:feature" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:fix" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:merge" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:merge" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:nw" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="5fa66748-b014-444d-a9ea-4d533d879568" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/Piotr.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/forms/AddFieldForm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/NavDrawer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/NavDrawer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MatchContent.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/MatchContent.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,8 +64,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="CSS File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -28,7 +76,6 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
@@ -62,7 +109,7 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="63e16165-1ea8-44da-bc93-18e7196993ad" name="Default Changelist" comment="" />
+      <changelist id="5fa66748-b014-444d-a9ea-4d533d879568" name="Default Changelist" comment="" />
       <created>1585869702854</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -71,28 +118,44 @@
       <workItem from="1585871543462" duration="1402000" />
       <workItem from="1585908700426" duration="14959000" />
       <workItem from="1586169318782" duration="8786000" />
+      <workItem from="1587997274544" duration="602000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="2" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="WindowStateProjectService">
-    <state width="1897" height="285" key="GridCell.Tab.0.bottom" timestamp="1586957871095">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1267" height="162" key="GridCell.Tab.0.bottom" timestamp="1587997504396">
+      <screen x="0" y="0" width="1289" height="725" />
     </state>
+    <state width="1267" height="162" key="GridCell.Tab.0.bottom/0.0.1289.725@0.0.1289.725" timestamp="1587997504396" />
     <state width="1897" height="285" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586957871095" />
-    <state width="1897" height="285" key="GridCell.Tab.0.center" timestamp="1586957871094">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1267" height="162" key="GridCell.Tab.0.center" timestamp="1587997504396">
+      <screen x="0" y="0" width="1289" height="725" />
     </state>
+    <state width="1267" height="162" key="GridCell.Tab.0.center/0.0.1289.725@0.0.1289.725" timestamp="1587997504396" />
     <state width="1897" height="285" key="GridCell.Tab.0.center/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586957871094" />
-    <state width="1897" height="285" key="GridCell.Tab.0.left" timestamp="1586957871094">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1267" height="162" key="GridCell.Tab.0.left" timestamp="1587997504396">
+      <screen x="0" y="0" width="1289" height="725" />
     </state>
+    <state width="1267" height="162" key="GridCell.Tab.0.left/0.0.1289.725@0.0.1289.725" timestamp="1587997504396" />
     <state width="1897" height="285" key="GridCell.Tab.0.left/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586957871094" />
-    <state width="1897" height="285" key="GridCell.Tab.0.right" timestamp="1586957871095">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1267" height="162" key="GridCell.Tab.0.right" timestamp="1587997504396">
+      <screen x="0" y="0" width="1289" height="725" />
     </state>
+    <state width="1267" height="162" key="GridCell.Tab.0.right/0.0.1289.725@0.0.1289.725" timestamp="1587997504396" />
     <state width="1897" height="285" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586957871094" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1586954898634">
       <screen x="0" y="0" width="1920" height="1040" />

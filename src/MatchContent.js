@@ -15,6 +15,8 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import Grid from "@material-ui/core/Grid";
+import {AddFieldForm} from "./forms/AddFieldForm";
+import DialogContent from "@material-ui/core/DialogContent";
 
 const useStyles = makeStyles((theme) => ({
     settings: {
@@ -76,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
 const MatchContent = () => {
     const classes = useStyles(),
         [fields, setFields] = useState(["Soccerfield", "Footballclub", "Bojo"]),
-        [selectedField, setSelectedField] = useState(""),
+        [selectedField, setSelectedField] = useState("Soccerfield"),
         [selectedCity, setSelectedCity] = useState(""),
         [date, setDate] = useState(null),
         [startTime, setStartTime] = useState(null),
@@ -92,7 +94,7 @@ const MatchContent = () => {
         const value = e.target.value;
 
         if (value === "") {
-            setSelectedField("");
+            // setSelectedField("");
             setOpen(true);
         } else setSelectedField(value);
     };
@@ -208,8 +210,12 @@ const MatchContent = () => {
 
                 </Grid>
             </Grid>
-            <Dialog open={open} onClose={onDialogClose}>
-                Jakiś dialog
+            <Dialog
+                open={open}
+                onClose={onDialogClose}>
+                <DialogContent>
+                    <AddFieldForm></AddFieldForm>
+                </DialogContent>
             </Dialog>
         </Paper>
     );
