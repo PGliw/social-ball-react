@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
+import {DragDropContext} from 'react-beautiful-dnd';
 import styles from "./TeamBuilder.module.css";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import {Player} from "./Player";
 import Soccer_field from "../../../assets/Soccer_field.png";
+import {DroppableLine} from "./DroppablePlayer";
 
 // fake data generator
 const getItems = (count, offset = 0) =>
@@ -38,37 +37,13 @@ const move = (source, destination, droppableSource, droppableDestination) => {
     return result;
 };
 
-const grid = 8;
-
-const getItemStyle = (isDragging, draggableStyle) => ({
-    // some basic styles to make the items look a bit nicer
-    userSelect: 'none',
-    padding: grid * 2,
-    margin: `0 0 ${grid}px 0`,
-
-    // change background colour if dragging
-    background: isDragging ? 'lightblue' : 'transparent',
-
-    // styles we need to apply on draggables
-    ...draggableStyle
-});
-
-const getListStyle = isDraggingOver => ({
-    background: isDraggingOver ? 'rgba(130, 255, 151, 0.5)' : 'transparent',
-    display: 'flex',
-    // justifyContent: 'space-between',
-    flexDirection: 'column',
-    padding: '2px',
-    border: '2px solid green',
-    justifyContent: 'center',
-    flexBasis: '100%',
-});
-
 
 export class Example extends Component {
     state = {
-        items: getItems(10),
-        selected: getItems(5, 10)
+        goalkeepers: getItems(1),
+        defenders: getItems(2, 1),
+        midfields: getItems(2, 3),
+        forwards: getItems(1, 5),
     };
 
 
@@ -78,8 +53,10 @@ export class Example extends Component {
      * source arrays stored in the state.
      */
     id2List = {
-        droppable: 'items',
-        droppable2: 'selected'
+        droppable1: 'goalkeepers',
+        droppable2: 'defenders',
+        droppable3: 'midfields',
+        droppable4: 'forwards',
     };
 
     getList = id => this.state[this.id2List[id]];
@@ -99,13 +76,12 @@ export class Example extends Component {
                 destination.index
             );
 
-            let state = {items};
-
-            if (source.droppableId === 'droppable2') {
-                state = {selected: items};
-            }
-
+            const state = {};
+            const droppableId = source.droppableId;
+            const listName = this.id2List[droppableId];
+            state[listName] = items;
             this.setState(state);
+
         } else {
             const result = move(
                 this.getList(source.droppableId),
@@ -114,10 +90,15 @@ export class Example extends Component {
                 destination
             );
 
-            this.setState({
-                items: result.droppable,
-                selected: result.droppable2
-            });
+            const state = {};
+            const sourceDroppableId = source.droppableId;
+            const sourceListName = this.id2List[sourceDroppableId];
+            const destDroppableId = destination.droppableId;
+            const destListName = this.id2List[destDroppableId];
+            state[sourceListName] = result[sourceDroppableId];
+            state[destListName] = result[destDroppableId];
+
+            this.setState(state);
         }
     };
 
@@ -131,67 +112,10 @@ export class Example extends Component {
                     <div className={styles.pitchHalf}
                          style={{left: "7%"}}
                     >
-                        <Droppable droppableId="droppable">
-                            {(provided, snapshot) => (
-                                <div
-                                    ref={provided.innerRef}
-                                    // className={styles.playersLine}
-                                    style={getListStyle(snapshot.isDraggingOver)}
-                                >
-                                    {this.state.items.map((item, index) => (
-                                        <Draggable
-                                            key={item.id}
-                                            draggableId={item.id}
-                                            index={index}>
-                                            {(provided, snapshot) => (
-                                                <div
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                    style={getItemStyle(
-                                                        snapshot.isDragging,
-                                                        provided.draggableProps.style
-                                                    )}>
-                                                    <Player/>
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                    ))}
-                                    {provided.placeholder}
-                                </div>
-                            )}
-                        </Droppable>
-                        <Droppable droppableId="droppable2">
-                            {(provided, snapshot) => (
-                                <div
-                                    // className={styles.playersLine}
-                                    ref={provided.innerRef}
-                                    style={getListStyle(snapshot.isDraggingOver)}
-                                >
-                                    {this.state.selected.map((item, index) => (
-                                        <Draggable
-                                            key={item.id}
-                                            draggableId={item.id}
-                                            index={index}>
-                                            {(provided, snapshot) => (
-                                                <div
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                    style={getItemStyle(
-                                                        snapshot.isDragging,
-                                                        provided.draggableProps.style
-                                                    )}>
-                                                    {/*{item.content}*/}
-                                                    <Player/>
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                    ))}
-                                    {provided.placeholder}
-                                </div>
-                            )}
-                        </Droppable>
+                        <DroppableLine droppableId="droppable1" items={this.state.goalkeepers}/>
+                        <DroppableLine droppableId="droppable2" items={this.state.defenders}/>
+                        <DroppableLine droppableId="droppable3" items={this.state.midfields}/>
+                        <DroppableLine droppableId="droppable4" items={this.state.forwards}/>
                     </div>
                 </div>
             </DragDropContext>
