@@ -54,7 +54,6 @@ export function TeamBuilder({equalTeams, samePositions}) {
     };
 
     return (
-
         <div className={styles.teamBuilderContainer}>
             <Grid container>
                 <Grid item md={6} sm={12}>

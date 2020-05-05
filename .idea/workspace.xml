@@ -51,10 +51,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5fa66748-b014-444d-a9ea-4d533d879568" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/forms/AddFieldForm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MatchContent.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/MatchContent.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/forms/new_match/teambuilder/Example.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/forms/new_match/teambuilder/Example.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/forms/new_match/teambuilder/TeamBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/forms/new_match/teambuilder/TeamBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/forms/new_match/teambuilder/TeamBuilder.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/forms/new_match/teambuilder/TeamBuilder.module.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,7 +132,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -157,6 +161,10 @@
     </state>
     <state width="1267" height="162" key="GridCell.Tab.0.right/0.0.1289.725@0.0.1289.725" timestamp="1587997504396" />
     <state width="1897" height="285" key="GridCell.Tab.0.right/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586957871094" />
+    <state x="2271" y="0" width="1585" height="898" key="dock-window-1" timestamp="1588710226149">
+      <screen x="1920" y="0" width="1920" height="1160" />
+    </state>
+    <state x="2271" y="0" width="1585" height="898" key="dock-window-1/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1588710226149" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1586954898634">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
