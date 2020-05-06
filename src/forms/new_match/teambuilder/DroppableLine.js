@@ -29,9 +29,12 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 export function DroppableLine(props) {
     const droppableId = props.droppableId;
     const items = props.items;
+    const isDropDisabled  = props.dropDisabled;
 
     return (
-        <Droppable droppableId={droppableId}>
+        <Droppable
+            droppableId={droppableId}
+            isDropDisabled={isDropDisabled || false}>
             {(provided, snapshot) => {
                 return (
                 <div
