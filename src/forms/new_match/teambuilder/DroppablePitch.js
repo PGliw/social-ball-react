@@ -11,7 +11,7 @@ const getItems = (count, offset = 0) =>
     }));
 
 
-export class Example extends Component {
+export class DroppablePitch extends Component {
     state = {
         goalkeepers: getItems(1),
         defenders: getItems(2, 1),

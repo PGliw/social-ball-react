@@ -98,19 +98,24 @@ export function DroppablePitchHalf(props) {
         }
     };
 
+    const originalLines = [
+        <DroppableLine droppableId="droppable1" items={players.goalkeepers}
+                       dropDisabled={disabledLines.goalkeepers || false}/>,
+        <DroppableLine droppableId="droppable2" items={players.defenders}
+                       dropDisabled={disabledLines.defenders || false}/>,
+        <DroppableLine droppableId="droppable3" items={players.midfields}
+                       dropDisabled={disabledLines.midfields || false}/>,
+        <DroppableLine droppableId="droppable4" items={players.forwards}
+                       dropDisabled={disabledLines.forwards || false}/>
+    ];
+    const transformedLines = isRightSide === false ? originalLines : originalLines.reverse();
+
     return (
         <DragDropContext onDragEnd={onDragEnd}>
             <div className={styles.pitchHalf}
                  style={pitchHalfStyle}
             >
-                <DroppableLine droppableId="droppable1" items={players.goalkeepers}
-                               dropDisabled={disabledLines.goalkeepers || false}/>
-                <DroppableLine droppableId="droppable2" items={players.defenders}
-                               dropDisabled={disabledLines.defenders || false}/>
-                <DroppableLine droppableId="droppable3" items={players.midfields}
-                               dropDisabled={disabledLines.midfields || false}/>
-                <DroppableLine droppableId="droppable4" items={players.forwards}
-                               dropDisabled={disabledLines.forwards || false}/>
+                {transformedLines}
             </div>
         </DragDropContext>
     );

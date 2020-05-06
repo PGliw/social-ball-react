@@ -51,10 +51,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5fa66748-b014-444d-a9ea-4d533d879568" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/forms/new_match/teambuilder/DroppablePitchHalf.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/forms/new_match/teambuilder/DroppablePlayer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/forms/new_match/teambuilder/DroppableLine.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/forms/new_match/teambuilder/Example.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/forms/new_match/teambuilder/Example.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/forms/new_match/teambuilder/DroppablePitchHalf.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/forms/new_match/teambuilder/DroppablePitchHalf.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/forms/new_match/teambuilder/Example.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/forms/new_match/teambuilder/DroppablePitch.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -207,10 +207,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1897" height="347" key="GridCell.Tab.3.right/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1588716898766" />
-    <state x="2879" y="0" width="968" height="1167" maximized="true" key="dock-window-1" timestamp="1588721451018">
+    <state x="2879" y="0" width="968" height="1167" key="dock-window-1" timestamp="1588723707893">
       <screen x="1920" y="0" width="1920" height="1160" />
     </state>
-    <state x="2879" y="0" width="968" height="1167" maximized="true" key="dock-window-1/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1588721451018" />
+    <state x="2879" y="0" width="968" height="1167" key="dock-window-1/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1588723707893" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1586954898634">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
