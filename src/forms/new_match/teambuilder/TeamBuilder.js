@@ -1,28 +1,35 @@
 import React, {useEffect, useState} from "react";
 import styles from "./Home.module.css";
-import {PlayersLine} from "./PlayersLine";
 import Grid from '@material-ui/core/Grid';
 import TextField from "@material-ui/core/TextField";
 import {DroppablePitch} from "./DroppablePitch";
 
-// fake data generator
-const getItems = (count, offset = 0) =>
+// id generator
+const getItems = (count, team, offset = 0) =>
     Array.from({length: count}, (v, k) => k).map(k => ({
-        id: `item-${k + offset}`,
-        content: `item ${k + offset}`
+        id: `item-${team}-${k + offset}`,
+        content: `item-${team}-${k + offset}`,
+        num: k
     }));
 
-const limits = [1, 5, 5, 5];
+const limits = {
+    goalkeepers: 1,
+    defenders: 5,
+    midfields: 5,
+    forwards: 5
+};
 
-export function TeamBuilder({equalTeams, samePositions}) {
+export function TeamBuilder(props) {
+    const equalTeams = props.equalTeams;
+    const samePositions = props.samePositions;
     const [color1, setColor1] = useState("#f54242");
     const [color2, setColor2] = useState("#ffffff");
     const [name1, setName1] = useState("Gospodarze");
     const [name2, setName2] = useState("Goście");
     const [players1, setPlayers1] = useState(7);
     const [players2, setPlayers2] = useState(7);
-    const team1Items = getItems(7);
-    const team2Items = getItems(7, 20);
+    const team1Items = getItems(7, 1);
+    const team2Items = getItems(7, 2);
     const [team1, setTeam1] = useState(
         {
             goalkeepers: team1Items.slice(0, 1),
@@ -60,25 +67,109 @@ export function TeamBuilder({equalTeams, samePositions}) {
         handleEqualTeamsChange(equalTeams);
     }, [equalTeams]);
 
-    useEffect(() => {
-        // TODO
-    }, [players1]);
 
     useEffect(() => {
-        // TODO
-    }, [players2]);
+        handleNewDisabled(team1, setTeam1Limits);
+    }, [team1]);
+
+    useEffect(() => {
+        handleNewDisabled(team2, setTeam2Limits);
+    }, [team2]);
+
+
+    const handleNewPlayersPlacement = (difference, teamId, team, setTeam) => {
+        const keys = Object.keys(team);
+        let newTeam = null;
+        if (difference > 0) {
+            for (let i = 0; i < difference; i++) {
+
+                let usedNums = [];
+                keys.forEach(key => {
+                        let result;
+                        result = usedNums.concat(team[key].map(item => item.num));
+                        usedNums = result;
+                    }
+                );
+                if (usedNums.length === 0) {
+                    console.error("No ids found");
+                    return;
+                }
+                const maxNum = Math.max.apply(Math, usedNums);
+                const nextItem = {
+                    id: `item-${teamId}-${maxNum+1}`,
+                    content: `item-${teamId}-${maxNum+1}`,
+                    num: maxNum+1
+                };
+
+                let nameOfLineToInsert = null;
+                for (let k = 0; k < keys.length; k++) {
+                    const key = keys[k];
+                    if (team[key].length < limits[key]) {
+                        nameOfLineToInsert = key;
+                        break;
+                    }
+                }
+                if (nameOfLineToInsert === null) {
+                    console.error("No free space found");
+                    return;
+                }
+                newTeam = JSON.parse(JSON.stringify(team));
+                newTeam[nameOfLineToInsert].push(nextItem);
+            }
+        } else if (difference < 0) {
+            for (let i = 0; i < Math.abs(difference); i++) {
+
+                let nameOfLineToRemove = null;
+                for (let k = keys.length - 1; k >= 0; k--) {
+                    const key = keys[k];
+                    if (team[key].length > 0) {
+                        nameOfLineToRemove = key;
+                        break;
+                    }
+                }
+                if (nameOfLineToRemove === null) {
+                    console.error("All lines already are empty");
+                    return;
+                }
+                newTeam = JSON.parse(JSON.stringify(team));
+                newTeam[nameOfLineToRemove].pop();
+            }
+        }
+        if (newTeam === null) {
+            console.error("New team is null");
+        } else {
+            setTeam(newTeam);
+        }
+    };
+
+
+    const handleNewDisabled = (newPlayers, setDisabled) => {
+        const newDisabledState = {
+            goalkeepers: newPlayers.goalkeepers.length >= limits.goalkeepers,
+            defenders: newPlayers.defenders.length >= limits.defenders,
+            midfields: newPlayers.midfields.length >= limits.midfields,
+            forwards: newPlayers.forwards.length >= limits.forwards
+        };
+        setDisabled(newDisabledState);
+    };
 
     const handlePlayersChange = (e) => {
         const target = e.target;
         const nextValue = parseInt(target.value);
-        console.log(equalTeams);
         if (equalTeams === true) {
+            const difference = nextValue - players1;
+            handleNewPlayersPlacement(difference, 1, team1, setTeam1);
+            handleNewPlayersPlacement(difference, 2, team2, setTeam2);
             setPlayers1(nextValue);
             setPlayers2(nextValue);
         } else {
             if (target.id === "players1") {
+                const difference = nextValue - players1;
+                handleNewPlayersPlacement(difference, 1, team1, setTeam1);
                 setPlayers1(nextValue);
             } else if (target.id === "players2") {
+                const difference = nextValue - players1;
+                handleNewPlayersPlacement(difference, 2, team2, setTeam2);
                 setPlayers2(nextValue);
             } else {
                 console.error(`Unknown team ${target.name}`);
@@ -86,20 +177,16 @@ export function TeamBuilder({equalTeams, samePositions}) {
         }
     };
 
-    const handlePlayersNumberChange = (team, oldPlayers, newPlayers) => {
-        // TODO
-    };
-
     const handleEqualTeamsChange = (areEqual) => {
         if (areEqual === true && players1 !== players2) {
             const max = Math.max(players1, players2);
+            const difference1 = max - players1;
+            handleNewPlayersPlacement(difference1, 1, team1, setTeam1);
             setPlayers1(max);
+            const difference2 = max - players2;
+            handleNewPlayersPlacement(difference2, 2, team2, setTeam1);
             setPlayers2(max);
         }
-    };
-
-    const handleSamePostionsChange = () => {
-        // TODO
     };
 
     return (
@@ -117,7 +204,7 @@ export function TeamBuilder({equalTeams, samePositions}) {
                         id="players1"
                         type="number"
                         value={players1}
-                        min={1} max={11}
+                        inputProps={{min: "1", max: "11", step: "1"}}
                         onChange={handlePlayersChange}/>
                     <input value={color1} onChange={e => setColor1(e.target.value)} type="color"/>
                 </Grid>
@@ -133,7 +220,7 @@ export function TeamBuilder({equalTeams, samePositions}) {
                         id="players2"
                         type="number"
                         value={players2}
-                        min={1} max={11}
+                        inputProps={{min: "1", max: "11", step: "1"}}
                         onChange={handlePlayersChange}/>
                     <input value={color2} onChange={e => setColor2(e.target.value)} type="color"/>
                 </Grid>

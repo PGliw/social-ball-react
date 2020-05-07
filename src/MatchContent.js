@@ -8,12 +8,9 @@ import Dialog from "@material-ui/core/Dialog";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import DateFnsUtils from "@date-io/date-fns";
-import {KeyboardDatePicker, MuiPickersUtilsProvider, KeyboardTimePicker} from "@material-ui/pickers";
+import {KeyboardDatePicker, KeyboardTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Radio from "@material-ui/core/Radio";
 import Grid from "@material-ui/core/Grid";
 import {AddFieldForm} from "./forms/AddFieldForm";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -214,7 +211,7 @@ const MatchContent = () => {
                 open={open}
                 onClose={onDialogClose}>
                 <DialogContent>
-                    <AddFieldForm></AddFieldForm>
+                    <AddFieldForm/>
                 </DialogContent>
             </Dialog>
         </Paper>
