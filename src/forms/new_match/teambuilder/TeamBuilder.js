@@ -5,63 +5,21 @@ import TextField from "@material-ui/core/TextField";
 import {DroppablePitch} from "./DroppablePitch";
 import {usePrevious} from "../../../utils/Hooks";
 
-// id generator
-const getItems = (count, team, offset = 0) =>
-    Array.from({length: count}, (v, k) => k).map(k => ({
-        id: `item-${team}-${k + offset}`,
-        content: `item-${team}-${k + offset}`,
-        num: k
-    }));
 
-const limits = {
-    goalkeepers: 1,
-    defenders: 5,
-    midfields: 5,
-    forwards: 5
-};
 
 export function TeamBuilder(props) {
     const equalTeams = props.equalTeams;
-    const [color1, setColor1] = useState("#f54242");
-    const [color2, setColor2] = useState("#ffffff");
-    const [name1, setName1] = useState("Gospodarze");
-    const [name2, setName2] = useState("Goście");
-    const [players1, setPlayers1] = useState(7);
-    const [players2, setPlayers2] = useState(7);
-    const team1Items = getItems(7, 1);
-    const team2Items = getItems(7, 2);
-    const [team1, setTeam1] = useState(
-        {
-            goalkeepers: team1Items.slice(0, 1),
-            defenders: team1Items.slice(1, 3),
-            midfields: team1Items.slice(3, 6),
-            forwards: team1Items.slice(6, 7)
-        }
-    );
-    const [team2, setTeam2] = useState(
-        {
-            goalkeepers: team2Items.slice(0, 1),
-            defenders: team2Items.slice(1, 3),
-            midfields: team2Items.slice(3, 6),
-            forwards: team2Items.slice(6, 7)
-        }
-    );
-    const [team1Limits, setTeam1Limits] = useState(
-        {
-            goalkeepers: true,
-            defenders: false,
-            midfields: false,
-            forwards: false
-        }
-    );
-    const [team2Limits, setTeam2Limits] = useState(
-        {
-            goalkeepers: true,
-            defenders: false,
-            midfields: false,
-            forwards: false
-        }
-    );
+    const [color1, color2] = props.colors;
+    const [setColor1, setColor2] = props.colorSetters;
+    const [name1, name2] = props.names;
+    const [setName1, setName2]= props.nameSetters;
+    const [players1, players2] = props.players;
+    const [setPlayers1, setPlayers2] = props.playersSetters;
+    const [team1, team2] = props.teams;
+    const [setTeam1, setTeam2] = props.teamSetters;
+    const [team1Limits, team2Limits] = props.teamLimits;
+    const [setTeam1Limits, setTeam2Limits] = props.teamLimitsSetters;
+    const limits = props.limits;
 
     useEffect(() => {
         handleEqualTeamsChange(equalTeams);
