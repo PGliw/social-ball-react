@@ -22,7 +22,6 @@ const limits = {
 
 export function TeamBuilder(props) {
     const equalTeams = props.equalTeams;
-    const samePositions = props.samePositions;
     const [color1, setColor1] = useState("#f54242");
     const [color2, setColor2] = useState("#ffffff");
     const [name1, setName1] = useState("Gospodarze");

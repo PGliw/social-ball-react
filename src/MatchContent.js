@@ -82,8 +82,7 @@ const MatchContent = () => {
         [endTime, setEndTime] = useState(null),
         [open, setOpen] = useState(false),
         [coach, setCoach] = useState(null),
-        [equalTeams, setEqualTeams] = useState(true),
-        [samePositions, setSamePositions] = useState(true);
+        [equalTeams, setEqualTeams] = useState(true);
 
     const handleCityChange = (e) => setSelectedCity(e.target.value);
 
@@ -99,15 +98,6 @@ const MatchContent = () => {
     const handleEqualTeamsChange = (e) => {
         const equal = e.target.checked;
         setEqualTeams(equal);
-        if (equal === false) {
-            setSamePositions(false);
-        }
-    };
-
-    const handleSamePositionsChange = (e) => {
-        const checked = e.target.checked;
-        const theSame = equalTeams !== false && checked;
-        setSamePositions(theSame);
     };
 
     const onDialogClose = () => setOpen(false);
@@ -189,12 +179,6 @@ const MatchContent = () => {
                         Równe składy drużyn
                     </label>
                     <br/>
-                    <label>
-                        <input type="checkbox" checked={samePositions}
-                               onChange={handleSamePositionsChange}/>
-                        Takie samo rozstawienie drużyn
-                    </label>
-                    <br/>
                     <Button className={classes.submitButton} variant="contained" color="primary">
                         Opublikuj
                     </Button>
@@ -202,7 +186,6 @@ const MatchContent = () => {
                 <Grid item sm={12} md={8}>
                     <TeamBuilder
                         equalTeams={equalTeams}
-                        samePositions={samePositions}
                     />
 
                 </Grid>
