@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "d761ea9a39f11e2cac34a97c9d3b00bc",
+    "revision": "df95144e05d07e102f8a0fdd0466aea1",
     "url": "/social-ball-react/index.html"
   },
   {
-    "revision": "f998662976d9d9ff4632",
-    "url": "/social-ball-react/static/css/main.f31a1d10.chunk.css"
+    "revision": "ed474242634d923a045a",
+    "url": "/social-ball-react/static/css/main.a919dd88.chunk.css"
   },
   {
-    "revision": "085802ee8bf65f063d13",
-    "url": "/social-ball-react/static/js/2.bd8d4bda.chunk.js"
+    "revision": "8bb2032a649beccd98d3",
+    "url": "/social-ball-react/static/js/2.fe7fe2f0.chunk.js"
   },
   {
     "revision": "0749163b59fbee32225059cb60c18af6",
-    "url": "/social-ball-react/static/js/2.bd8d4bda.chunk.js.LICENSE.txt"
+    "url": "/social-ball-react/static/js/2.fe7fe2f0.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "f998662976d9d9ff4632",
-    "url": "/social-ball-react/static/js/main.4e5ba399.chunk.js"
+    "revision": "ed474242634d923a045a",
+    "url": "/social-ball-react/static/js/main.ab5ea54b.chunk.js"
   },
   {
     "revision": "ad5721971cac691103dc",
