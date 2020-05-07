@@ -29,6 +29,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 export function DroppableLine(props) {
     const droppableId = props.droppableId;
     const items = props.items;
+    const color = props.color;
     const isDropDisabled  = props.dropDisabled;
 
     return (
@@ -56,7 +57,7 @@ export function DroppableLine(props) {
                                         provided.draggableProps.style
                                     )}>
                                     {/*{item.content}*/}
-                                    <Player/>
+                                    <Player color={color}/>
                                 </div>
                             )}
                         </Draggable>

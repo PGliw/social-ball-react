@@ -34,6 +34,8 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 
 export function DroppablePitchHalf(props) {
     const players = props.players;
+    const playerLinesKeys = Object.keys(players);
+    const playersLinesCount = playerLinesKeys.length;
     const disabledLines = props.disabledLines;
     const handleChange = props.handleChange;
     const color = props.color;
@@ -41,19 +43,15 @@ export function DroppablePitchHalf(props) {
     const pitchHalfStyle = isRightSide === true ? {right: "7%"} : {left: "7%"};
     const teamId = isRightSide === true ? 2 : 1;
 
-
     /**
      * A semi-generic way to handle multiple lists. Matches
      * the IDs of the droppable container to the names of the
      * source arrays stored in the state.
      */
-    const id2List = {
-        droppable1: 'goalkeepers',
-        droppable2: 'defenders',
-        droppable3: 'midfields',
-        droppable4: 'forwards',
-    };
-
+    const droppableNames = [...Array(playersLinesCount).keys()].map(i => `droppable${i}`);
+    // eg. {droppable0: 'goalkeepers', droppable1: 'defenders', ... }
+    const id2List = {};
+    droppableNames.forEach((droppableName, index) => id2List[droppableName] = playerLinesKeys[index]);
     const getList = id => players[id2List[id]];
 
     const onDragEnd = result => {
@@ -64,6 +62,8 @@ export function DroppablePitchHalf(props) {
             return;
         }
 
+        const newPlayers = JSON.parse(JSON.stringify(players));
+
         if (source.droppableId === destination.droppableId) {
             const items = reorder(
                 getList(source.droppableId),
@@ -71,12 +71,11 @@ export function DroppablePitchHalf(props) {
                 destination.index
             );
 
-            const state = {};
             const droppableId = source.droppableId;
             const listName = id2List[droppableId];
-            state[listName] = items;
+            newPlayers[listName] = items;
 
-            handleChange(state);
+            handleChange(newPlayers);
 
         } else {
             const result = move(
@@ -86,28 +85,29 @@ export function DroppablePitchHalf(props) {
                 destination
             );
 
-            const state = {};
             const sourceDroppableId = source.droppableId;
             const sourceListName = id2List[sourceDroppableId];
             const destDroppableId = destination.droppableId;
             const destListName = id2List[destDroppableId];
-            state[sourceListName] = result[sourceDroppableId];
-            state[destListName] = result[destDroppableId];
+            newPlayers[sourceListName] = result[sourceDroppableId];
+            newPlayers[destListName] = result[destDroppableId];
 
-            handleChange(state);
+            handleChange(newPlayers);
         }
     };
 
-    const originalLines = [
-        <DroppableLine droppableId="droppable1" items={players.goalkeepers}
-                       dropDisabled={disabledLines.goalkeepers || false}/>,
-        <DroppableLine droppableId="droppable2" items={players.defenders}
-                       dropDisabled={disabledLines.defenders || false}/>,
-        <DroppableLine droppableId="droppable3" items={players.midfields}
-                       dropDisabled={disabledLines.midfields || false}/>,
-        <DroppableLine droppableId="droppable4" items={players.forwards}
-                       dropDisabled={disabledLines.forwards || false}/>
-    ];
+    const originalLines = droppableNames.map((droppableName) => {
+        const playersLineKey = id2List[droppableName];
+        const items = players[playersLineKey];
+        const dropDisabled = disabledLines[playersLineKey];
+        return (
+            <DroppableLine
+                key={droppableName}
+                color={color}
+                droppableId={droppableName} items={items}
+                dropDisabled={dropDisabled || false}/>
+        );
+    });
     const transformedLines = isRightSide === false ? originalLines : originalLines.reverse();
 
     return (

@@ -52,9 +52,10 @@
   <component name="ChangeListManager">
     <list default="true" id="5fa66748-b014-444d-a9ea-4d533d879568" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/forms/new_match/teambuilder/DroppableLine.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/forms/new_match/teambuilder/DroppableLine.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/forms/new_match/teambuilder/DroppablePitch.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/forms/new_match/teambuilder/DroppablePitch.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/forms/new_match/teambuilder/DroppablePitchHalf.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/forms/new_match/teambuilder/DroppablePitchHalf.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/forms/new_match/teambuilder/Example.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/forms/new_match/teambuilder/DroppablePitch.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/forms/new_match/teambuilder/TeamBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/forms/new_match/teambuilder/TeamBuilder.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,11 +120,12 @@
       <workItem from="1585908700426" duration="14959000" />
       <workItem from="1586169318782" duration="8786000" />
       <workItem from="1587997274544" duration="602000" />
+      <workItem from="1588841737318" duration="5034000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="1" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -207,13 +209,19 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1897" height="347" key="GridCell.Tab.3.right/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1588716898766" />
-    <state x="2879" y="0" width="968" height="1167" key="dock-window-1" timestamp="1588723707893">
+    <state x="2879" y="0" width="968" height="1167" key="dock-window-1" timestamp="1588842359502">
       <screen x="1920" y="0" width="1920" height="1160" />
     </state>
-    <state x="2879" y="0" width="968" height="1167" key="dock-window-1/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1588723707893" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1586954898634">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="2879" y="0" width="968" height="1167" key="dock-window-1/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1588842359502" />
+    <state x="3021" y="0" width="826" height="1167" key="dock-window-2" timestamp="1588843383674">
+      <screen x="1920" y="0" width="1920" height="1160" />
+    </state>
+    <state x="2873" y="0" width="974" height="1167" key="dock-window-2/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1588842886118" />
+    <state x="3021" y="0" width="826" height="1167" key="dock-window-2/0.0.1920.1040/1920.0.1920.1160@1920.0.1920.1160" timestamp="1588843383674" />
+    <state x="2543" y="251" width="672" height="757" key="search.everywhere.popup" timestamp="1588845333649">
+      <screen x="1920" y="0" width="1920" height="1160" />
     </state>
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1160@0.0.1920.1040" timestamp="1586954898634" />
+    <state x="2543" y="251" width="672" height="757" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1160@1920.0.1920.1160" timestamp="1588845333649" />
   </component>
 </project>

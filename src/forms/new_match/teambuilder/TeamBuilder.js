@@ -1,27 +1,72 @@
 import React, {useEffect, useState} from "react";
 import styles from "./Home.module.css";
-import Soccer_field from "../../../assets/Soccer_field.png"
 import {PlayersLine} from "./PlayersLine";
-import {PitchHalf} from "./PitchHalf";
 import Grid from '@material-ui/core/Grid';
 import TextField from "@material-ui/core/TextField";
+import {DroppablePitch} from "./DroppablePitch";
 
+// fake data generator
+const getItems = (count, offset = 0) =>
+    Array.from({length: count}, (v, k) => k).map(k => ({
+        id: `item-${k + offset}`,
+        content: `item ${k + offset}`
+    }));
+
+const limits = [1, 5, 5, 5];
 
 export function TeamBuilder({equalTeams, samePositions}) {
     const [color1, setColor1] = useState("#f54242");
     const [color2, setColor2] = useState("#ffffff");
     const [name1, setName1] = useState("Gospodarze");
     const [name2, setName2] = useState("Goście");
-    const [players1, setPlayers1] = useState(5);
-    const [players2, setPlayers2] = useState(5);
-    const [lines1, setLines1] = useState(4);
-    const [lines2, setLines2] = useState(4);
+    const [players1, setPlayers1] = useState(7);
+    const [players2, setPlayers2] = useState(7);
+    const team1Items = getItems(7);
+    const team2Items = getItems(7, 20);
+    const [team1, setTeam1] = useState(
+        {
+            goalkeepers: team1Items.slice(0, 1),
+            defenders: team1Items.slice(1, 3),
+            midfields: team1Items.slice(3, 6),
+            forwards: team1Items.slice(6, 7)
+        }
+    );
+    const [team2, setTeam2] = useState(
+        {
+            goalkeepers: team2Items.slice(0, 1),
+            defenders: team2Items.slice(1, 3),
+            midfields: team2Items.slice(3, 6),
+            forwards: team2Items.slice(6, 7)
+        }
+    );
+    const [team1Limits, setTeam1Limits] = useState(
+        {
+            goalkeepers: true,
+            defenders: false,
+            midfields: false,
+            forwards: false
+        }
+    );
+    const [team2Limits, setTeam2Limits] = useState(
+        {
+            goalkeepers: true,
+            defenders: false,
+            midfields: false,
+            forwards: false
+        }
+    );
+
     useEffect(() => {
         handleEqualTeamsChange(equalTeams);
     }, [equalTeams]);
 
+    useEffect(() => {
+        // TODO
+    }, [players1]);
 
-    const pitchLines1 = Array(lines1).map((el) => <PlayersLine className={styles.playersLine} id={"line-" + el}/>);
+    useEffect(() => {
+        // TODO
+    }, [players2]);
 
     const handlePlayersChange = (e) => {
         const target = e.target;
@@ -39,6 +84,10 @@ export function TeamBuilder({equalTeams, samePositions}) {
                 console.error(`Unknown team ${target.name}`);
             }
         }
+    };
+
+    const handlePlayersNumberChange = (team, oldPlayers, newPlayers) => {
+        // TODO
     };
 
     const handleEqualTeamsChange = (areEqual) => {
@@ -90,10 +139,11 @@ export function TeamBuilder({equalTeams, samePositions}) {
                 </Grid>
                 <br/>
             </Grid>
-            <div className={styles.pitchContainer}>
-                <img className={styles.responsivePitch} draggable="false" src={Soccer_field} alt="Soccer field"/>
-                <PitchHalf players={[[1], [2, 3], [4, 5]]} color={color1} isLeftSide={true}/>
-                <PitchHalf players={[[1], [2, 3], [4, 5]]} color={color2} isLeftSide={false}/>
-            </div>
+            <DroppablePitch
+                teams={[team1, team2]}
+                changeHandlers={[setTeam1, setTeam2]}
+                teamsLimits={[team1Limits, team2Limits]}
+                teamsColors={[color1, color2]}
+            />
         </div>);
 }
