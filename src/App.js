@@ -2,9 +2,10 @@ import React from 'react';
 import {RegistrationForm} from './forms/login_registration/RegistrationForm';
 import {LoginForm} from './forms/login_registration/LoginForm';
 import {UserProfile} from './UserProfile';
-import './App.css';
+// import './App.css';
 import {HashRouter as Router, Route} from 'react-router-dom';
 import {Home} from "./Home";
+import {Board} from "./Board";
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                     <Route path="/register" component={RegistrationForm}/>
                     <Route path="/home" component={Home}/>
                     <Route path="/profile" component={UserProfile}/>
+                    <Route path="/board" component={Board}/>
                 </div>
             </Router>
         </div>
