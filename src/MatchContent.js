@@ -8,12 +8,9 @@ import Dialog from "@material-ui/core/Dialog";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import DateFnsUtils from "@date-io/date-fns";
-import {KeyboardDatePicker, MuiPickersUtilsProvider, KeyboardTimePicker} from "@material-ui/pickers";
+import {KeyboardDatePicker, KeyboardTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Radio from "@material-ui/core/Radio";
 import Grid from "@material-ui/core/Grid";
 import {AddFieldForm} from "./forms/AddFieldForm";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -75,18 +72,71 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+// id generator
+const getItems = (count, team, offset = 0) =>
+    Array.from({length: count}, (v, k) => k).map(k => ({
+        id: `item-${team}-${k + offset}`,
+        content: `item-${team}-${k + offset}`,
+        num: k
+    }));
+
 const MatchContent = () => {
-    const classes = useStyles(),
-        [fields, setFields] = useState(["Soccerfield", "Footballclub", "Bojo"]),
-        [selectedField, setSelectedField] = useState("Soccerfield"),
-        [selectedCity, setSelectedCity] = useState(""),
-        [date, setDate] = useState(null),
-        [startTime, setStartTime] = useState(null),
-        [endTime, setEndTime] = useState(null),
-        [open, setOpen] = useState(false),
-        [coach, setCoach] = useState(null),
-        [equalTeams, setEqualTeams] = useState(true),
-        [samePositions, setSamePositions] = useState(true);
+    const classes = useStyles();
+    const [fields, setFields] = useState(["Soccerfield", "Footballclub", "Bojo"]);
+    const [selectedField, setSelectedField] = useState("Soccerfield");
+    const [selectedCity, setSelectedCity] = useState("");
+    const [date, setDate] = useState(null);
+    const [startTime, setStartTime] = useState(null);
+    const [endTime, setEndTime] = useState(null);
+    const [open, setOpen] = useState(false);
+    const [coach, setCoach] = useState(null);
+    const [equalTeams, setEqualTeams] = useState(true);
+    const [color1, setColor1] = useState("#f54242");
+    const [color2, setColor2] = useState("#ffffff");
+    const [name1, setName1] = useState("Gospodarze");
+    const [name2, setName2] = useState("Goście");
+    const [players1, setPlayers1] = useState(7);
+    const [players2, setPlayers2] = useState(7);
+    const team1Items = getItems(7, 1);
+    const team2Items = getItems(7, 2);
+    const [team1, setTeam1] = useState(
+        {
+            goalkeepers: team1Items.slice(0, 1),
+            defenders: team1Items.slice(1, 3),
+            midfields: team1Items.slice(3, 6),
+            forwards: team1Items.slice(6, 7)
+        }
+    );
+    const [team2, setTeam2] = useState(
+        {
+            goalkeepers: team2Items.slice(0, 1),
+            defenders: team2Items.slice(1, 3),
+            midfields: team2Items.slice(3, 6),
+            forwards: team2Items.slice(6, 7)
+        }
+    );
+    const [team1Limits, setTeam1Limits] = useState(
+        {
+            goalkeepers: true,
+            defenders: false,
+            midfields: false,
+            forwards: false
+        }
+    );
+    const [team2Limits, setTeam2Limits] = useState(
+        {
+            goalkeepers: true,
+            defenders: false,
+            midfields: false,
+            forwards: false
+        }
+    );
+    const limits = {
+        goalkeepers: 1,
+        defenders: 5,
+        midfields: 5,
+        forwards: 5
+    };
 
     const handleCityChange = (e) => setSelectedCity(e.target.value);
 
@@ -102,15 +152,6 @@ const MatchContent = () => {
     const handleEqualTeamsChange = (e) => {
         const equal = e.target.checked;
         setEqualTeams(equal);
-        if (equal === false) {
-            setSamePositions(false);
-        }
-    };
-
-    const handleSamePositionsChange = (e) => {
-        const checked = e.target.checked;
-        const theSame = equalTeams !== false && checked;
-        setSamePositions(theSame);
     };
 
     const onDialogClose = () => setOpen(false);
@@ -192,12 +233,6 @@ const MatchContent = () => {
                         Równe składy drużyn
                     </label>
                     <br/>
-                    <label>
-                        <input type="checkbox" checked={samePositions}
-                               onChange={handleSamePositionsChange}/>
-                        Takie samo rozstawienie drużyn
-                    </label>
-                    <br/>
                     <Button className={classes.submitButton} variant="contained" color="primary">
                         Opublikuj
                     </Button>
@@ -205,7 +240,17 @@ const MatchContent = () => {
                 <Grid item sm={12} md={8}>
                     <TeamBuilder
                         equalTeams={equalTeams}
-                        samePositions={samePositions}
+                        colors={[color1, color2]}
+                        colorSetters={[setColor1, setColor2]}
+                        names={[name1, name2]}
+                        nameSetters={[setName1, setName2]}
+                        players={[players1, players2]}
+                        playersSetters={[setPlayers1, setPlayers2]}
+                        teams={[team1, team2]}
+                        teamSetters={[setTeam1, setTeam2]}
+                        teamLimits={[team1Limits, team2Limits]}
+                        teamLimitsSetters={[setTeam1Limits, setTeam2Limits]}
+                        limits={limits}
                     />
 
                 </Grid>
@@ -214,7 +259,7 @@ const MatchContent = () => {
                 open={open}
                 onClose={onDialogClose}>
                 <DialogContent>
-                    <AddFieldForm></AddFieldForm>
+                    <AddFieldForm/>
                 </DialogContent>
             </Dialog>
         </Paper>
