@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UserProfile = () => {
+export const UserProfile = () => {
   const classes = useStyles();
 
   const Row = ({ index }) => (
@@ -138,5 +138,3 @@ const UserProfile = () => {
     </NavDrawer>
   );
 };
-
-export default UserProfile;

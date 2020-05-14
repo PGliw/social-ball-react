@@ -1,57 +1,66 @@
-import React from "react";
-import {Link, Redirect} from "react-router-dom";
-import styles from "../CommonForm.module.css";
-import {FormInput} from "../FormInput";
+import React, {useEffect, useState} from 'react';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Link from '@material-ui/core/Link';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import {makeStyles} from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+import Paper from '@material-ui/core/Paper';
 import {SERVER_URL} from "../../config";
+import {Redirect} from "react-router-dom";
 
-export class LoginForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            fields: {
-                keepLoggedIn: false
-            },
-            errors: {},
-            isSubmitButtonEnabled: false,
-            isLoginSuccessful: false
-        };
-    }
+const useStyles = makeStyles((theme) => ({
+    paper: {
+        marginTop: theme.spacing(3),
+        marginBottom: theme.spacing(3),
+        padding: theme.spacing(2),
+        [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
+            marginTop: theme.spacing(6),
+            marginBottom: theme.spacing(6),
+            padding: theme.spacing(3),
+        },
+    },
+    form: {
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(3),
+    },
+    submit: {
+        margin: theme.spacing(3, 0, 2),
+    },
+}));
 
-    handleInputChange = (event) => {
-        const fields = this.state.fields;
-        const target = event.target;
-        const name = target.name;
-        const value = name === "keepLoggedIn" ? target.checked : target.value;
-        fields[name] = value;
+export function LoginForm() {
+    const classes = useStyles();
 
-        const errors = this.state.errors;
-        switch (name) {
-            case "email":
-                const validEmailRegex = RegExp(
-                    /^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i
-                );
-                errors.email = validEmailRegex.test(value)
-                    ? null
-                    : "To nie jest poprawny adres email";
-                break;
-            case "password":
-                errors.password =
-                    value.length < 8
-                        ? "Hasło musi mieć przynajmniej 8 znaków"
-                        : null;
-                break;
-            default:
-                break;
-        }
-        this.setState({
-            fields: fields,
-            errors: errors,
-            isSubmitButtonEnabled:
-                errors.email === null && errors.password === null,
-        });
-    };
+    const [email, setEmail] = useState(null);
+    const [password, setPassword] = useState(null);
+    const [keepLoggedIn, setKeepLoggedIn] = useState(false);
 
-    onSubmit = (e) => {
+    const [emailError, setEmailError] = useState(null);
+    const [passwordError, setPasswordError] = useState(null);
+
+    const [submitButtonEnabled, setSubmitButtonEnabled] = useState(false);
+
+    const [isLoginSuccessful, setLoginSuccessful] = useState(null)
+
+    useEffect(() => {
+        setSubmitButtonEnabled(
+            email !== null
+            && emailError === null
+            && password !== null
+            && passwordError === null);
+    }, [
+        email,
+        emailError,
+        password,
+        passwordError
+    ]);
+
+    const onSubmit = (e) => {
         e.preventDefault();
         fetch(`${SERVER_URL}/token/generate-token`, {
             method: 'POST',
@@ -62,9 +71,7 @@ export class LoginForm extends React.Component {
             body: JSON.stringify(this.state.fields)
         }).then((response) => {
             if (response.status === 200) {
-                this.setState({
-                    isLoginSuccessful: true
-                });
+                setLoginSuccessful(true);
             }
             console.log(response.status);
             return response.json();
@@ -72,51 +79,97 @@ export class LoginForm extends React.Component {
             if (data.message) {
                 alert(data.message);
             }
+            setLoginSuccessful(false);
         }))
     };
 
-    render() {
-        if (this.state.isLoginSuccessful === true) {
-            return <Redirect to='/home'/>
-        } else return (
-            <div className={styles.registrationCard}>
-                <h1>Logowanie</h1>
-                <form onSubmit={this.onSubmit}>
-                    <FormInput
-                        label="Adres e-mail"
-                        type="email"
-                        name="email"
-                        value={this.state.fields.email || ""}
-                        onChange={this.handleInputChange}
-                        error={this.state.errors.email}
-                    />
-                    <FormInput
-                        label="Hasło"
-                        type="password"
-                        name="password"
-                        value={this.state.fields.password || ""}
-                        onChange={this.handleInputChange}
-                        error={this.state.errors.password}
-                    />
-                    <label>
-                        <input
-                            type="checkbox"
-                            name="keepLoggedIn"
-                            checked={this.state.fields.keepLoggedIn}
-                            onChange={this.handleInputChange}
-                        />
-                        Nie wylogowuj mnie
-                    </label>
-                    <input
-                        type="submit"
-                        value="Zaloguj się"
-                        disabled={!this.state.isSubmitButtonEnabled}
-                    />
-                    <p>
-                        Nie masz konta? <Link to="/register">Zarejestruj się!</Link>
-                    </p>
-                </form>
-            </div>
-        );
-    }
+    return (
+        isLoginSuccessful === true ?
+            <Redirect to='/home'/>
+            :
+            <Container component="main" maxWidth="sm">
+                <Paper className={classes.paper}>
+                    <CssBaseline/>
+                    <div>
+                        <Typography component="h1" variant="h5">
+                            Logowanie
+                        </Typography>
+                        <form className={classes.form} onSubmit={(e) => onSubmit(e)}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        label="Adres e-mail"
+                                        id="email"
+                                        fullWidth
+                                        required
+                                        variant="outlined"
+                                        value={email || ''}
+                                        onChange={event => {
+                                            const validEmailRegex = RegExp(/^(([^<>()\\[\]\\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
+                                            setEmail(event.target.value);
+                                            setEmailError(validEmailRegex.test(event.target.value)
+                                                ? null
+                                                : 'To nie jest poprawny adres email');
+                                        }}
+                                        error={emailError !== null}
+                                        helperText={emailError}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        label="Hasło"
+                                        id="password"
+                                        type="password"
+                                        autoComplete="current-password"
+                                        required
+                                        fullWidth
+                                        variant="outlined"
+                                        value={password || ''}
+                                        onChange={event => {
+                                            setPassword(event.target.value);
+                                            setPasswordError(event.target.value.length < 8
+                                                ? 'Hasło musi mieć przynajmniej 8 znaków'
+                                                : null);
+                                        }}
+                                        error={passwordError !== null}
+                                        helperText={passwordError}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={keepLoggedIn}
+                                                onChange={event => {
+                                                    setKeepLoggedIn(event.target.checked);
+                                                }}
+                                                id="keepLoggedIn"
+                                            />
+                                        }
+                                        label="Nie wylogowuj mnie"
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                disabled={!submitButtonEnabled}
+                                className={classes.submit}
+                            >
+                                Zarejestruj się
+                            </Button>
+                            <Grid container justify="flex-end">
+                                <Grid item>
+                                    <Link href="#" variant="body2">
+                                        Nie masz konta? Zarejestruj się
+                                    </Link>
+                                </Grid>
+                            </Grid>
+                        </form>
+                    </div>
+                </Paper>
+            </Container>
+    );
 }
