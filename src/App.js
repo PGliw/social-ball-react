@@ -13,12 +13,6 @@ function App() {
         <div className="App">
             <Router>
                 <div className="container">
-                    <Route exact path="/" component={LoginForm} />
-                    <Route path="/login" component={LoginForm} />
-                    <Route path="/register" component={RegistrationForm} />
-                    <Route path="/home" component={Home} />
-                    <Route path="/profile" component={UserProfile} />
-                    <Route path="/example" component={DroppablePitch} />
                     <Route exact path="/" component={LoginForm}/>
                     <Route path="/login" component={LoginForm}/>
                     <Route path="/register" component={RegistrationForm}/>
