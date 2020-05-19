@@ -7,6 +7,7 @@ import {HashRouter as Router, Route} from 'react-router-dom';
 import {Home} from "./Home";
 import {Board} from "./Board";
 import {DroppablePitch} from "./forms/new_match/teambuilder/DroppablePitch";
+import {Stats} from "./Stats";
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
                     <Route path="/profile" component={UserProfile}/>
                     <Route path="/board" component={Board}/>
                     <Route path="/example" component={DroppablePitch}/>
+                    <Route path="/stats" component={Stats}/>
                 </div>
             </Router>
         </div>
