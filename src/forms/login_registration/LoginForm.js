@@ -162,9 +162,12 @@ export function LoginForm() {
                             </Button>
                             <Grid container justify="flex-end">
                                 <Grid item>
-                                    <Link href="#" variant="body2">
+                                    <Link href="#/register" variant="body2">
                                         Nie masz konta? Zarejestruj się
                                     </Link>
+                                    {/* <p>
+                        Nie masz konta? <Link to="/register">Zarejestruj się!</Link>
+                    </p> */}
                                 </Grid>
                             </Grid>
                         </form>

@@ -1,0 +1,145 @@
+import React from 'react';
+import { Doughnut } from 'react-chartjs-2';
+import clsx from 'clsx';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  IconButton,
+  Divider,
+  Typography
+} from '@material-ui/core';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import { Grid } from '@material-ui/core';
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    height: '100%'
+  },
+  chartContainer: {
+    position: 'relative',
+    height: '300px'
+  },
+  stats: {
+  },
+  device: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(1)
+  },
+  deviceIcon: {
+    color: theme.palette.icon
+  }
+}));
+
+export const PieChartCard = props => {
+  const { className, ...rest } = props;
+
+  const classes = useStyles();
+  const theme = useTheme();
+
+  const data = {
+    datasets: [
+      {
+        data: [63, 15, 22],
+        backgroundColor: [
+          theme.palette.primary.main,
+          theme.palette.error.main,
+          theme.palette.warning.main
+        ],
+        borderWidth: 8,
+        borderColor: theme.palette.white,
+        hoverBorderColor: theme.palette.white
+      }
+    ],
+    labels: ['Desktop', 'Tablet', 'Mobile']
+  };
+
+  const options = {
+    legend: {
+      display: false
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false,
+    cutoutPercentage: 80,
+    layout: { padding: 0 },
+    tooltips: {
+      enabled: false,
+      mode: 'index',
+      intersect: false,
+      borderWidth: 1,
+      borderColor: theme.palette.divider,
+      backgroundColor: theme.palette.white,
+      titleFontColor: theme.palette.text.primary,
+      bodyFontColor: theme.palette.text.secondary,
+      footerFontColor: theme.palette.text.secondary
+    }
+  };
+
+  const devices = [
+    {
+      title: 'Super Stadion',
+      value: '63',
+      color: theme.palette.primary.main
+    },
+    {
+      title: 'Stadion OSIR',
+      value: '15',
+      color: theme.palette.error.main
+    },
+    {
+      title: 'Stadion Narodowy',
+      value: '23',
+      color: theme.palette.warning.main
+    }
+  ];
+
+  return (
+    <Card
+      {...rest}
+      className={clsx(classes.root, className)}
+    >
+      <CardHeader
+        action={
+          <IconButton size="small">
+            <RefreshIcon />
+          </IconButton>
+        }
+        title="Najpopularniejsze boisko"
+      />
+      <Divider />
+      <CardContent>
+        <div className={classes.chartContainer}>
+          <Doughnut
+            data={data}
+            options={options}
+          />
+        </div>
+        <div className={classes.stats}>
+          {devices.map(device => (
+            <Grid
+              container
+              className={classes.device}
+              key={device.title}
+              justify="space-between"
+            >
+              <Grid item>
+                <Typography variant="body1">{device.title}</Typography>
+              </Grid>
+              <Grid item>
+              <Typography
+                style={{ color: device.color }}
+                variant="h6"
+              >
+                {device.value}%
+              </Typography>
+              </Grid>
+            </Grid>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
