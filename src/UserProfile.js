@@ -5,6 +5,58 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import logo from "./assets/avatarPlaceholder.PNG";
 import Link from "@material-ui/core/Link";
+import FriendsList from "./FriendsList";
+
+
+const options = {
+  animationEnabled: true,
+  exportEnabled: true,
+  theme: "light2",
+  title: {
+    text: "Godziny na boisku według dnia w biężącym miesiącu"
+  },
+  axisX: {
+    interval: 1,
+  },
+  data: [{
+    type: "column",
+    indexLabelFontColor: "#5A5757",
+    indexLabelPlacement: "outside",
+    dataPoints: [
+      { x: 1, y: 3 },
+      { x: 2, y: 5 },
+      { x: 3, y: 0 },
+      { x: 4, y: 0 },
+      { x: 5, y: 0 },
+      { x: 6, y: 7 },
+      { x: 7, y: 1 },
+      { x: 8, y: 1 },
+      { x: 9, y: 1 },
+      { x: 10, y: 0 },
+      { x: 11, y: 0 },
+      { x: 12, y: 0 },
+      { x: 13, y: 4 },
+      { x: 14, y: 7 },
+      { x: 15, y: 2 },
+      { x: 16, y: 1 },
+      { x: 17, y: 2 },
+      { x: 18, y: 0 },
+      { x: 19, y: 1 },
+      { x: 20, y: 2 },
+      { x: 21, y: 6 },
+      { x: 22, y: 3 },
+      { x: 23, y: 0 },
+      { x: 24, y: 0 },
+      { x: 25, y: 0 },
+      { x: 26, y: 1 },
+      { x: 27, y: 2 },
+      { x: 28, y: 2 },
+      { x: 29, y: 4 },
+      { x: 30, y: 0 },
+      { x: 31, y: 0 },
+    ]
+  }]
+}
 
 const eventsArray = [
   { name: "X organizuje mecz", img: "logo" },
@@ -35,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     border: "1.3px solid ",
     margin: "auto",
-    display: "flex",
+    // display: "flex",
     flexDirection: "column",
     padding: theme.spacing(2),
   },
@@ -77,7 +129,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const UserProfile = () => {
+const UserProfile = () => {
   const classes = useStyles();
 
   const Row = ({ index }) => (
@@ -123,18 +175,31 @@ export const UserProfile = () => {
           <span>&nbsp;</span>
         </div>
         <Grid className={classes.rowFlex}>
+
+          <Grid >
+            {/* <CanvasJSChart options={options} /> */}
+          </Grid>
+
           <Grid className={classes.columnFlex}>
             <h3 className={classes.textLeftRight}>
-              <span className={classes.leftText}>Znajomi:</span>
-              <span className={classes.rightText}>23</span>
+              <span className={classes.leftText}>Wydarzenia znajomych:</span>
+              <span className={classes.rightText}></span>
             </h3>
             {eventsArray.map((item, index) => Row({ index }))}
           </Grid>
           <Grid className={classes.columnFlex}>
-            <h3>Moja aktywność</h3>
+            <Grid className="friends" >
+              <h3 className={classes.textLeftRight}>
+                <span className={classes.leftText}>Łącznie znajomych:</span>
+                <span className={classes.rightText}>23</span>
+              </h3>
+              <FriendsList />
+            </Grid>
           </Grid>
         </Grid>
       </Paper>
     </NavDrawer>
   );
 };
+
+export default UserProfile;
