@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     },
     rightAvatarGroup: {
         marginLeft: '8px',
-    }
+    },
 }));
 
 export default function MatchCard(props) {
