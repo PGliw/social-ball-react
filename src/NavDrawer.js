@@ -17,6 +17,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import logo from './assets/logo.svg';
+import Link from "@material-ui/core/Link";
+import Grid from "@material-ui/core/Grid";
 
 
 const drawerWidth = 240;
@@ -108,7 +110,7 @@ const NavDrawer = ({children}) => {
                     >
                         <MenuIcon/>
                     </IconButton>
-                    <img src={logo} width="50" height="50" />
+                    <img src={logo} width="50" height="50"/>
                     <Typography variant="h6" className={classes.title}>
                         Social-ball
                     </Typography>
@@ -129,18 +131,24 @@ const NavDrawer = ({children}) => {
                 </div>
                 <Divider/>
                 <List>
-                    <ListItem>
-                        <ListItemIcon><SportsSoccerIcon/></ListItemIcon>
-                        <ListItemText>Mecze</ListItemText>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemIcon><EqualizerIcon/></ListItemIcon>
-                        <ListItemText>Statystyki</ListItemText>
-                    </ListItem>
-                    <ListItem>
-                        <ListItemIcon><AccountBoxIcon/></ListItemIcon>
-                        <ListItemText>Profil</ListItemText>
-                    </ListItem>
+                    <Link href="#/home" variant="body2">
+                        <ListItem>
+                            <ListItemIcon><SportsSoccerIcon/></ListItemIcon>
+                            <ListItemText>Mecze</ListItemText>
+                        </ListItem>
+                    </Link>
+                    <Link href="#/stats" variant="body2">
+                        <ListItem>
+                            <ListItemIcon><EqualizerIcon/></ListItemIcon>
+                            <ListItemText>Statystyki</ListItemText>
+                        </ListItem>
+                    </Link>
+                    <Link href="#/profile" variant="body2">
+                        <ListItem>
+                            <ListItemIcon><AccountBoxIcon/></ListItemIcon>
+                            <ListItemText>Profil</ListItemText>
+                        </ListItem>
+                    </Link>
                 </List>
             </Drawer>
             <main

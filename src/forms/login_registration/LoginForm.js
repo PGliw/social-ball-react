@@ -45,7 +45,7 @@ export function LoginForm() {
 
     const [submitButtonEnabled, setSubmitButtonEnabled] = useState(false);
 
-    const [isLoginSuccessful, setLoginSuccessful] = useState(null)
+    const [isLoginSuccessful, setLoginSuccessful] = useState(null);
 
     useEffect(() => {
         setSubmitButtonEnabled(
@@ -68,7 +68,9 @@ export function LoginForm() {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(this.state.fields)
+            body: JSON.stringify({
+                email, password
+            })
         }).then((response) => {
             if (response.status === 200) {
                 setLoginSuccessful(true);
@@ -158,16 +160,13 @@ export function LoginForm() {
                                 disabled={!submitButtonEnabled}
                                 className={classes.submit}
                             >
-                                Zarejestruj się
+                                Zaloguj się
                             </Button>
                             <Grid container justify="flex-end">
                                 <Grid item>
                                     <Link href="#/register" variant="body2">
                                         Nie masz konta? Zarejestruj się
                                     </Link>
-                                    {/* <p>
-                        Nie masz konta? <Link to="/register">Zarejestruj się!</Link>
-                    </p> */}
                                 </Grid>
                             </Grid>
                         </form>
