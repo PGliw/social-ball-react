@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {TeamBuilder} from "./forms/new_match/teambuilder/TeamBuilder";
+import {TeamBuilder} from "./teambuilder/TeamBuilder";
 import Paper from "@material-ui/core/Paper";
 import {Select} from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -12,9 +12,13 @@ import {KeyboardDatePicker, KeyboardTimePicker, MuiPickersUtilsProvider} from "@
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import {AddFieldForm} from "./forms/AddFieldForm";
+import {AddFieldForm} from "./AddFieldForm";
 import DialogContent from "@material-ui/core/DialogContent";
-import NavDrawer from "./NavDrawer";
+import NavDrawer from "../../NavDrawer";
+import {withStyles} from "@material-ui/core/styles";
+import MuiDialogTitle from "@material-ui/core/DialogTitle";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles((theme) => ({
     settings: {
@@ -77,13 +81,41 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-// id generator
+// player id generator
 const getItems = (count, team, offset = 0) =>
     Array.from({length: count}, (v, k) => k).map(k => ({
         id: `item-${team}-${k + offset}`,
         content: `item-${team}-${k + offset}`,
         num: k
     }));
+
+//styles for dialog title
+const styles = (theme) => ({
+    root: {
+        margin: 0,
+        padding: theme.spacing(2),
+    },
+    closeButton: {
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1),
+        color: theme.palette.grey[500],
+    },
+});
+
+const DialogTitle = withStyles(styles)((props) => {
+    const {children, classes, onClose, ...other} = props;
+    return (
+        <MuiDialogTitle disableTypography className={classes.root} {...other}>
+            <Typography variant="h6">{children}</Typography>
+            {onClose ? (
+                <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+                    <CloseIcon/>
+                </IconButton>
+            ) : null}
+        </MuiDialogTitle>
+    );
+});
 
 const MatchForm = ({token}) => {
     const classes = useStyles();
@@ -266,8 +298,11 @@ const MatchForm = ({token}) => {
                     onClose={onDialogClose}
                     classes={{paper: classes.dialogPaper}}
                 >
+                    <DialogTitle onClose={onDialogClose}>
+                        Nowe boisko
+                    </DialogTitle>
                     <DialogContent>
-                        <AddFieldForm/>
+                        <AddFieldForm token={token}/>
                     </DialogContent>
                 </Dialog>
             </Paper>

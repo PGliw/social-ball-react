@@ -6,7 +6,7 @@ import {UserProfile} from './UserProfile';
 import {HashRouter as Router, Route} from 'react-router-dom';
 import {Board} from "./Board";
 import {Stats} from "./Stats";
-import MatchForm from "./MatchForm";
+import MatchForm from "./forms/new_match/MatchForm";
 
 const withToken = (token, RedirectComponent) => {
     return ({component: Component, ...rest}) =>

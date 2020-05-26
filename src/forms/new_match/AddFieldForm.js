@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Container from "@material-ui/core/Container";
-import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
@@ -9,7 +8,20 @@ import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
-import {SERVER_URL} from "../config";
+import {SERVER_URL} from "../../config";
+
+const styles = (theme) => ({
+    root: {
+        margin: 0,
+        padding: theme.spacing(2),
+    },
+    closeButton: {
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1),
+        color: theme.palette.grey[500],
+    },
+});
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -31,14 +43,15 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export function AddFieldForm() {
+
+export function AddFieldForm({token}) {
     const classes = useStyles();
 
     const [fieldName, setFieldName] = useState(null);
     const [latitude, setLatitude] = useState(null);
     const [longitude, setLongitude] = useState(null);
-    const [payable, setPayable] = useState(null);
-    const [reservationRequired, setReservationRequired] = useState(null);
+    const [payable, setPayable] = useState(false);
+    const [reservationRequired, setReservationRequired] = useState(false);
     const [surface, setSurface] = useState(null);
     const [website, setWebsite] = useState(null);
     const [image, setImage] = useState(null);
@@ -54,6 +67,7 @@ export function AddFieldForm() {
 
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [isAdded, setAdded] = useState(false);
 
     useEffect(() => {
         setAddButtonEnabled(
@@ -91,6 +105,7 @@ export function AddFieldForm() {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
             },
             body: JSON.stringify({
                 image,
@@ -110,16 +125,15 @@ export function AddFieldForm() {
             } else {
                 throw new Error('Something went wrong ...')
             }
-        }).catch(error => setError(error));
+        }).then(_ => setAdded(true))
+            .catch(error => setError(error));
     };
+
 
     return (
         <Container component="main" maxWidth="sm">
             <CssBaseline/>
             <div>
-                <Typography className={classes.header} component="h1" variant="h5">
-                    Dodaj boisko
-                </Typography>
                 <form className={classes.form} onSubmit={(e) => onSubmit(e)}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} sm={12}>
@@ -265,17 +279,25 @@ export function AddFieldForm() {
                                 label="Wymagana rezerwacja"
                             />
                         </Grid>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            disabled={!addButtonEnabled}
-                            className={classes.add}>
-                            Dodaj
-                        </Button>
-                    </Grid>
+                        {isAdded ?
+                            (
+                                <h2>✅ Dodano</h2>
+                            )
+                            :
+                            (
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={!addButtonEnabled}
+                                    className={classes.add}>
+                                    Dodaj
+                                </Button>
+                            )
+                        }
+                        < /Grid>
                 </form>
             </div>
         </Container>
-    )
+)
 }
