@@ -14,6 +14,20 @@ export const Board = () => (
                 }
                 image="./assets/background.png"
                 description="No hejka chciałbym was zaprosić na meczyk piłki noznej ;)"
+                comments={[
+                    {
+                        avatar: <Avatar alt="Natalia Wcisło" src="/static/images/avatar/2.jpg" />,
+                        author: "Natalia Wcisło",
+                        date: new Date(),
+                        content: "Polecam ten mecz"
+                    },
+                    {
+                        avatar: <Avatar alt="Jędrzej Jędrzejewski" src="/static/images/avatar/2.jpg" />,
+                        author: "Jędrzej Jędrzejewski",
+                        date: new Date(),
+                        content: "Na pewno będę! Napisze długi komentarz tak żeby przetestować możliwości responsywności tej strony internetowej"
+                    }
+                ]}
             />
         </Grid>
         <Grid item>
@@ -25,6 +39,14 @@ export const Board = () => (
                 }
                 image="./assets/background.png"
                 description="No hejka chciałbym was zaprosić na meczyk piłki noznej ;)"
+                comments={[
+                    {
+                        avatar: <Avatar alt="Natalia Wcisło" src="/static/images/avatar/2.jpg" />,
+                        author: "Natalia Wcisło",
+                        date: new Date(),
+                        content: "Również polecam ten mecz"
+                    }
+                ]}
             />
         </Grid>
     </Grid>

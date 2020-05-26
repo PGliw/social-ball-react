@@ -18,6 +18,9 @@ import Grid from '@material-ui/core/Grid';
 import LocationIcon from '@material-ui/icons/LocationOn';
 import Avatar from '@material-ui/core/Avatar';
 import AvatarGroup from '@material-ui/lab/AvatarGroup';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -40,10 +43,39 @@ const useStyles = makeStyles((theme) => ({
     avatar: {
         backgroundColor: red[500],
     },
-    rightAvatarGroup: {
-        marginLeft: '8px',
+    comment: {
+        width: "100%",
+        borderRadius: 32,
+        backgroundColor: theme.palette.grey[200],
+        boxShadow: "none"
     }
 }));
+
+const formatDate = (date) => {
+    var options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('pl-PL', options);
+};
+
+function Comment(props) {
+    const classes = useStyles();
+
+    return (
+        <Grid item xs={12}>
+            <Card className={classes.comment}>
+                <CardHeader
+                    avatar={props.avatar}
+                    action={
+                        <IconButton aria-label="settings">
+                            <MoreVertIcon />
+                        </IconButton>
+                    }
+                    title={props.author}
+                    subheader={props.content}
+                />
+            </Card>
+        </Grid>
+    )
+}
 
 export default function MatchCard(props) {
     const classes = useStyles();
@@ -52,11 +84,6 @@ export default function MatchCard(props) {
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
-
-    const formatDate = (date) => {
-        var options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return date.toLocaleDateString('pl-PL', options);
-    }
 
     return (
         <Card className={classes.root}>
@@ -121,7 +148,7 @@ export default function MatchCard(props) {
                                 <Typography variant="subtitle2" color="textSecondary">
                                     Mordeczki
                                 </Typography>
-                                <AvatarGroup max={4} className={classes.rightAvatarGroup}>
+                                <AvatarGroup max={4}>
                                     <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
                                     <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
                                     <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
@@ -133,7 +160,7 @@ export default function MatchCard(props) {
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="body2" color="textSecondary" component="p">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras dapibus semper magna nec eleifend. Pellentesque at arcu lacus. Curabitur ut diam ut ex condimentum molestie vitae eget ante. Fusce aliquam, purus ut posuere porttitor, ipsum ante ornare magna, ac efficitur.
+                            {props.description}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -158,9 +185,36 @@ export default function MatchCard(props) {
             </CardActions>
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        {props.description}
-                    </Typography>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <Grid container className={classes.messageArea} spacing={1}>
+                                {props.comments.map((comment) =>
+                                    <Comment
+                                        avatar={comment.avatar}
+                                        author={comment.author}
+                                        date={comment.date}
+                                        content={comment.content}
+                                    />
+                                )}
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Grid container xs={12} spacing={1} fullWidth>
+                                <Grid item>
+                                    <Avatar alt="Natalia Wcisło" src="/static/images/avatar/2.jpg" />
+                                </Grid>
+                                <Grid item xs>
+                                    <TextField
+                                        id="firstName"
+                                        fullWidth
+                                        variant="outlined"
+                                        size="small"
+                                        placeholder="Napisz komentarz..."
+                                    />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </CardContent>
             </Collapse>
         </Card>
