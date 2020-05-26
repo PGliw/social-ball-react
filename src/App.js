@@ -6,6 +6,7 @@ import {UserProfile} from './UserProfile';
 import {HashRouter as Router, Route} from 'react-router-dom';
 import {Board} from "./Board";
 import {Stats} from "./Stats";
+import MatchForm from "./MatchForm";
 
 const withToken = (token, RedirectComponent) => {
     return ({component: Component, ...rest}) =>
@@ -34,6 +35,7 @@ function App() {
                     <PrivateRoute path="/profile" component={UserProfile}/>
                     <PrivateRoute path="/board" component={Board}/>
                     <PrivateRoute path="/stats" component={Stats}/>
+                    <PrivateRoute path="/new-match" component={MatchForm}/>
                 </div>
             </Router>
         </div>

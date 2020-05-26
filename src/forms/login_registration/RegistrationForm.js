@@ -135,7 +135,7 @@ export function RegistrationForm() {
 
     return (
         isRegistrationSuccessful === true ?
-            <Redirect to='/login'/>
+            <Redirect to={'/login'} push/>
             :
             <Container component="main" maxWidth="sm">
                 <Paper className={classes.paper}>

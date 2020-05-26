@@ -96,7 +96,7 @@ export function LoginForm({handleToken}) {
 
     return (
         isLoginSuccessful === true ?
-            <Redirect to='/home'/>
+            <Redirect to={'/board'} push />
             :
             <Container component="main" maxWidth="sm">
                 <Paper className={classes.paper}>
