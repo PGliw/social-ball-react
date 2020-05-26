@@ -9,6 +9,7 @@ import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
+import {SERVER_URL} from "../config";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -51,6 +52,9 @@ export function AddFieldForm() {
 
     const [addButtonEnabled, setAddButtonEnabled] = useState(false);
 
+    const [isLoading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
     useEffect(() => {
         setAddButtonEnabled(
             fieldName !== null
@@ -80,174 +84,198 @@ export function AddFieldForm() {
     ]);
 
     const onSubmit = (e) => {
-        // TO DO
+        e.preventDefault();
+        setLoading(true);
+        fetch(`${SERVER_URL}/footballPitch`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                image,
+                isPayable: payable,
+                isReservationRequired: reservationRequired,
+                latitude,
+                longitude,
+                name: fieldName,
+                typeOfSurface: surface,
+                website,
+            })
+        }).then((response) => {
+            setLoading(false);
+            if (response.ok) {
+                console.log(response.status);
+                return response.json();
+            } else {
+                throw new Error('Something went wrong ...')
+            }
+        }).catch(error => setError(error));
     };
 
     return (
         <Container component="main" maxWidth="sm">
-            <Paper className={classes.paper}>
-                <CssBaseline/>
-                <div>
-                    <Typography className={classes.header} component="h1" variant="h5">
-                        Dodaj boisko
-                    </Typography>
-                    <form className={classes.form} onSubmit={(e) => onSubmit(e)}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} sm={12}>
-                                <TextField
-                                    label="Nazwa"
-                                    id="fieldName"
-                                    fullWidth
-                                    required
-                                    autoFocus
-                                    variant="outlined"
-                                    value={fieldName || ''}
-                                    onChange={event => {
-                                        setFieldName(event.target.value);
-                                        setFieldError(event.target.value.length < 1
-                                            ? 'nazwa nie moze być pusta'
-                                            : null);
-                                    }}
-                                    error={fieldError !== null}
-                                    helperText={fieldError}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    label="Szerokość geograficzna"
-                                    id="latitude"
-                                    fullWidth
-                                    required
-                                    variant="outlined"
-                                    value={latitude || ''}
-                                    onChange={event => {
-                                        setLatitude(event.target.value);
-                                        setLatitudeError(parseFloat(event.target.value) > 90
-                                        || parseFloat(event.target.value) < 0
-                                        || isNaN(parseFloat(event.target.value))
-                                            ? 'Podaj wartość z zakresu 0-90'
-                                            : null);
-                                    }}
-                                    error={latitudeError !== null}
-                                    helperText={latitudeError}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    label="Długość geograficzna"
-                                    id="longitude"
-                                    fullWidth
-                                    required
-                                    variant="outlined"
-                                    value={longitude || ''}
-                                    onChange={event => {
-                                        setLongitude(event.target.value);
-                                        setLongitudeError(parseFloat(event.target.value) > 180
-                                        || parseFloat(event.target.value) < 0
-                                        || isNaN(parseFloat(event.target.value))
-                                            ? 'Podaj wartość z zakresu 0-180'
-                                            : null);
-                                    }}
-                                    error={longitudeError !== null}
-                                    helperText={longitudeError}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={12}>
-                                <TextField
-                                    label="Nawierzchnia"
-                                    id="surface"
-                                    fullWidth
-                                    required
-                                    variant="outlined"
-                                    value={surface || ''}
-                                    onChange={event => {
-                                        setSurface(event.target.value);
-                                        setSurfaceError(event.target.value.length < 1
-                                            ? 'nazwa nie moze być pusta'
-                                            : null);
-                                    }}
-                                    error={surfaceError !== null}
-                                    helperText={surfaceError}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Strona www"
-                                    id="website"
-                                    fullWidth
-                                    required
-                                    variant="outlined"
-                                    value={website || ''}
-                                    onChange={event => {
-                                        const validWebsiteRegex = RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi);
-                                        setWebsite(event.target.value);
-                                        setWebsiteError(validWebsiteRegex.test(event.target.value)
-                                            ? null
-                                            : 'To nie jest poprawny adres www');
-                                    }}
-                                    error={websiteError !== null}
-                                    helperText={websiteError}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Zdjęcie"
-                                    id="image"
-                                    fullWidth
-                                    required
-                                    variant="outlined"
-                                    value={image || ''}
-                                    onChange={event => {
-                                        const validWebsiteRegex = RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi);
-                                        setImage(event.target.value);
-                                        setImageError(validWebsiteRegex.test(event.target.value)
-                                            ? null
-                                            : 'To nie jest poprawny link do zdjęcia');
-                                    }}
-                                    error={imageError !== null}
-                                    helperText={imageError}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={payable}
-                                            onChange={event => {
-                                                setPayable(event.target.checked);
-                                            }}
-                                            id="payable"
-                                        />
-                                    }
-                                    label="Boisko płatne"
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={reservationRequired}
-                                            onChange={event => {
-                                                setReservationRequired(event.target.checked);
-                                            }}
-                                            id="reservation"
-                                        />
-                                    }
-                                    label="Wymagana rezerwacja"
-                                />
-                            </Grid>
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                                disabled={!addButtonEnabled}
-                                className={classes.add}>
-                                Dodaj
-                            </Button>
+            <CssBaseline/>
+            <div>
+                <Typography className={classes.header} component="h1" variant="h5">
+                    Dodaj boisko
+                </Typography>
+                <form className={classes.form} onSubmit={(e) => onSubmit(e)}>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={12}>
+                            <TextField
+                                label="Nazwa"
+                                id="fieldName"
+                                fullWidth
+                                required
+                                autoFocus
+                                variant="outlined"
+                                value={fieldName || ''}
+                                onChange={event => {
+                                    setFieldName(event.target.value);
+                                    setFieldError(event.target.value.length < 1
+                                        ? 'nazwa nie moze być pusta'
+                                        : null);
+                                }}
+                                error={fieldError !== null}
+                                helperText={fieldError}
+                            />
                         </Grid>
-                    </form>
-                </div>
-            </Paper>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="Szerokość geograficzna"
+                                id="latitude"
+                                fullWidth
+                                required
+                                variant="outlined"
+                                value={latitude || ''}
+                                onChange={event => {
+                                    setLatitude(event.target.value);
+                                    setLatitudeError(parseFloat(event.target.value) > 90
+                                    || parseFloat(event.target.value) < 0
+                                    || isNaN(parseFloat(event.target.value))
+                                        ? 'Podaj wartość z zakresu 0-90'
+                                        : null);
+                                }}
+                                error={latitudeError !== null}
+                                helperText={latitudeError}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="Długość geograficzna"
+                                id="longitude"
+                                fullWidth
+                                required
+                                variant="outlined"
+                                value={longitude || ''}
+                                onChange={event => {
+                                    setLongitude(event.target.value);
+                                    setLongitudeError(parseFloat(event.target.value) > 180
+                                    || parseFloat(event.target.value) < 0
+                                    || isNaN(parseFloat(event.target.value))
+                                        ? 'Podaj wartość z zakresu 0-180'
+                                        : null);
+                                }}
+                                error={longitudeError !== null}
+                                helperText={longitudeError}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <TextField
+                                label="Nawierzchnia"
+                                id="surface"
+                                fullWidth
+                                required
+                                variant="outlined"
+                                value={surface || ''}
+                                onChange={event => {
+                                    setSurface(event.target.value);
+                                    setSurfaceError(event.target.value.length < 1
+                                        ? 'nazwa nie moze być pusta'
+                                        : null);
+                                }}
+                                error={surfaceError !== null}
+                                helperText={surfaceError}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Strona www"
+                                id="website"
+                                fullWidth
+                                required
+                                variant="outlined"
+                                value={website || ''}
+                                onChange={event => {
+                                    const validWebsiteRegex = RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi);
+                                    setWebsite(event.target.value);
+                                    setWebsiteError(validWebsiteRegex.test(event.target.value)
+                                        ? null
+                                        : 'To nie jest poprawny adres www');
+                                }}
+                                error={websiteError !== null}
+                                helperText={websiteError}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Zdjęcie"
+                                id="image"
+                                fullWidth
+                                required
+                                variant="outlined"
+                                value={image || ''}
+                                onChange={event => {
+                                    const validWebsiteRegex = RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi);
+                                    setImage(event.target.value);
+                                    setImageError(validWebsiteRegex.test(event.target.value)
+                                        ? null
+                                        : 'To nie jest poprawny link do zdjęcia');
+                                }}
+                                error={imageError !== null}
+                                helperText={imageError}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={payable}
+                                        onChange={event => {
+                                            setPayable(event.target.checked);
+                                        }}
+                                        id="payable"
+                                    />
+                                }
+                                label="Boisko płatne"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={reservationRequired}
+                                        onChange={event => {
+                                            setReservationRequired(event.target.checked);
+                                        }}
+                                        id="reservation"
+                                    />
+                                }
+                                label="Wymagana rezerwacja"
+                            />
+                        </Grid>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            disabled={!addButtonEnabled}
+                            className={classes.add}>
+                            Dodaj
+                        </Button>
+                    </Grid>
+                </form>
+            </div>
         </Container>
     )
 }

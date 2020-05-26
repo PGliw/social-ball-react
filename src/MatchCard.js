@@ -54,9 +54,9 @@ export default function MatchCard(props) {
     };
 
     const formatDate = (date) => {
-        var options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const options = {year: 'numeric', month: 'long', day: 'numeric'};
         return date.toLocaleDateString('pl-PL', options);
-    }
+    };
 
     return (
         <Card className={classes.root}>

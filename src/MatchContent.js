@@ -21,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "center",
         alignItems: "center"
     },
+    dialogPaper: {
+        minHeight: '58vh',
+        maxHeight: '70vh',
+    },
     team: {
         display: "flex",
         width: "40%",
@@ -80,7 +84,7 @@ const getItems = (count, team, offset = 0) =>
         num: k
     }));
 
-const MatchContent = () => {
+const MatchContent = ({token}) => {
     const classes = useStyles();
     const [fields, setFields] = useState(["Soccerfield", "Footballclub", "Bojo"]);
     const [selectedField, setSelectedField] = useState("Soccerfield");
@@ -257,7 +261,9 @@ const MatchContent = () => {
             </Grid>
             <Dialog
                 open={open}
-                onClose={onDialogClose}>
+                onClose={onDialogClose}
+                classes={{ paper: classes.dialogPaper }}
+            >
                 <DialogContent>
                     <AddFieldForm/>
                 </DialogContent>

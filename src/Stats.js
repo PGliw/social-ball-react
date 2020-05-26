@@ -16,11 +16,11 @@ const useStyles = makeStyles(theme => ({
     toolbar: theme.mixins.toolbar,
   }));
 
-export const Stats = () => {
+export const Stats = ({token}) => {
     const classes = useStyles();
 
     return (
-        <NavDrawer className={classes.root}>
+        <NavDrawer token={token} className={classes.root}>
             <div className={classes.toolbar} />
             <Grid
                 container

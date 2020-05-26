@@ -59,7 +59,16 @@ export function RegistrationForm() {
 
     const [submitButtonEnabled, setSubmitButtonEnabled] = useState(false);
 
-    const [isRegistrationSuccessful, setRegistrationSuccessful] = useState(null)
+    const [isRegistrationSuccessful, setRegistrationSuccessful] = useState(null);
+    const [isLoading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        if (error) {
+            alert(error.message);
+            console.log(error);
+        }
+    }, [error]);
 
     useEffect(() => {
         setSubmitButtonEnabled(
@@ -110,17 +119,19 @@ export function RegistrationForm() {
                 username: email
             })
         }).then((response) => {
-            if (response.status === 200) {
-                setRegistrationSuccessful(true);
+            setLoading(false);
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Something went wrong ...')
             }
-            return response.json();
-        }).then((data => {
-            if (data.message) {
-                alert(data.message)
-            }
-            setRegistrationSuccessful(false);
-        }))
+        }).then(_ => {
+            setLoading(false);
+            setRegistrationSuccessful(true)
+        })
+            .catch(error => setError(error));
     };
+
 
     return (
         isRegistrationSuccessful === true ?

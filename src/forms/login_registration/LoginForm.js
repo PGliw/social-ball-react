@@ -33,19 +33,24 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export function LoginForm() {
+export function LoginForm({handleToken}) {
     const classes = useStyles();
-
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
     const [keepLoggedIn, setKeepLoggedIn] = useState(false);
-
     const [emailError, setEmailError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
-
     const [submitButtonEnabled, setSubmitButtonEnabled] = useState(false);
-
     const [isLoginSuccessful, setLoginSuccessful] = useState(null);
+    const [isLoading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const handleSuccessfulLogin = ({username, token}) => {
+        if (token) {
+            handleToken(token);
+            setLoginSuccessful(true);
+        }
+    };
 
     useEffect(() => {
         setSubmitButtonEnabled(
@@ -60,6 +65,13 @@ export function LoginForm() {
         passwordError
     ]);
 
+    useEffect(() => {
+        if (error) {
+            alert(error.message);
+            console.log(error);
+        }
+    }, [error]);
+
     const onSubmit = (e) => {
         e.preventDefault();
         fetch(`${SERVER_URL}/token/generate-token`, {
@@ -72,17 +84,14 @@ export function LoginForm() {
                 email, password
             })
         }).then((response) => {
-            if (response.status === 200) {
-                setLoginSuccessful(true);
+            setLoading(false);
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Something went wrong ...')
             }
-            console.log(response.status);
-            return response.json();
-        }).then((data => {
-            if (data.message) {
-                alert(data.message);
-            }
-            setLoginSuccessful(false);
-        }))
+        }).then(responseBody => handleSuccessfulLogin(responseBody))
+            .catch(error => setError(error));
     };
 
     return (
