@@ -295,7 +295,7 @@ export function AddFieldForm({token}) {
                                 </Button>
                             )
                         }
-                        < /Grid>
+                        </Grid>
                 </form>
             </div>
         </Container>

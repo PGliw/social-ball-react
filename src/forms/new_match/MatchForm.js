@@ -1,24 +1,17 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {TeamBuilder} from "./teambuilder/TeamBuilder";
 import Paper from "@material-ui/core/Paper";
-import {Select} from "@material-ui/core";
-import MenuItem from "@material-ui/core/MenuItem";
-import Dialog from "@material-ui/core/Dialog";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
+import {Select, MenuItem, Dialog, InputLabel, FormControl, Typography, Button, Grid, DialogContent, withStyles} from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
 import {KeyboardDatePicker, KeyboardTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
 import {AddFieldForm} from "./AddFieldForm";
-import DialogContent from "@material-ui/core/DialogContent";
 import NavDrawer from "../../NavDrawer";
-import {withStyles} from "@material-ui/core/styles";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
+import {SERVER_URL} from "../../config";
+import {Redirect} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     settings: {
@@ -119,14 +112,17 @@ const DialogTitle = withStyles(styles)((props) => {
 
 const MatchForm = ({token}) => {
     const classes = useStyles();
-    const [fields, setFields] = useState(["Soccerfield", "Footballclub", "Bojo"]);
-    const [selectedField, setSelectedField] = useState("Soccerfield");
-    const [selectedCity, setSelectedCity] = useState("");
+    const [isLoading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const [pitches, setPitches] = useState([]);
+    const [selectedPitch, setSelectedPitch] = useState(null);
+    const [selectedCity, setSelectedCity] = useState("Wrocław");
+    const [selectedReferee, setSelectedRefree] = useState(null);
     const [date, setDate] = useState(null);
     const [startTime, setStartTime] = useState(null);
     const [endTime, setEndTime] = useState(null);
     const [open, setOpen] = useState(false);
-    const [coach, setCoach] = useState(null);
     const [equalTeams, setEqualTeams] = useState(true);
     const [color1, setColor1] = useState("#f54242");
     const [color2, setColor2] = useState("#ffffff");
@@ -136,6 +132,31 @@ const MatchForm = ({token}) => {
     const [players2, setPlayers2] = useState(7);
     const team1Items = getItems(7, 1);
     const team2Items = getItems(7, 2);
+    const [description, setDescription] = useState("");
+    const [isCloseClicked, setCloseClicked] = useState(false);
+    const [positions, setPositions] = useState([]);
+
+    const [isPublishButtonEnabled, setPublishButtonEnabled] = useState(false);
+    const [isPublished, setPublished] = useState(false);
+
+    useEffect(() => {
+        setPublishButtonEnabled(
+            selectedPitch !== null
+            && date !== null
+            && startTime !== null
+            && endTime !== null
+        );
+    }, [
+        selectedPitch,
+        date,
+        startTime,
+        endTime
+    ]);
+
+    useEffect(() => {
+        if (error) alert(error);
+    }, [error]);
+
     const [team1, setTeam1] = useState(
         {
             goalkeepers: team1Items.slice(0, 1),
@@ -175,15 +196,202 @@ const MatchForm = ({token}) => {
         forwards: 5
     };
 
+
+    const lineCountToSides = (lineCount) => {
+        let result = null;
+        const MIDDLE_LEFT = "lewy-środkowy", MIDDLE_RIGHT = "prawy-środkowy", MIDDLE = "środkowy", LEFT = "lewy",
+            RIGHT = "prawy";
+        switch (lineCount) {
+            case 0:
+                result = [];
+                break;
+            case 1:
+                result = [MIDDLE];
+                break;
+            case 2:
+                result = [MIDDLE_LEFT, MIDDLE_RIGHT];
+                break;
+            case 3:
+                result = [MIDDLE_LEFT, MIDDLE, MIDDLE_RIGHT];
+                break;
+            case 4:
+                result = [LEFT, MIDDLE_LEFT, MIDDLE_RIGHT, RIGHT];
+                break;
+            case 5:
+                result = [LEFT, MIDDLE_LEFT, MIDDLE, MIDDLE_RIGHT, RIGHT];
+                break;
+        }
+        if (result === null) {
+            console.error(`Result of lineCountToSides is null (lineCount=${lineCount})`);
+        }
+        return result;
+    };
+
+    const teamToMatchMemberDtoArray = ({goalkeepers, defenders, midfields, forwards,}) => {
+        const GOALKEEPER = "bramkarz", DEFENDER = "obrońca", MIDFIELD = "pomocnik", FORWARD = "napastnik";
+        let goalkeepersObjArr = [];
+        if (goalkeepers.length > 0) goalkeepersObjArr = [{name: GOALKEEPER, side: null}];
+        const defendersObjArr = lineCountToSides(defenders.length).map(sideName => ({
+            name: DEFENDER,
+            side: sideName
+        }));
+        const midfieldsObjArr = lineCountToSides(midfields.length).map(sideName => ({
+            name: MIDFIELD,
+            side: sideName
+        }));
+        const forwardObjArr = lineCountToSides(forwards.length).map(sideName => (
+            {name: FORWARD, side: sideName})
+        );
+        const playersObjArr = goalkeepersObjArr.concat(defendersObjArr, midfieldsObjArr, forwardObjArr);
+        return playersObjArr.map(playerObj => {
+            const positionObj = positions.find(position => position.name === playerObj.name && position.side === playerObj.side);
+            if (!positionObj) {
+                console.error("Position not found");
+                console.log(playerObj);
+            }
+
+            return {
+                isConfirmed: false,
+                userId: null,
+                positionId: positionObj.id,
+            }
+        });
+    };
+
+    useEffect(() => {
+        setLoading(true);
+        getPitches().then();
+        getPositions().then();
+    }, []);
+
+    const getPositions = () =>
+        fetch(`${SERVER_URL}/positions`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            },
+        }).then((response) => {
+            setLoading(false);
+            if (response.ok) {
+                return response.json();
+            } else {
+                const error = response.statusText;
+                throw new Error(error)
+            }
+        }).then(responseBody => {
+            return setPositions(responseBody)
+        })
+            .catch(error => setError(error));
+
+    const getPitches = () =>
+        fetch(`${SERVER_URL}/footballPitches`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            },
+        }).then((response) => {
+            setLoading(false);
+            if (response.ok) {
+                return response.json();
+            } else {
+                const error = response.statusText;
+                throw new Error(error)
+            }
+        }).then(responseBody => setPitches(responseBody))
+            .catch(error => setError(error));
+
+    const postFootballMatch = () => {
+        setLoading(true);
+        return fetch(`${SERVER_URL}/footballMatches`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify(
+                {
+                    beginningTime: startTime.toISOString(),
+                    description: description,
+                    endingTime: endTime.toISOString(),
+                    id: null,
+                    pitchId: selectedPitch.id,
+                }
+            )
+        }).then((response) => {
+            setLoading(false);
+            if (response.ok) {
+                return response.json();
+            } else {
+                const error = response.statusText;
+                throw new Error(error)
+            }
+        })
+    };
+
+    const withFootballMatchIdPostTeamFun = (footballMatchId) => (name, membersCount, shirtColours, teamMembers) => {
+        setLoading(true);
+        return fetch(`${SERVER_URL}/teams`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify({name, membersCount, shirtColours, teamMembers, footballMatchId,})
+        }).then((response) => {
+            setLoading(false);
+            if (response.ok) {
+                return response.json();
+            } else {
+                const error = response.statusText;
+                throw new Error(error)
+            }
+        })
+
+    };
+
+    const handleSubmit = () => {
+        setLoading(true);
+        postFootballMatch()
+            .then(responseBody => {
+                const matchId = responseBody.id;
+                return withFootballMatchIdPostTeamFun(matchId);
+            })
+            .then(postTeamFunction => {
+                const matchMembersTeam1 = teamToMatchMemberDtoArray(team1);
+                const matchMembersTeam2 = teamToMatchMemberDtoArray(team2);
+                return Promise.all([
+                    postTeamFunction(name1, players1, color1, matchMembersTeam1),
+                    postTeamFunction(name2, players2, color2, matchMembersTeam2),
+                ]);
+            })
+            .then(([team1response, team2response]) => {
+                    setPublished(true);
+            })
+            .catch(error => setError(error));
+    };
+
     const handleCityChange = (e) => setSelectedCity(e.target.value);
 
-    const handleFieldChange = (e) => {
+    const handlePitchChange = (e) => {
         const value = e.target.value;
 
         if (value === "") {
-            // setSelectedField("");
             setOpen(true);
-        } else setSelectedField(value);
+        } else setSelectedPitch(value);
+    };
+
+    const handleRefereeChange = (e) => {
+        const value = e.target.value;
+
+        if (value === "") {
+            setOpen(true);
+        } else setSelectedRefree(value);
     };
 
     const handleEqualTeamsChange = (e) => {
@@ -193,10 +401,10 @@ const MatchForm = ({token}) => {
 
     const onDialogClose = () => setOpen(false);
 
-    const handleCoachChange = (e) => setCoach(e.target.value);
-
-    return (
-        <NavDrawer token={token}>
+    if (isCloseClicked) {
+        return <Redirect to={"/board"}/>;
+    } else {
+        return <NavDrawer token={token}>
             <Paper className={classes.paper} elevation={3}>
                 <Typography variant="h5">
                     Nowy mecz
@@ -213,7 +421,9 @@ const MatchForm = ({token}) => {
                                 format="dd/MM/yyyy"
                                 inputVariant="outlined"
                                 value={date}
-                                onChange={date => setDate(date)}
+                                onChange={date => {
+                                    setDate(date)
+                                }}
                                 KeyboardButtonProps={{
                                     'aria-label': 'change date',
                                 }}
@@ -225,7 +435,7 @@ const MatchForm = ({token}) => {
                                 inputVariant="outlined"
                                 fullWidth
                                 value={startTime}
-                                onChange={time => setStartTime(time)}
+                                onChange={setStartTime}
                             />
                             <KeyboardTimePicker
                                 label="Ostatni gwizdek"
@@ -233,7 +443,7 @@ const MatchForm = ({token}) => {
                                 inputVariant="outlined"
                                 fullWidth
                                 value={endTime}
-                                onChange={time => setEndTime(time)}
+                                onChange={setEndTime}
                             />
                         </MuiPickersUtilsProvider>
 
@@ -247,11 +457,11 @@ const MatchForm = ({token}) => {
                         </FormControl>
                         <FormControl className={classes.field}>
                             <InputLabel id="field">Boisko</InputLabel>
-                            <Select labelId="field" onChange={handleFieldChange} value={selectedField}>
-                                {fields.map(field => {
+                            <Select labelId="field" onChange={handlePitchChange} value={selectedPitch}>
+                                {pitches.map(pitch => {
                                     return (
-                                        <MenuItem value={field} key={field}>
-                                            {field}
+                                        <MenuItem value={pitch.id} key={pitch.id}>
+                                            {pitch.name}
                                         </MenuItem>
                                     )
                                 })}
@@ -260,7 +470,7 @@ const MatchForm = ({token}) => {
                         </FormControl>
                         <FormControl className={classes.field}>
                             <InputLabel id="referee">Sędzia</InputLabel>
-                            <Select labelId="referee" onChange={handleFieldChange} value={selectedField}>
+                            <Select labelId="referee" onChange={handleRefereeChange} value={selectedReferee}>
                                 <MenuItem value={true}>Tak</MenuItem>
                                 <MenuItem value={false}>Nie</MenuItem>
                                 <MenuItem value={null}>Obojętne</MenuItem>
@@ -271,9 +481,31 @@ const MatchForm = ({token}) => {
                             Równe składy drużyn
                         </label>
                         <br/>
-                        <Button className={classes.submitButton} variant="contained" color="primary">
-                            Opublikuj
-                        </Button>
+                        {isPublished ?
+                            (
+                                <div>
+                                    <h2>✅ Opublikowano</h2>
+                                    <Button variant="outlined" className={classes.submitButton} color="primary"
+                                            onClick={() => setCloseClicked(true)}>
+                                        Zamknij
+                                    </Button>
+                                </div>
+                            )
+                            :
+                            (
+                                <div>
+                                    <Button className={classes.submitButton} variant="contained" color="primary"
+                                            disabled={!isPublishButtonEnabled} onClick={handleSubmit}>
+                                        Opublikuj
+                                    </Button>
+                                    <Button variant="outlined" className={classes.submitButton} color="primary"
+                                            onClick={() => setCloseClicked(true)}>
+                                        Anuluj
+                                    </Button>
+                                </div>
+                            )
+                        }
+
                     </Grid>
                     <Grid item sm={12} md={8}>
                         <TeamBuilder
@@ -307,7 +539,7 @@ const MatchForm = ({token}) => {
                 </Dialog>
             </Paper>
         </NavDrawer>
-    );
+    }
 };
 
 export default MatchForm;

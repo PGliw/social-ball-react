@@ -66,10 +66,7 @@ export function LoginForm({handleToken}) {
     ]);
 
     useEffect(() => {
-        if (error) {
-            alert(error.message);
-            console.log(error);
-        }
+        if (error) alert(error);
     }, [error]);
 
     const onSubmit = (e) => {
@@ -88,7 +85,7 @@ export function LoginForm({handleToken}) {
             if (response.ok) {
                 return response.json();
             } else {
-                throw new Error('Something went wrong ...')
+                throw new Error(response.statusText)
             }
         }).then(responseBody => handleSuccessfulLogin(responseBody))
             .catch(error => setError(error));
