@@ -70,7 +70,7 @@ export function AddPitchForm({token, onPitchAdded}) {
 
     const handleAdded = (isAddingSuccessful) => {
         setAdded(isAddingSuccessful);
-        onPitchAdded(isAddingSuccessful);
+        onPitchAdded();
     };
 
     useEffect(() => {
@@ -113,7 +113,7 @@ export function AddPitchForm({token, onPitchAdded}) {
             'footballPitches',
             setLoading,
             setError,
-            setAdded,
+            handleAdded,
             {
                 image,
                 isPayable: payable,

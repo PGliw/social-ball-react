@@ -2,7 +2,18 @@ import React, {useEffect, useState} from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {TeamBuilder} from "./teambuilder/TeamBuilder";
 import Paper from "@material-ui/core/Paper";
-import {Select, MenuItem, Dialog, InputLabel, FormControl, Typography, Button, Grid, DialogContent, withStyles} from "@material-ui/core";
+import {
+    Select,
+    MenuItem,
+    Dialog,
+    InputLabel,
+    FormControl,
+    Typography,
+    Button,
+    Grid,
+    DialogContent,
+    withStyles
+} from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
 import {KeyboardDatePicker, KeyboardTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import {AddPitchForm} from "./AddPitchForm";
@@ -12,6 +23,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import {SERVER_URL} from "../../config";
 import {Redirect} from "react-router-dom";
+import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
 
 const useStyles = makeStyles((theme) => ({
     settings: {
@@ -138,6 +150,7 @@ const MatchForm = ({token}) => {
 
     const [isPublishButtonEnabled, setPublishButtonEnabled] = useState(false);
     const [isPublished, setPublished] = useState(false);
+    const [reloadPitchesCounter, setReloadPitchersCounter] = useState(0);
 
     useEffect(() => {
         setPublishButtonEnabled(
@@ -276,51 +289,18 @@ const MatchForm = ({token}) => {
         });
     };
 
+    const handleReloadPitches = () => setReloadPitchersCounter(reloadPitchesCounter + 1);
+
     useEffect(() => {
-        setLoading(true);
-        getPitches().then();
-        getPositions().then();
-    }, []);
+        const fetchFromAdiWithToken = withTokenFetchFromApi(token);
+        fetchFromAdiWithToken(API_METHODS.GET, 'footballPitches', setLoading, setError, setPitches);
+    }, [token, reloadPitchesCounter]);
 
-    const getPositions = () =>
-        fetch(`${SERVER_URL}/positions`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-            },
-        }).then((response) => {
-            setLoading(false);
-            if (response.ok) {
-                return response.json();
-            } else {
-                const error = response.statusText;
-                throw new Error(error)
-            }
-        }).then(responseBody => {
-            return setPositions(responseBody)
-        })
-            .catch(error => setError(error));
+    useEffect(() => {
+        const fetchFromAdiWithToken = withTokenFetchFromApi(token);
+        fetchFromAdiWithToken(API_METHODS.GET, 'positions', setLoading, setError, setPositions);
+    }, [token]);
 
-    const getPitches = () =>
-        fetch(`${SERVER_URL}/footballPitches`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-            },
-        }).then((response) => {
-            setLoading(false);
-            if (response.ok) {
-                return response.json();
-            } else {
-                const error = response.statusText;
-                throw new Error(error)
-            }
-        }).then(responseBody => setPitches(responseBody))
-            .catch(error => setError(error));
 
     const postFootballMatch = () => {
         setLoading(true);
@@ -389,7 +369,7 @@ const MatchForm = ({token}) => {
                 ]);
             })
             .then(([team1response, team2response]) => {
-                    setPublished(true);
+                setPublished(true);
             })
             .catch(error => setError(error));
     };
@@ -443,10 +423,12 @@ const MatchForm = ({token}) => {
                                 KeyboardButtonProps={{
                                     'aria-label': 'change date',
                                 }}
+                                minDate={new Date()}
                             />
                             <KeyboardTimePicker
                                 label="Pierwszy gwizdek"
                                 id="startTime"
+                                ampm={false}
                                 variant="inline"
                                 inputVariant="outlined"
                                 fullWidth
@@ -456,6 +438,8 @@ const MatchForm = ({token}) => {
                             <KeyboardTimePicker
                                 label="Ostatni gwizdek"
                                 id="endTime"
+                                ampm={false}
+                                variant="inline"
                                 inputVariant="outlined"
                                 fullWidth
                                 value={endTime}
@@ -550,7 +534,7 @@ const MatchForm = ({token}) => {
                         Nowe boisko
                     </DialogTitle>
                     <DialogContent>
-                        <AddPitchForm token={token}/>
+                        <AddPitchForm token={token} onPitchAdded={handleReloadPitches}/>
                     </DialogContent>
                 </Dialog>
             </Paper>
