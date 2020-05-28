@@ -28,7 +28,7 @@ export const Board = ({token, logout}) => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [allMatches, setAllMatches] = useState([]);
-    const [positions, setPositions] = useState([]);
+    const [positions, setPositions] = useState(null);
 
     const handleAllMatches = (newAllMatches) => {
         console.log(newAllMatches);

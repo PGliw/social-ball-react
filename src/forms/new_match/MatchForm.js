@@ -25,6 +25,7 @@ import {SERVER_URL} from "../../config";
 import {Redirect} from "react-router-dom";
 import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
 import TextField from "@material-ui/core/TextField";
+import {POSITION_NAMES, SIDE_NAMES} from "../../api/constants";
 
 const useStyles = makeStyles((theme) => ({
     settings: {
@@ -232,26 +233,24 @@ const MatchForm = ({token}) => {
 
     const lineCountToSides = (lineCount) => {
         let result = null;
-        const MIDDLE_LEFT = "lewy-środkowy", MIDDLE_RIGHT = "prawy-środkowy", MIDDLE = "środkowy", LEFT = "lewy",
-            RIGHT = "prawy";
         switch (lineCount) {
             case 0:
                 result = [];
                 break;
             case 1:
-                result = [MIDDLE];
+                result = [SIDE_NAMES.MIDDLE];
                 break;
             case 2:
-                result = [MIDDLE_LEFT, MIDDLE_RIGHT];
+                result = [SIDE_NAMES.MIDDLE_LEFT, SIDE_NAMES.MIDDLE_RIGHT];
                 break;
             case 3:
-                result = [MIDDLE_LEFT, MIDDLE, MIDDLE_RIGHT];
+                result = [SIDE_NAMES.MIDDLE_LEFT, SIDE_NAMES.MIDDLE, SIDE_NAMES.MIDDLE_RIGHT];
                 break;
             case 4:
-                result = [LEFT, MIDDLE_LEFT, MIDDLE_RIGHT, RIGHT];
+                result = [SIDE_NAMES.LEFT, SIDE_NAMES.MIDDLE_LEFT, SIDE_NAMES.MIDDLE_RIGHT, SIDE_NAMES.RIGHT];
                 break;
             case 5:
-                result = [LEFT, MIDDLE_LEFT, MIDDLE, MIDDLE_RIGHT, RIGHT];
+                result = [SIDE_NAMES.LEFT, SIDE_NAMES.MIDDLE_LEFT, SIDE_NAMES.MIDDLE, SIDE_NAMES.MIDDLE_RIGHT, SIDE_NAMES.RIGHT];
                 break;
         }
         if (result === null) {
@@ -261,19 +260,18 @@ const MatchForm = ({token}) => {
     };
 
     const teamToMatchMemberDtoArray = ({goalkeepers, defenders, midfields, forwards,}) => {
-        const GOALKEEPER = "bramkarz", DEFENDER = "obrońca", MIDFIELD = "pomocnik", FORWARD = "napastnik";
         let goalkeepersObjArr = [];
-        if (goalkeepers.length > 0) goalkeepersObjArr = [{name: GOALKEEPER, side: null}];
+        if (goalkeepers.length > 0) goalkeepersObjArr = [{name: POSITION_NAMES.GOALKEEPER, side: null}];
         const defendersObjArr = lineCountToSides(defenders.length).map(sideName => ({
-            name: DEFENDER,
+            name: POSITION_NAMES.DEFENDER,
             side: sideName
         }));
         const midfieldsObjArr = lineCountToSides(midfields.length).map(sideName => ({
-            name: MIDFIELD,
+            name: POSITION_NAMES.MIDFIELD,
             side: sideName
         }));
         const forwardObjArr = lineCountToSides(forwards.length).map(sideName => (
-            {name: FORWARD, side: sideName})
+            {name: POSITION_NAMES.FORWARD, side: sideName})
         );
         const playersObjArr = goalkeepersObjArr.concat(defendersObjArr, midfieldsObjArr, forwardObjArr);
         return playersObjArr.map(playerObj => {
