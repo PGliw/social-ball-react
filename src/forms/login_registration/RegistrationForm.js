@@ -17,6 +17,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import {KeyboardDatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
 import {SERVER_URL} from "../../config";
 import {Redirect} from "react-router-dom";
+import {API_METHODS, fetchFromApi} from "../../api/baseFetch";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -64,10 +65,7 @@ export function RegistrationForm() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (error) {
-            alert(error.message);
-            console.log(error);
-        }
+        if (error) alert(error);
     }, [error]);
 
     useEffect(() => {
@@ -103,35 +101,22 @@ export function RegistrationForm() {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        fetch(`${SERVER_URL}/users`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                id: Math.floor((1000) * Math.random()), // TODO replace
-                firstName,
-                lastName,
+        fetchFromApi(
+            API_METHODS.POST,
+            "users",
+            setLoading,
+            setError,
+            () => setRegistrationSuccessful(true),
+            {
+                firstName: firstName,
+                lastName: lastName,
                 dateOfBirth: birthday.toISOString().split('T')[0],
-                password,
-                email,
-                username: email
-            })
-        }).then((response) => {
-            setLoading(false);
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Something went wrong ...')
+                password: password,
+                email: email,
+                username: firstName,
             }
-        }).then(_ => {
-            setLoading(false);
-            setRegistrationSuccessful(true)
-        })
-            .catch(error => setError(error));
+        );
     };
-
 
     return (
         isRegistrationSuccessful === true ?
