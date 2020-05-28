@@ -5,7 +5,7 @@ import Paper from "@material-ui/core/Paper";
 import {Select, MenuItem, Dialog, InputLabel, FormControl, Typography, Button, Grid, DialogContent, withStyles} from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
 import {KeyboardDatePicker, KeyboardTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
-import {AddFieldForm} from "./AddFieldForm";
+import {AddPitchForm} from "./AddPitchForm";
 import NavDrawer from "../../NavDrawer";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import IconButton from "@material-ui/core/IconButton";
@@ -550,7 +550,7 @@ const MatchForm = ({token}) => {
                         Nowe boisko
                     </DialogTitle>
                     <DialogContent>
-                        <AddFieldForm token={token}/>
+                        <AddPitchForm token={token}/>
                     </DialogContent>
                 </Dialog>
             </Paper>

@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react'
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
-import {SERVER_URL} from "../../config";
+import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
 
 const styles = (theme) => ({
     root: {
@@ -44,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export function AddFieldForm({token}) {
+export function AddPitchForm({token, onPitchAdded}) {
     const classes = useStyles();
 
     const [fieldName, setFieldName] = useState(null);
@@ -68,6 +67,15 @@ export function AddFieldForm({token}) {
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isAdded, setAdded] = useState(false);
+
+    const handleAdded = (isAddingSuccessful) => {
+        setAdded(isAddingSuccessful);
+        onPitchAdded(isAddingSuccessful);
+    };
+
+    useEffect(() => {
+        if (error) alert(error);
+    }, [error]);
 
     useEffect(() => {
         setAddButtonEnabled(
@@ -99,15 +107,14 @@ export function AddFieldForm({token}) {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        setLoading(true);
-        fetch(`${SERVER_URL}/footballPitch`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-            },
-            body: JSON.stringify({
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.POST,
+            'footballPitches',
+            setLoading,
+            setError,
+            setAdded,
+            {
                 image,
                 isPayable: payable,
                 isReservationRequired: reservationRequired,
@@ -116,17 +123,8 @@ export function AddFieldForm({token}) {
                 name: fieldName,
                 typeOfSurface: surface,
                 website,
-            })
-        }).then((response) => {
-            setLoading(false);
-            if (response.ok) {
-                console.log(response.status);
-                return response.json();
-            } else {
-                throw new Error('Something went wrong ...')
             }
-        }).then(_ => setAdded(true))
-            .catch(error => setError(error));
+        );
     };
 
 
@@ -295,9 +293,9 @@ export function AddFieldForm({token}) {
                                 </Button>
                             )
                         }
-                        </Grid>
+                    </Grid>
                 </form>
             </div>
         </Container>
-)
+    )
 }
