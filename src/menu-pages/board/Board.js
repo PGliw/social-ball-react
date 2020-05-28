@@ -28,6 +28,7 @@ export const Board = ({token, logout}) => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [allMatches, setAllMatches] = useState([]);
+    const [positions, setPositions] = useState([]);
 
     const handleAllMatches = (newAllMatches) => {
         console.log(newAllMatches);
@@ -51,6 +52,11 @@ export const Board = ({token, logout}) => {
         [token]
     );
 
+    useEffect(() => {
+        const fetchFromAdiWithToken = withTokenFetchFromApi(token);
+        fetchFromAdiWithToken(API_METHODS.GET, 'positions', setLoading, setError, setPositions);
+    }, [token]);
+
     if (newMatchClicked === true) {
         return <Redirect to={"/new-match"} push/>
     } else
@@ -61,9 +67,10 @@ export const Board = ({token, logout}) => {
                     <Grid item>
                         <MatchCard
                             footballMatch={footballMatch}
+                            positions={positions}
                         />
                     </Grid>))
-                })}
+                }
             </Grid>
             <Fab variant={"extended"} color="primary" aria-label="add" className={classes.fab}
                  onClick={() => setNewMatchClicked(true)}>
