@@ -119,9 +119,9 @@ const MatchForm = ({token}) => {
     const [selectedPitch, setSelectedPitch] = useState(null);
     const [selectedCity, setSelectedCity] = useState("Wrocław");
     const [selectedReferee, setSelectedRefree] = useState(null);
-    const [date, setDate] = useState(null);
-    const [startTime, setStartTime] = useState(null);
-    const [endTime, setEndTime] = useState(null);
+    const [date, setDate] = useState(new Date());
+    const [startTime, setStartTime] = useState(new Date());
+    const [endTime, setEndTime] = useState(new Date());
     const [open, setOpen] = useState(false);
     const [equalTeams, setEqualTeams] = useState(true);
     const [color1, setColor1] = useState("#f54242");
@@ -196,6 +196,24 @@ const MatchForm = ({token}) => {
         forwards: 5
     };
 
+    const handleMatchDate = (newMatchDateTime) => {
+        const newStartDateTime = new Date(newMatchDateTime);
+        newStartDateTime.setHours(startTime.getHours(), startTime.getMinutes(), startTime.getSeconds());
+        setStartTime(newStartDateTime);
+        const newEndDateTime = new Date(newMatchDateTime);
+        newEndDateTime.setHours(endTime.getHours(), endTime.getMinutes(), endTime.getSeconds());
+        setEndTime(newEndDateTime);
+    };
+
+    const withTimeAndSetterHandleTime = (time, setTime) => (newTime) => {
+        const newDateTime = new Date(time);
+        newDateTime.setHours(newTime.getHours(), newTime.getMinutes(), newTime.getSeconds());
+        setTime(newDateTime);
+    };
+
+    const handleStartTime = withTimeAndSetterHandleTime(startTime, setStartTime);
+
+    const handleEndTime = withTimeAndSetterHandleTime(endTime, setEndTime);
 
     const lineCountToSides = (lineCount) => {
         let result = null;
@@ -420,10 +438,8 @@ const MatchForm = ({token}) => {
                                 fullWidth
                                 format="dd/MM/yyyy"
                                 inputVariant="outlined"
-                                value={date}
-                                onChange={date => {
-                                    setDate(date)
-                                }}
+                                value={startTime}
+                                onChange={handleMatchDate}
                                 KeyboardButtonProps={{
                                     'aria-label': 'change date',
                                 }}
@@ -435,7 +451,7 @@ const MatchForm = ({token}) => {
                                 inputVariant="outlined"
                                 fullWidth
                                 value={startTime}
-                                onChange={setStartTime}
+                                onChange={handleStartTime}
                             />
                             <KeyboardTimePicker
                                 label="Ostatni gwizdek"
@@ -443,7 +459,7 @@ const MatchForm = ({token}) => {
                                 inputVariant="outlined"
                                 fullWidth
                                 value={endTime}
-                                onChange={setEndTime}
+                                onChange={handleEndTime}
                             />
                         </MuiPickersUtilsProvider>
 
