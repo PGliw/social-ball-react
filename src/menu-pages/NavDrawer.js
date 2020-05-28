@@ -111,7 +111,9 @@ const NavDrawer = ({children, token, logout}) => {
         setOpen(false)
     };
 
-    const handleLogout = () => logout();
+    const handleLogout = () => {
+        logout()
+    };
 
     useEffect(() => {
         if (error) alert(error);
