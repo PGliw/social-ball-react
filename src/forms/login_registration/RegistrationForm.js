@@ -17,6 +17,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import {KeyboardDatePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
 import {SERVER_URL} from "../../config";
 import {Redirect} from "react-router-dom";
+import {API_METHODS, fetchFromApi} from "../../api/baseFetch";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -59,7 +60,13 @@ export function RegistrationForm() {
 
     const [submitButtonEnabled, setSubmitButtonEnabled] = useState(false);
 
-    const [isRegistrationSuccessful, setRegistrationSuccessful] = useState(null)
+    const [isRegistrationSuccessful, setRegistrationSuccessful] = useState(null);
+    const [isLoading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        if (error) alert(error);
+    }, [error]);
 
     useEffect(() => {
         setSubmitButtonEnabled(
@@ -94,37 +101,26 @@ export function RegistrationForm() {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        fetch(`${SERVER_URL}/users`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                id: Math.floor((1000) * Math.random()), // TODO replace
-                firstName,
-                lastName,
+        fetchFromApi(
+            API_METHODS.POST,
+            "users",
+            setLoading,
+            setError,
+            () => setRegistrationSuccessful(true),
+            {
+                firstName: firstName,
+                lastName: lastName,
                 dateOfBirth: birthday.toISOString().split('T')[0],
-                password,
-                email,
-                username: email
-            })
-        }).then((response) => {
-            if (response.status === 200) {
-                setRegistrationSuccessful(true);
+                password: password,
+                email: email,
+                username: firstName,
             }
-            return response.json();
-        }).then((data => {
-            if (data.message) {
-                alert(data.message)
-            }
-            setRegistrationSuccessful(false);
-        }))
+        );
     };
 
     return (
         isRegistrationSuccessful === true ?
-            <Redirect to='/login'/>
+            <Redirect to={'/login'} push/>
             :
             <Container component="main" maxWidth="sm">
                 <Paper className={classes.paper}>
