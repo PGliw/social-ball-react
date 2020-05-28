@@ -24,6 +24,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import {SERVER_URL} from "../../config";
 import {Redirect} from "react-router-dom";
 import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
+import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles((theme) => ({
     settings: {
@@ -151,6 +152,7 @@ const MatchForm = ({token}) => {
     const [isPublishButtonEnabled, setPublishButtonEnabled] = useState(false);
     const [isPublished, setPublished] = useState(false);
     const [reloadPitchesCounter, setReloadPitchersCounter] = useState(0);
+    const [matchTitle, setMatchTitle] = useState('Nowy mecz');
 
     useEffect(() => {
         setPublishButtonEnabled(
@@ -318,6 +320,7 @@ const MatchForm = ({token}) => {
                     endingTime: endTime.toISOString(),
                     id: null,
                     pitchId: selectedPitch.id,
+                    title: matchTitle,
                 }
             )
         }).then((response) => {
@@ -404,12 +407,19 @@ const MatchForm = ({token}) => {
     } else {
         return <NavDrawer token={token}>
             <Paper className={classes.paper} elevation={3}>
-                <Typography variant="h5">
-                    Nowy mecz
-                </Typography>
                 <Grid container spacing={3}>
-                    <Grid className={classes.details} item sm={12} md={4}>
+                    <Grid className={classes.details} item sm={12} md={4} spacing={3}>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <TextField
+                                label="Nazwa meczu"
+                                id="matchTitle"
+                                type="text"
+                                required
+                                fullWidth
+                                variant="outlined"
+                                value={matchTitle}
+                                onChange={event => setMatchTitle(event.target.value)}
+                            />
                             <KeyboardDatePicker
                                 label="Termin"
                                 id="date"
@@ -476,6 +486,15 @@ const MatchForm = ({token}) => {
                                 <MenuItem value={null}>Obojętne</MenuItem>
                             </Select>
                         </FormControl>
+                        <TextField
+                            id="outlined-multiline-static"
+                            label="Opis"
+                            multiline
+                            rows={3}
+                            value={description}
+                            onChange={event => setDescription(event.target.value)}
+                            variant="outlined"
+                        />
                         <label>
                             <input type="checkbox" checked={equalTeams} onChange={handleEqualTeamsChange}/>
                             Równe składy drużyn
