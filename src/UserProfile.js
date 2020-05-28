@@ -108,13 +108,11 @@ TabPanel.propTypes = {
 const UserProfile = () => {
   const classes = useStyles();
   const [value, setValue] = React.useState(1);
-  const [open, setOpen] = useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const onDialogClose = () => setOpen(false);
 
   const Row = ({ index }) => (
     <Paper className={classes.paper}>
@@ -158,35 +156,6 @@ const UserProfile = () => {
                 <Link href="">
                   <h3>Zarządzaj kontem</h3>
                 </Link>
-                <Checkbox
-                  checked={open}
-                  onChange={event => {
-                    setOpen(event.target.checked);
-                  }}
-                  id="test"
-                />
-                <Dialog
-                  open={open}
-                  onClose={onDialogClose}>
-                  <DialogContent>
-                    <Box className={classes.paperBox}>
-                      <RoundedImage image={ProfilePlaceholder}
-                        roundedColor="#e6e6e6"
-                        roundedSize="13"
-                        imageWidth="160"
-                        imageHeight="160"
-                      />
-                      <h2>Jan Kowalski</h2>
-                      <p className={classes.positions}>Ulubione pozycje: napastnik</p>
-                      <p>
-                        172 rozegrane mecze | 221 godzin na boisku | 71 strzelonych goli
-                                </p>
-                      <Link href="">
-                        <h3>Dodaj do znajomych</h3>
-                      </Link>
-                    </Box>
-                  </DialogContent>
-                </Dialog>
               </Box>
             </Box>
           </Paper>
