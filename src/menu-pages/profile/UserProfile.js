@@ -1,9 +1,9 @@
 import React from "react";
-import NavDrawer from "./NavDrawer";
+import NavDrawer from "../NavDrawer";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import logo from "./assets/avatarPlaceholder.PNG";
+import logo from "../../assets/avatarPlaceholder.PNG";
 import Link from "@material-ui/core/Link";
 
 const eventsArray = [
@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const UserProfile = ({token}) => {
+export const UserProfile = ({token, logout}) => {
   const classes = useStyles();
 
   const Row = ({ index }) => (
@@ -103,7 +103,7 @@ export const UserProfile = ({token}) => {
   );
 
   return (
-    <NavDrawer token={token}>
+    <NavDrawer token={token} logout={logout}>
       <Paper className={classes.paper}>
         <Grid className={classes.rowFlex}>
           <img className={classes.img} src={logo} />

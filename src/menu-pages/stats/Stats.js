@@ -1,5 +1,5 @@
 import React from 'react';
-import NavDrawer from './NavDrawer';
+import NavDrawer from '../NavDrawer';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import {BarCard} from "./stats/BarCard";
@@ -16,11 +16,11 @@ const useStyles = makeStyles(theme => ({
     toolbar: theme.mixins.toolbar,
   }));
 
-export const Stats = ({token}) => {
+export const Stats = ({token, logout}) => {
     const classes = useStyles();
 
     return (
-        <NavDrawer token={token} className={classes.root}>
+        <NavDrawer token={token} logout={logout} className={classes.root}>
             <div className={classes.toolbar} />
             <Grid
                 container

@@ -17,13 +17,15 @@ import {
 import DateFnsUtils from "@date-io/date-fns";
 import {KeyboardDatePicker, KeyboardTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import {AddPitchForm} from "./AddPitchForm";
-import NavDrawer from "../../NavDrawer";
+import NavDrawer from "../../menu-pages/NavDrawer";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import {SERVER_URL} from "../../config";
 import {Redirect} from "react-router-dom";
 import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
+import TextField from "@material-ui/core/TextField";
+import {POSITION_NAMES, SIDE_NAMES} from "../../api/constants";
 
 const useStyles = makeStyles((theme) => ({
     settings: {
@@ -151,6 +153,7 @@ const MatchForm = ({token}) => {
     const [isPublishButtonEnabled, setPublishButtonEnabled] = useState(false);
     const [isPublished, setPublished] = useState(false);
     const [reloadPitchesCounter, setReloadPitchersCounter] = useState(0);
+    const [matchTitle, setMatchTitle] = useState('Nowy mecz');
 
     useEffect(() => {
         setPublishButtonEnabled(
@@ -230,26 +233,24 @@ const MatchForm = ({token}) => {
 
     const lineCountToSides = (lineCount) => {
         let result = null;
-        const MIDDLE_LEFT = "lewy-środkowy", MIDDLE_RIGHT = "prawy-środkowy", MIDDLE = "środkowy", LEFT = "lewy",
-            RIGHT = "prawy";
         switch (lineCount) {
             case 0:
                 result = [];
                 break;
             case 1:
-                result = [MIDDLE];
+                result = [SIDE_NAMES.MIDDLE];
                 break;
             case 2:
-                result = [MIDDLE_LEFT, MIDDLE_RIGHT];
+                result = [SIDE_NAMES.MIDDLE_LEFT, SIDE_NAMES.MIDDLE_RIGHT];
                 break;
             case 3:
-                result = [MIDDLE_LEFT, MIDDLE, MIDDLE_RIGHT];
+                result = [SIDE_NAMES.MIDDLE_LEFT, SIDE_NAMES.MIDDLE, SIDE_NAMES.MIDDLE_RIGHT];
                 break;
             case 4:
-                result = [LEFT, MIDDLE_LEFT, MIDDLE_RIGHT, RIGHT];
+                result = [SIDE_NAMES.LEFT, SIDE_NAMES.MIDDLE_LEFT, SIDE_NAMES.MIDDLE_RIGHT, SIDE_NAMES.RIGHT];
                 break;
             case 5:
-                result = [LEFT, MIDDLE_LEFT, MIDDLE, MIDDLE_RIGHT, RIGHT];
+                result = [SIDE_NAMES.LEFT, SIDE_NAMES.MIDDLE_LEFT, SIDE_NAMES.MIDDLE, SIDE_NAMES.MIDDLE_RIGHT, SIDE_NAMES.RIGHT];
                 break;
         }
         if (result === null) {
@@ -259,19 +260,18 @@ const MatchForm = ({token}) => {
     };
 
     const teamToMatchMemberDtoArray = ({goalkeepers, defenders, midfields, forwards,}) => {
-        const GOALKEEPER = "bramkarz", DEFENDER = "obrońca", MIDFIELD = "pomocnik", FORWARD = "napastnik";
         let goalkeepersObjArr = [];
-        if (goalkeepers.length > 0) goalkeepersObjArr = [{name: GOALKEEPER, side: null}];
+        if (goalkeepers.length > 0) goalkeepersObjArr = [{name: POSITION_NAMES.GOALKEEPER, side: null}];
         const defendersObjArr = lineCountToSides(defenders.length).map(sideName => ({
-            name: DEFENDER,
+            name: POSITION_NAMES.DEFENDER,
             side: sideName
         }));
         const midfieldsObjArr = lineCountToSides(midfields.length).map(sideName => ({
-            name: MIDFIELD,
+            name: POSITION_NAMES.MIDFIELD,
             side: sideName
         }));
         const forwardObjArr = lineCountToSides(forwards.length).map(sideName => (
-            {name: FORWARD, side: sideName})
+            {name: POSITION_NAMES.FORWARD, side: sideName})
         );
         const playersObjArr = goalkeepersObjArr.concat(defendersObjArr, midfieldsObjArr, forwardObjArr);
         return playersObjArr.map(playerObj => {
@@ -318,6 +318,7 @@ const MatchForm = ({token}) => {
                     endingTime: endTime.toISOString(),
                     id: null,
                     pitchId: selectedPitch.id,
+                    title: matchTitle,
                 }
             )
         }).then((response) => {
@@ -404,12 +405,19 @@ const MatchForm = ({token}) => {
     } else {
         return <NavDrawer token={token}>
             <Paper className={classes.paper} elevation={3}>
-                <Typography variant="h5">
-                    Nowy mecz
-                </Typography>
                 <Grid container spacing={3}>
-                    <Grid className={classes.details} item sm={12} md={4}>
+                    <Grid className={classes.details} item sm={12} md={4} spacing={3}>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <TextField
+                                label="Nazwa meczu"
+                                id="matchTitle"
+                                type="text"
+                                required
+                                fullWidth
+                                variant="outlined"
+                                value={matchTitle}
+                                onChange={event => setMatchTitle(event.target.value)}
+                            />
                             <KeyboardDatePicker
                                 label="Termin"
                                 id="date"
@@ -476,6 +484,15 @@ const MatchForm = ({token}) => {
                                 <MenuItem value={null}>Obojętne</MenuItem>
                             </Select>
                         </FormControl>
+                        <TextField
+                            id="outlined-multiline-static"
+                            label="Opis"
+                            multiline
+                            rows={3}
+                            value={description}
+                            onChange={event => setDescription(event.target.value)}
+                            variant="outlined"
+                        />
                         <label>
                             <input type="checkbox" checked={equalTeams} onChange={handleEqualTeamsChange}/>
                             Równe składy drużyn
