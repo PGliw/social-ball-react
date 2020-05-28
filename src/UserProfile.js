@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import NavDrawer from "./NavDrawer";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import logo from "./assets/avatarPlaceholder.PNG";
-import Link from "@material-ui/core/Link";
+import { Grid, Box, Link, Paper, Tabs, Tab } from "@material-ui/core";
+import ProfilePlaceholder from "./assets/profile-placeholder.png";
 import FriendsList from "./FriendsList";
-
+import RoundedImage from "react-rounded-image";
+import TabsWrappedLabel, { a11yProps } from "./Tabs";
+import TabPanel from "@material-ui/lab/TabPanel";
+import * as PropTypes from "prop-types";
+import TabContext from "@material-ui/lab/TabContext";
+import DialogContent from "@material-ui/core/DialogContent";
+import Dialog from "@material-ui/core/Dialog";
+import Checkbox from "@material-ui/core/Checkbox";
 
 const options = {
   animationEnabled: true,
@@ -56,7 +61,7 @@ const options = {
       { x: 31, y: 0 },
     ]
   }]
-}
+};
 
 const eventsArray = [
   { name: "X organizuje mecz", img: "logo" },
@@ -65,31 +70,16 @@ const eventsArray = [
 ];
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    marginTop: theme.spacing(6),
+  },
   paper: {
-    marginTop: theme.spacing(7),
-    marginBottom: theme.spacing(3),
-    padding: theme.spacing(2),
-  },
-  grid: {
-    marginTop: theme.spacing(-3),
-    marginBottom: theme.spacing(1),
-    padding: theme.spacing(2),
-  },
-  rowFlex: {
-    border: "1.3px solid ",
-    margin: "auto",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
     padding: theme.spacing(1),
+    margin: theme.spacing(2),
   },
-  columnFlex: {
-    marginTop: theme.spacing(2),
-    border: "1.3px solid ",
-    margin: "auto",
-    // display: "flex",
-    flexDirection: "column",
-    padding: theme.spacing(2),
+  paperBox: {
+    padding: theme.spacing(1),
   },
   img: {
     width: 150,
@@ -107,97 +97,92 @@ const useStyles = makeStyles((theme) => ({
   positions: {
     textAlign: "left",
   },
-  event: {
-    border: "1.3px solid ",
-    padding: "10px",
-    margin: "10px",
-    display: "flex",
-    flexDirection: "row",
-  },
-  textLeftRight: {
-    textAlign: "right",
-    position: "relative",
-    margin: "2px",
-  },
-  leftText: {
-    left: 0,
-    position: "absolute",
-    marginLeft: "10px",
-  },
-  rightText: {
-    margin: "10px",
-  },
 }));
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
 
 const UserProfile = () => {
   const classes = useStyles();
+  const [value, setValue] = React.useState(1);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
 
   const Row = ({ index }) => (
-    <div className={classes.event}>
-      <Grid container justify="left">
-        <Grid item>
-          <img width={50} height={50} align="left" src={logo}></img>
-        </Grid>
-      </Grid>
-      <Grid>
-        <Grid container justify="flex-end">
-          <Grid item>
-            <p>{eventsArray[index].name}</p>
-          </Grid>
-        </Grid>
-        <Grid container justify="flex-end">
-          <Grid item>
-            <Link href="">Zobacz</Link>
-          </Grid>
-        </Grid>
-      </Grid>
-    </div>
+    <Paper className={classes.paper}>
+      <Box display="flex" p={1} bgcolor="background.paper">
+        <Box className={classes.paperBox}>
+          <RoundedImage image={ProfilePlaceholder}
+            roundedColor="#e6e6e6"
+            roundedSize="13"
+            imageWidth="80"
+            imageHeight="80"
+          />
+        </Box>
+        <Box className={classes.paperBox}>
+          <p>{eventsArray[index].name}</p>
+          <Link href="">Zobacz</Link>
+        </Box>
+      </Box>
+    </Paper>
   );
 
   return (
     <NavDrawer>
-      <Paper className={classes.paper}>
-        <Grid className={classes.rowFlex}>
-          <img className={classes.img} src={logo} />
-          <Grid className={classes.grid}>
-            <p className={classes.name}>Jan Kowalski</p>
-            <p className={classes.positions}>Ulubione pozycje: napastnik</p>
-            <p>
-              172 rozegrane mecze | 221 godzin na boisku | 71 strzelonych goli
-            </p>
-          </Grid>
-
-          <Link href="">
-            <h3>Zarządzaj kontem</h3>
-          </Link>
+      <Grid className={classes.root}>
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <Box display="flex" p={1} bgcolor="background.paper">
+              <Box className={classes.paperBox}>
+                <RoundedImage image={ProfilePlaceholder}
+                  roundedColor="#e6e6e6"
+                  roundedSize="13"
+                  imageWidth="160"
+                  imageHeight="160"
+                />
+              </Box>
+              <Box className={classes.paperBox}>
+                <h2>Jan Kowalski</h2>
+                <p className={classes.positions}>Ulubione pozycje: napastnik</p>
+                <p>
+                  172 rozegrane mecze | 221 godzin na boisku | 71 strzelonych goli
+                                </p>
+                <Link href="">
+                  <h3>Zarządzaj kontem</h3>
+                </Link>
+              </Box>
+            </Box>
+          </Paper>
         </Grid>
-        <div>
-          <span>&nbsp;</span>
-        </div>
-        <Grid className={classes.rowFlex}>
-
-          <Grid >
-            {/* <CanvasJSChart options={options} /> */}
-          </Grid>
-
-          <Grid className={classes.columnFlex}>
-            <h3 className={classes.textLeftRight}>
-              <span className={classes.leftText}>Wydarzenia znajomych:</span>
-              <span className={classes.rightText}></span>
-            </h3>
-            {eventsArray.map((item, index) => Row({ index }))}
-          </Grid>
-          <Grid className={classes.columnFlex}>
-            <Grid className="friends" >
-              <h3 className={classes.textLeftRight}>
-                <span className={classes.leftText}>Łącznie znajomych:</span>
-                <span className={classes.rightText}>23</span>
-              </h3>
-              <FriendsList />
-            </Grid>
-          </Grid>
+        <Grid item xs={12} md={6}>
+          <Paper className={classes.paper}>
+            <TabContext value={value}>
+              <Tabs value={value} onChange={handleChange} variant="fullWidth"
+                aria-label="wrapped label tabs example">
+                <Tab value={1} label="Aktywność znajomych" {...a11yProps('two')} />
+                <Tab value={2} label="Lista znajomych" {...a11yProps('three')} />
+              </Tabs>
+              <TabPanel value={value} index={1}>
+                {eventsArray.map((item, index) => Row({ index }))}
+              </TabPanel>
+              <TabPanel value={value} index={2}>
+                <FriendsList />
+              </TabPanel>
+            </TabContext>
+          </Paper>
         </Grid>
-      </Paper>
+        <Grid item xs={12} md={6}>
+          <Paper className={classes.paper}>
+            <h3>Moje mecze</h3>
+          </Paper>
+        </Grid>
+      </Grid>
     </NavDrawer>
   );
 };
