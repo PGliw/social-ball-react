@@ -83,4 +83,4 @@ export const Stats = ({token, logout}) => {
             </Grid>
         </NavDrawer>
     );
-}
+};
