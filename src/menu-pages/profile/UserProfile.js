@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Box, Grid, Link, Paper, Tab, Tabs} from "@material-ui/core";
 import ProfilePlaceholder from "../../assets/profile-placeholder.png";
@@ -10,6 +10,7 @@ import * as PropTypes from "prop-types";
 import TabContext from "@material-ui/lab/TabContext";
 import NavDrawer from "../NavDrawer";
 import logo from "../../assets/avatarPlaceholder.PNG";
+import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
 
 const options = {
     animationEnabled: true,
@@ -106,10 +107,23 @@ TabPanel.propTypes = {
 export const UserProfile = ({token, logout}) => {
     const classes = useStyles();
     const [value, setValue] = React.useState(1);
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+  useEffect(() => {
+    const fetchFromApiWithToken = withTokenFetchFromApi(token);
+    fetchFromApiWithToken(
+        API_METHODS.GET,
+        'profile',
+        setLoading,
+        setError,
+        setUser);
+  }, [token]);
 
 
     const Row = ({index}) => (
@@ -146,7 +160,7 @@ export const UserProfile = ({token, logout}) => {
                                 />
                             </Box>
                             <Box className={classes.paperBox}>
-                                <h2>Jan Kowalski</h2>
+                                <h2>{ user ? user.firstName + " " + user.lastName : null}</h2>
                                 <p className={classes.positions}>Ulubione pozycje: napastnik</p>
                                 <p>
                                     172 rozegrane mecze | 221 godzin na boisku | 71 strzelonych goli
