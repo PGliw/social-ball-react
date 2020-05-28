@@ -17,7 +17,7 @@ import {
 import DateFnsUtils from "@date-io/date-fns";
 import {KeyboardDatePicker, KeyboardTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import {AddPitchForm} from "./AddPitchForm";
-import NavDrawer from "../../NavDrawer";
+import NavDrawer from "../../menu-pages/NavDrawer";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";

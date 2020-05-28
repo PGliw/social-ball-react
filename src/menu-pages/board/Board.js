@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
-import MatchCard from "./MatchCard";
+import MatchCard from "./board/MatchCard";
 import {Avatar, Fab, Grid} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import NavDrawer from "./NavDrawer";
+import NavDrawer from "../NavDrawer";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Redirect} from "react-router-dom";
-import {API_METHODS, withTokenFetchFromApi} from "./api/baseFetch";
+import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
 
 const useStyles = makeStyles((theme) => ({
         root: {
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     }
 ));
 
-export const Board = ({token}) => {
+export const Board = ({token, logout}) => {
     const classes = useStyles();
     const [newMatchClicked, setNewMatchClicked] = useState(false);
     const [error, setError] = useState(null);
@@ -35,7 +35,7 @@ export const Board = ({token}) => {
     };
 
     useEffect(() => {
-        if(error) alert(error);
+        if (error) alert(error);
     }, [error]);
 
     useEffect(() => {
@@ -54,7 +54,7 @@ export const Board = ({token}) => {
     if (newMatchClicked === true) {
         return <Redirect to={"/new-match"} push/>
     } else
-        return <NavDrawer token={token}>
+        return <NavDrawer token={token} logout={logout}>
             <Grid container direction="column" spacing={3} alignItems="center" style={{marginTop: "30px"}}
                   className={classes.root}>
                 {allMatches.map(footballMatch => (
