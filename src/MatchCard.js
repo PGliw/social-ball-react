@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -9,7 +9,7 @@ import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
+import {red} from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -48,31 +48,42 @@ const useStyles = makeStyles((theme) => ({
 export default function MatchCard(props) {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
+    const match = props.footballMatch;
+    const author = match.organizer.firstName + match.organizer.lastName;
+    const authorAvatar = author.image ?
+        <Avatar alt={author} src="/static/images/avatar/2.jpg"/>
+        :
+        <Avatar alt={author} src={author.image}/>;
+    const startDateTime = new Date(match.beginningTime);
+    const endDateTime = new Date(match.endingTime);
+    const [team1, team2] = props.footballMatch.teams;
+    const team1ConfirmedMembers = team1 ? team1.teamMembers.filter(teamMember => teamMember.user) : [];
+    const team2ConfirmedMembers = team2 ? team2.teamMembers.filter(teamMember => teamMember.user) : [];
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
 
     const formatDate = (date) => {
-        var options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const options = {year: 'numeric', month: 'long', day: 'numeric'};
         return date.toLocaleDateString('pl-PL', options);
-    }
+    };
 
     return (
         <Card className={classes.root}>
             <CardHeader
-                avatar={props.avatar}
+                avatar={authorAvatar}
                 action={
                     <IconButton aria-label="settings">
-                        <MoreVertIcon />
+                        <MoreVertIcon/>
                     </IconButton>
                 }
-                title={props.author}
-                subheader={formatDate(props.date)}
+                title={author}
+                subheader={formatDate(startDateTime)}
             />
             <CardMedia
                 className={classes.media}
-                image={props.image}
+                image={"./assets/background.png"}
             />
             <CardContent>
                 <Grid container spacing={2}>
@@ -80,38 +91,41 @@ export default function MatchCard(props) {
                         <Grid container spacing={3}>
                             <Grid item xs={6}>
                                 <Typography variant="h6">
-                                    Super mecz
+                                    {match.title}
                                 </Typography>
                             </Grid>
                             <Grid item xs={6}>
                                 <Grid container direction="row" justify="flex-end">
                                     <Grid item>
                                         <Typography variant="caption" color="textSecondary">
-                                            Wrocław, Soccerfield
+                                            {match.pitch ? match.pitch.name : ''}
                                         </Typography>
                                     </Grid>
                                     <Grid item>
-                                        <LocationIcon style={{ fontSize: 16 }} color="disabled"/>
+                                        <LocationIcon style={{fontSize: 16}} color="disabled"/>
                                     </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid> 
+                        </Grid>
                         <Typography variant="subtitle2" color="textSecondary">
-                            18 czerwca 2020
+                            {startDateTime.toLocaleDateString()}
                         </Typography>
                     </Grid>
                     <Grid item xs={12}>
                         <Grid container direction="row" justify="center" alignItems="center" spacing={3}>
                             <Grid item align="right">
                                 <Typography variant="subtitle2" color="textSecondary">
-                                    Ziomale
+                                    {team1 ? team1.name : ''}
                                 </Typography>
                                 <AvatarGroup max={4}>
-                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                                    <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                                    <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                                    <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
-                                    <Avatar alt="Trevor Henderson" src="/static/images/avatar/5.jpg" />
+                                    {team1ConfirmedMembers.map(teamMember =>
+                                        {
+                                            const alt = teamMember.user.firstName + " " + teamMember.user.lastName;
+                                            const src = teamMember.user.image ? teamMember.user.image : "/static/images/avatar/1.jpg"; // TODO
+                                            return <Avatar alt={alt} src={src}/>
+                                        }
+                                    )}
+
                                 </AvatarGroup>
                             </Grid>
                             <Grid item align="center">
@@ -119,31 +133,33 @@ export default function MatchCard(props) {
                             </Grid>
                             <Grid item align="left">
                                 <Typography variant="subtitle2" color="textSecondary">
-                                    Mordeczki
+                                    {team2 ? team2.name : ''}
                                 </Typography>
-                                <AvatarGroup max={4} className={classes.rightAvatarGroup}>
-                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                                    <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                                    <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                                    <Avatar alt="Agnes Walker" src="/static/images/avatar/4.jpg" />
-                                    <Avatar alt="Trevor Henderson" src="/static/images/avatar/5.jpg" />
+                                <AvatarGroup max={4}>
+                                    {team1ConfirmedMembers.map(teamMember =>
+                                        {
+                                            const alt = teamMember.user.firstName + " " + teamMember.user.lastName;
+                                            const src = teamMember.user.image ? teamMember.user.image : "/static/images/avatar/1.jpg"; // TODO
+                                            return <Avatar alt={alt} src={src}/>
+                                        }
+                                    )}
                                 </AvatarGroup>
                             </Grid>
                         </Grid>
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="body2" color="textSecondary" component="p">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras dapibus semper magna nec eleifend. Pellentesque at arcu lacus. Curabitur ut diam ut ex condimentum molestie vitae eget ante. Fusce aliquam, purus ut posuere porttitor, ipsum ante ornare magna, ac efficitur.
+                            {match.description}
                         </Typography>
                     </Grid>
                 </Grid>
             </CardContent>
             <CardActions disableSpacing>
                 <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
+                    <FavoriteIcon/>
                 </IconButton>
                 <IconButton aria-label="share">
-                    <ShareIcon />
+                    <ShareIcon/>
                 </IconButton>
                 <IconButton
                     className={clsx(classes.expand, {
@@ -153,13 +169,13 @@ export default function MatchCard(props) {
                     aria-expanded={expanded}
                     aria-label="show more"
                 >
-                    <ExpandMoreIcon />
+                    <ExpandMoreIcon/>
                 </IconButton>
             </CardActions>
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
                     <Typography variant="body2" color="textSecondary" component="p">
-                        {props.description}
+                        {match.description}
                     </Typography>
                 </CardContent>
             </Collapse>

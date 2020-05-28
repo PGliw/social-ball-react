@@ -12,6 +12,7 @@ import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import {SERVER_URL} from "../../config";
 import {Redirect} from "react-router-dom";
+import {API_METHODS, fetchFromApi} from "../../api/baseFetch";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -33,19 +34,24 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export function LoginForm() {
+export function LoginForm({handleToken}) {
     const classes = useStyles();
-
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
     const [keepLoggedIn, setKeepLoggedIn] = useState(false);
-
     const [emailError, setEmailError] = useState(null);
     const [passwordError, setPasswordError] = useState(null);
-
     const [submitButtonEnabled, setSubmitButtonEnabled] = useState(false);
-
     const [isLoginSuccessful, setLoginSuccessful] = useState(null);
+    const [isLoading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const handleSuccessfulLogin = ({username, token}) => {
+        if (token) {
+            handleToken(token);
+            setLoginSuccessful(true);
+        }
+    };
 
     useEffect(() => {
         setSubmitButtonEnabled(
@@ -60,34 +66,25 @@ export function LoginForm() {
         passwordError
     ]);
 
+    useEffect(() => {
+        if (error) alert(error);
+    }, [error]);
+
     const onSubmit = (e) => {
         e.preventDefault();
-        fetch(`${SERVER_URL}/token/generate-token`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email, password
-            })
-        }).then((response) => {
-            if (response.status === 200) {
-                setLoginSuccessful(true);
-            }
-            console.log(response.status);
-            return response.json();
-        }).then((data => {
-            if (data.message) {
-                alert(data.message);
-            }
-            setLoginSuccessful(false);
-        }))
+        fetchFromApi(
+            API_METHODS.POST,
+            "token/generate-token",
+            setLoading,
+            setError,
+            handleSuccessfulLogin,
+            {email, password}
+        );
     };
 
     return (
         isLoginSuccessful === true ?
-            <Redirect to='/home'/>
+            <Redirect to={'/board'} push/>
             :
             <Container component="main" maxWidth="sm">
                 <Paper className={classes.paper}>
