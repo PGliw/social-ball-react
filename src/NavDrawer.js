@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import clsx from 'clsx';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -6,7 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import Appbar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
-import {ListItem, ListItemIcon, ListItemText} from '@material-ui/core';
+import {ListItem, ListItemIcon, ListItemText, Box} from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import SportsSoccerIcon from '@material-ui/icons/SportsSoccer';
@@ -18,7 +18,7 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import logo from './assets/logo.svg';
 import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
+import {SERVER_URL} from "./config";
 
 
 const drawerWidth = 240;
@@ -81,12 +81,25 @@ const useStyles = makeStyles((theme) => ({
         }),
         marginLeft: 0,
     },
+    toolbarRightSideContent: {
+        marginLeft: "auto"
+    }
 }));
 
-const NavDrawer = ({children}) => {
+const UserMiniature = (user) => {
+    if (user) {
+        return user.firstName + " " + user.lastName;
+    } else {
+        return null;
+    }
+};
+
+const NavDrawer = ({children, token}) => {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const [user, setUser] = useState(null);
+    const [error, setError] = useState(null);
 
     const handleDrawerOpen = () => {
         setOpen(true)
@@ -95,6 +108,26 @@ const NavDrawer = ({children}) => {
     const handleDrawerClose = () => {
         setOpen(false)
     };
+
+
+    useEffect(() => {
+        fetch(`${SERVER_URL}/profile`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Something went wrong ...')
+            }
+        }).then(responseBody => setUser(responseBody))
+            .catch(error => setError(error));
+    }, [token]);
+
 
     return (
         <div className={classes.root}>
@@ -110,10 +143,12 @@ const NavDrawer = ({children}) => {
                     >
                         <MenuIcon/>
                     </IconButton>
-                    <img src={logo} width="50" height="50"/>
+                    <img src={logo} width="50" height="50" alt={"Social ball app logo"}/>
                     <Typography variant="h6" className={classes.title}>
                         Social-ball
                     </Typography>
+                    <div
+                        className={classes.toolbarRightSideContent}>{UserMiniature(user)}</div>
                 </Toolbar>
             </Appbar>
             <Drawer
@@ -131,7 +166,7 @@ const NavDrawer = ({children}) => {
                 </div>
                 <Divider/>
                 <List>
-                    <Link href="#/home" variant="body2">
+                    <Link href="#/board" variant="body2">
                         <ListItem>
                             <ListItemIcon><SportsSoccerIcon/></ListItemIcon>
                             <ListItemText>Mecze</ListItemText>

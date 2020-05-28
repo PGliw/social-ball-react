@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const UserProfile = () => {
+export const UserProfile = ({token}) => {
   const classes = useStyles();
 
   const Row = ({ index }) => (
@@ -103,7 +103,7 @@ export const UserProfile = () => {
   );
 
   return (
-    <NavDrawer>
+    <NavDrawer token={token}>
       <Paper className={classes.paper}>
         <Grid className={classes.rowFlex}>
           <img className={classes.img} src={logo} />

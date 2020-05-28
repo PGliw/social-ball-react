@@ -1,27 +1,41 @@
-import React from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import {RegistrationForm} from './forms/login_registration/RegistrationForm';
 import {LoginForm} from './forms/login_registration/LoginForm';
 import {UserProfile} from './UserProfile';
 // import './App.css';
 import {HashRouter as Router, Route} from 'react-router-dom';
-import {Home} from "./Home";
 import {Board} from "./Board";
-import {DroppablePitch} from "./forms/new_match/teambuilder/DroppablePitch";
 import {Stats} from "./Stats";
+import MatchForm from "./forms/new_match/MatchForm";
+
+const withToken = (token, RedirectComponent) => {
+    return ({component: Component, ...rest}) =>
+        <Route
+            {...rest}
+            render={props => (!!token ? <Component {...props} token={token}/> : RedirectComponent(props))}
+        />
+};
+
 
 function App() {
+    const [token, setToken] = useState(null);
+    const LoginFormWithToken = (props) => <LoginForm {...props} handleToken={(newToken) => {
+        setToken(newToken)
+    }}/>;
+
+    const PrivateRoute = withToken(token, LoginFormWithToken);
+
     return (
         <div className="App">
             <Router>
                 <div className="container">
-                    <Route exact path="/" component={LoginForm}/>
-                    <Route path="/login" component={LoginForm}/>
+                    <Route exact path="/" render={LoginFormWithToken}/>
+                    <Route path="/login" render={LoginFormWithToken}/>
                     <Route path="/register" component={RegistrationForm}/>
-                    <Route path="/home" component={Home}/>
-                    <Route path="/profile" component={UserProfile}/>
-                    <Route path="/board" component={Board}/>
-                    <Route path="/example" component={DroppablePitch}/>
-                    <Route path="/stats" component={Stats}/>
+                    <PrivateRoute path="/profile" component={UserProfile}/>
+                    <PrivateRoute path="/board" component={Board}/>
+                    <PrivateRoute path="/stats" component={Stats}/>
+                    <PrivateRoute path="/new-match" component={MatchForm}/>
                 </div>
             </Router>
         </div>
