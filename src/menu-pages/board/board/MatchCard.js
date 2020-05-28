@@ -18,6 +18,7 @@ import Grid from '@material-ui/core/Grid';
 import LocationIcon from '@material-ui/icons/LocationOn';
 import Avatar from '@material-ui/core/Avatar';
 import AvatarGroup from '@material-ui/lab/AvatarGroup';
+import {PositionPicker} from "./PositionPicker";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -81,11 +82,12 @@ export default function MatchCard(props) {
                 title={author}
                 subheader={formatDate(startDateTime)}
             />
-            <CardMedia
-                className={classes.media}
-                image={"./assets/background.png"}
-            />
             <CardContent>
+                {
+                    props.positions && match.teams && match.teams.length > 0 ?
+                        <PositionPicker teams={match.teams} positions={props.positions}/>
+                        : null
+                }
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <Grid container spacing={3}>
@@ -118,8 +120,7 @@ export default function MatchCard(props) {
                                     {team1 ? team1.name : ''}
                                 </Typography>
                                 <AvatarGroup max={4}>
-                                    {team1ConfirmedMembers.map(teamMember =>
-                                        {
+                                    {team1ConfirmedMembers.map(teamMember => {
                                             const alt = teamMember.user.firstName + " " + teamMember.user.lastName;
                                             const src = teamMember.user.image ? teamMember.user.image : "/static/images/avatar/1.jpg"; // TODO
                                             return <Avatar alt={alt} src={src}/>
@@ -136,8 +137,7 @@ export default function MatchCard(props) {
                                     {team2 ? team2.name : ''}
                                 </Typography>
                                 <AvatarGroup max={4}>
-                                    {team1ConfirmedMembers.map(teamMember =>
-                                        {
+                                    {team1ConfirmedMembers.map(teamMember => {
                                             const alt = teamMember.user.firstName + " " + teamMember.user.lastName;
                                             const src = teamMember.user.image ? teamMember.user.image : "/static/images/avatar/1.jpg"; // TODO
                                             return <Avatar alt={alt} src={src}/>

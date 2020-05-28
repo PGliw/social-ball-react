@@ -1,20 +1,18 @@
 import React, {Component, useEffect, useState} from 'react';
 import {RegistrationForm} from './forms/login_registration/RegistrationForm';
 import {LoginForm} from './forms/login_registration/LoginForm';
-import {UserProfile} from './UserProfile';
+import {UserProfile} from './menu-pages/profile/UserProfile';
 // import './App.css';
 import {HashRouter as Router, Route} from 'react-router-dom';
-import {Board} from "./Board";
-import {Stats} from "./Stats";
+import {Board} from "./menu-pages/board/Board";
+import {Stats} from "./menu-pages/stats/Stats";
 import MatchForm from "./forms/new_match/MatchForm";
 
-const withToken = (token, RedirectComponent) => {
-    return ({component: Component, ...rest}) =>
-        <Route
-            {...rest}
-            render={props => (!!token ? <Component {...props} token={token}/> : RedirectComponent(props))}
-        />
-};
+const withTokenAndLogout = (token, logout, RedirectComponent) => ({component: Component, ...rest}) =>
+    <Route
+        {...rest}
+        render={props => (!!token ? <Component {...props} token={token} logout={logout}/> : RedirectComponent(props))}
+    />;
 
 
 function App() {
@@ -22,8 +20,9 @@ function App() {
     const LoginFormWithToken = (props) => <LoginForm {...props} handleToken={(newToken) => {
         setToken(newToken)
     }}/>;
+    const logout = () => setToken(null);
 
-    const PrivateRoute = withToken(token, LoginFormWithToken);
+    const PrivateRoute = withTokenAndLogout(token, logout, LoginFormWithToken);
 
     return (
         <div className="App">
