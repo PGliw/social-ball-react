@@ -1,25 +1,27 @@
 {
   "files": {
-    "main.css": "/social-ball-react/static/css/main.a919dd88.chunk.css",
-    "main.js": "/social-ball-react/static/js/main.ab5ea54b.chunk.js",
-    "main.js.map": "/social-ball-react/static/js/main.ab5ea54b.chunk.js.map",
+    "main.css": "/social-ball-react/static/css/main.0592384f.chunk.css",
+    "main.js": "/social-ball-react/static/js/main.996de691.chunk.js",
+    "main.js.map": "/social-ball-react/static/js/main.996de691.chunk.js.map",
     "runtime-main.js": "/social-ball-react/static/js/runtime-main.a145b8d3.js",
     "runtime-main.js.map": "/social-ball-react/static/js/runtime-main.a145b8d3.js.map",
-    "static/js/2.fe7fe2f0.chunk.js": "/social-ball-react/static/js/2.fe7fe2f0.chunk.js",
-    "static/js/2.fe7fe2f0.chunk.js.map": "/social-ball-react/static/js/2.fe7fe2f0.chunk.js.map",
+    "static/js/2.4ff4f3c4.chunk.js": "/social-ball-react/static/js/2.4ff4f3c4.chunk.js",
+    "static/js/2.4ff4f3c4.chunk.js.map": "/social-ball-react/static/js/2.4ff4f3c4.chunk.js.map",
     "index.html": "/social-ball-react/index.html",
-    "precache-manifest.b984a511b17fa1a86f52ac59189a56e9.js": "/social-ball-react/precache-manifest.b984a511b17fa1a86f52ac59189a56e9.js",
+    "precache-manifest.aaf2808b3c4653d275992ea92d46475a.js": "/social-ball-react/precache-manifest.aaf2808b3c4653d275992ea92d46475a.js",
     "service-worker.js": "/social-ball-react/service-worker.js",
-    "static/css/main.a919dd88.chunk.css.map": "/social-ball-react/static/css/main.a919dd88.chunk.css.map",
-    "static/js/2.fe7fe2f0.chunk.js.LICENSE.txt": "/social-ball-react/static/js/2.fe7fe2f0.chunk.js.LICENSE.txt",
+    "static/css/main.0592384f.chunk.css.map": "/social-ball-react/static/css/main.0592384f.chunk.css.map",
+    "static/js/2.4ff4f3c4.chunk.js.LICENSE.txt": "/social-ball-react/static/js/2.4ff4f3c4.chunk.js.LICENSE.txt",
     "static/media/Soccer_field.png": "/social-ball-react/static/media/Soccer_field.5e784b82.png",
+    "static/media/avatarPlaceholder.PNG": "/social-ball-react/static/media/avatarPlaceholder.ab201d6a.PNG",
     "static/media/index.css": "/social-ball-react/static/media/background.31f32a28.png",
-    "static/media/logo.svg": "/social-ball-react/static/media/logo.9d8bc298.svg"
+    "static/media/logo.svg": "/social-ball-react/static/media/logo.9d8bc298.svg",
+    "static/media/profile-placeholder.png": "/social-ball-react/static/media/profile-placeholder.0845446d.png"
   },
   "entrypoints": [
     "static/js/runtime-main.a145b8d3.js",
-    "static/js/2.fe7fe2f0.chunk.js",
-    "static/css/main.a919dd88.chunk.css",
-    "static/js/main.ab5ea54b.chunk.js"
+    "static/js/2.4ff4f3c4.chunk.js",
+    "static/css/main.0592384f.chunk.css",
+    "static/js/main.996de691.chunk.js"
   ]
 }
