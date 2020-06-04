@@ -1,16 +1,17 @@
-import {Box} from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import * as PropTypes from "expect";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 
 export function TabPanel(props) {
-    const {children, value, index, ...other} = props;
+    const { children, value, index, ...other } = props;
 
     return (
         <div
             role="tabpanel"
             hidden={value !== index}
+            // hidden={true}
             id={`wrapped-tabpanel-${index}`}
             aria-labelledby={`wrapped-tab-${index}`}
             {...other}
