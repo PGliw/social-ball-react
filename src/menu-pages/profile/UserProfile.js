@@ -3,6 +3,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Box, Grid, Link, Paper, Tab, Tabs, Dialog, DialogContent, Button } from "@material-ui/core";
 import ProfilePlaceholder from "../../assets/profile-placeholder.png";
 import FriendsList from "./FriendsList";
+import InvitationList from "./InvitationList";
 import RoundedImage from "react-rounded-image";
 import { a11yProps } from "./Tabs";
 import TabPanel from "@material-ui/lab/TabPanel";
@@ -11,8 +12,8 @@ import TabContext from "@material-ui/lab/TabContext";
 import NavDrawer from "../NavDrawer";
 import logo from "../../assets/avatarPlaceholder.PNG";
 import { API_METHODS, withTokenFetchFromApi } from "../../api/baseFetch";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import { UpdateDataForm } from "./UpdateDataForm";
+import { MatchesTable } from "./MatchesTable";
 
 const options = {
     animationEnabled: true,
@@ -28,39 +29,6 @@ const options = {
         type: "column",
         indexLabelFontColor: "#5A5757",
         indexLabelPlacement: "outside",
-        dataPoints: [
-            { x: 1, y: 3 },
-            { x: 2, y: 5 },
-            { x: 3, y: 0 },
-            { x: 4, y: 0 },
-            { x: 5, y: 0 },
-            { x: 6, y: 7 },
-            { x: 7, y: 1 },
-            { x: 8, y: 1 },
-            { x: 9, y: 1 },
-            { x: 10, y: 0 },
-            { x: 11, y: 0 },
-            { x: 12, y: 0 },
-            { x: 13, y: 4 },
-            { x: 14, y: 7 },
-            { x: 15, y: 2 },
-            { x: 16, y: 1 },
-            { x: 17, y: 2 },
-            { x: 18, y: 0 },
-            { x: 19, y: 1 },
-            { x: 20, y: 2 },
-            { x: 21, y: 6 },
-            { x: 22, y: 3 },
-            { x: 23, y: 0 },
-            { x: 24, y: 0 },
-            { x: 25, y: 0 },
-            { x: 26, y: 1 },
-            { x: 27, y: 2 },
-            { x: 28, y: 2 },
-            { x: 29, y: 4 },
-            { x: 30, y: 0 },
-            { x: 31, y: 0 },
-        ]
     }]
 };
 
@@ -118,13 +86,18 @@ export const UserProfile = ({ token, logout }) => {
     const [error, setError] = useState(null);
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState("tresc");
+    const [acquaitances, setAcquaitances] = useState(null);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
+    const handleAllAcquaitances = (newAllAcquaitances) => {
+        console.log(newAllAcquaitances);
+        setAcquaitances(newAllAcquaitances);
+    };
+
     useEffect(() => {
-        // console.log('user profile');
         const fetchFromApiWithToken = withTokenFetchFromApi(token);
         fetchFromApiWithToken(
             API_METHODS.GET,
@@ -134,6 +107,15 @@ export const UserProfile = ({ token, logout }) => {
             setUser);
     }, [token]);
 
+    useEffect(() => {
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            'acquaitances',
+            setLoading,
+            setError,
+            handleAllAcquaitances);
+    }, [token]);
 
     const Row = ({ index }) => (
         <Paper className={classes.paper}>
@@ -185,28 +167,31 @@ export const UserProfile = ({ token, logout }) => {
                         </Box>
                     </Paper>
                 </Grid>
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={9}>
                     <Paper className={classes.paper}>
                         <TabContext value={value}>
                             <Tabs value={value} onChange={handleChange} variant="fullWidth"
                                 aria-label="wrapped label tabs example">
                                 <Tab value="one" label="Aktywność znajomych" wrapped {...a11yProps('one')} />
                                 <Tab value="two" label="Znajomi" wrapped {...a11yProps('two')} />
-                                <Tab value="three" label="Moje mecze" wrapped {...a11yProps('three')} />
-                                <Tab value="four" label="Archiwum meczy" wrapped {...a11yProps('four')} />
+                                <Tab value="three" label="Zaproszenia do znajomych" wrapped {...a11yProps('three')} />
+                                <Tab value="four" label="Moje mecze" wrapped {...a11yProps('four')} />
+                                <Tab value="five" label="Archiwum meczy" wrapped {...a11yProps('five')} />
                             </Tabs>
                             <TabPanel value={value} hidden={value !== "one"} index="one">
                                 {eventsArray.map((item, index) => Row({ index }))}
                             </TabPanel>
                             <TabPanel value={value} hidden={value !== "two"} index="two">
-                                item two
-                                <FriendsList />
+                                <FriendsList acquaitances={acquaitances} />
                             </TabPanel>
                             <TabPanel value={value} hidden={value !== "three"} index="three">
-                                <h3>Moje mecze</h3>
+                                <InvitationList></InvitationList>
                             </TabPanel>
                             <TabPanel value={value} hidden={value !== "four"} index="four">
-                                <h3>Archiwum meczy</h3>
+                                <MatchesTable archiveMatches={false}></MatchesTable>
+                            </TabPanel>
+                            <TabPanel value={value} hidden={value !== "five"} index="five">
+                                <MatchesTable archiveMatches={true}></MatchesTable>
                             </TabPanel>
                         </TabContext>
                     </Paper>

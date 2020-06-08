@@ -113,9 +113,6 @@ export function UpdateDataForm() {
     };
 
     return (
-        // isUpdateSuccessful === true ?
-        //     <Redirect to={'/profile'} push />
-        //     :
         <Container component="main" maxWidth="sm">
             <Paper className={classes.paper}>
                 <CssBaseline />
