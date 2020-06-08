@@ -3,7 +3,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import DialogContent from "@material-ui/core/DialogContent";
 import Dialog from "@material-ui/core/Dialog";
 import { Box, Link } from "@material-ui/core";
-import ProfilePlaceholder from "./assets/profile-placeholder.png";
+import ProfilePlaceholder from "../../assets/profile-placeholder.png";
 import RoundedImage from "react-rounded-image";
 import Button from "@material-ui/core/Button";
 

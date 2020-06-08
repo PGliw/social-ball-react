@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import friends from "./friends";
 import Friend from "./Friend";
 import "./FriendsList.css";
+import { API_METHODS, withTokenFetchFromApi } from "../../api/baseFetch";
 
 export default class FriendsList extends Component {
     constructor(props) {
@@ -11,7 +12,10 @@ export default class FriendsList extends Component {
             searchText: ""
             , orderBy: "name"
             , order: "ascending"
+            , ddd: "test"
+            , acquaitances: this.props.acquaitances
         };
+        console.log(this.props);
     }
 
     handleChange(field, event) {
@@ -23,6 +27,7 @@ export default class FriendsList extends Component {
             searchText
             , orderBy
             , order
+            , acquaitances
         } = this.state;
 
         const friendsList = friends
@@ -34,7 +39,7 @@ export default class FriendsList extends Component {
                     picSquare={friend.pic_square}
                     friendCount={friend.friend_count}
                     nickname={friend.nickname}
-                    key={friend.name}
+                // key={friend.name}
                 />
             ));
 
