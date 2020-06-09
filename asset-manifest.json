@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/social-ball-react/static/css/main.0592384f.chunk.css",
-    "main.js": "/social-ball-react/static/js/main.996de691.chunk.js",
-    "main.js.map": "/social-ball-react/static/js/main.996de691.chunk.js.map",
+    "main.css": "/social-ball-react/static/css/main.2f97a84e.chunk.css",
+    "main.js": "/social-ball-react/static/js/main.4c8f95e8.chunk.js",
+    "main.js.map": "/social-ball-react/static/js/main.4c8f95e8.chunk.js.map",
     "runtime-main.js": "/social-ball-react/static/js/runtime-main.a145b8d3.js",
     "runtime-main.js.map": "/social-ball-react/static/js/runtime-main.a145b8d3.js.map",
-    "static/js/2.4ff4f3c4.chunk.js": "/social-ball-react/static/js/2.4ff4f3c4.chunk.js",
-    "static/js/2.4ff4f3c4.chunk.js.map": "/social-ball-react/static/js/2.4ff4f3c4.chunk.js.map",
+    "static/js/2.86da0370.chunk.js": "/social-ball-react/static/js/2.86da0370.chunk.js",
+    "static/js/2.86da0370.chunk.js.map": "/social-ball-react/static/js/2.86da0370.chunk.js.map",
     "index.html": "/social-ball-react/index.html",
-    "precache-manifest.aaf2808b3c4653d275992ea92d46475a.js": "/social-ball-react/precache-manifest.aaf2808b3c4653d275992ea92d46475a.js",
+    "precache-manifest.6d7809807d4c3d9f89c5771067e5b85b.js": "/social-ball-react/precache-manifest.6d7809807d4c3d9f89c5771067e5b85b.js",
     "service-worker.js": "/social-ball-react/service-worker.js",
-    "static/css/main.0592384f.chunk.css.map": "/social-ball-react/static/css/main.0592384f.chunk.css.map",
-    "static/js/2.4ff4f3c4.chunk.js.LICENSE.txt": "/social-ball-react/static/js/2.4ff4f3c4.chunk.js.LICENSE.txt",
+    "static/css/main.2f97a84e.chunk.css.map": "/social-ball-react/static/css/main.2f97a84e.chunk.css.map",
+    "static/js/2.86da0370.chunk.js.LICENSE.txt": "/social-ball-react/static/js/2.86da0370.chunk.js.LICENSE.txt",
     "static/media/Soccer_field.png": "/social-ball-react/static/media/Soccer_field.5e784b82.png",
     "static/media/avatarPlaceholder.PNG": "/social-ball-react/static/media/avatarPlaceholder.ab201d6a.PNG",
     "static/media/index.css": "/social-ball-react/static/media/background.31f32a28.png",
@@ -20,8 +20,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.a145b8d3.js",
-    "static/js/2.4ff4f3c4.chunk.js",
-    "static/css/main.0592384f.chunk.css",
-    "static/js/main.996de691.chunk.js"
+    "static/js/2.86da0370.chunk.js",
+    "static/css/main.2f97a84e.chunk.css",
+    "static/js/main.4c8f95e8.chunk.js"
   ]
 }
