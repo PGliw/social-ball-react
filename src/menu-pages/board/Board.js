@@ -6,7 +6,8 @@ import NavDrawer from "../NavDrawer";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Redirect} from "react-router-dom";
 import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
-import {MatchProtocolDialog} from "../../forms/match_protocol/MatchProtocolDialog";
+import {MatchProtocol} from "../../forms/match_protocol/MatchProtocol";
+import {withMaterialDialog} from "../../hoc/withMaterialDialog";
 
 const useStyles = makeStyles((theme) => ({
         root: {
@@ -83,13 +84,13 @@ export const Board = ({token, logout}) => {
                             footballMatch={footballMatch}
                             comments={[ // TODO fetch comments from API
                                 {
-                                    avatar: <Avatar alt="Natalia Wcisło" src="/static/images/avatar/2.jpg" />,
+                                    avatar: <Avatar alt="Natalia Wcisło" src="/static/images/avatar/2.jpg"/>,
                                     author: "Natalia Wcisło",
                                     date: new Date(),
                                     content: "Polecam ten mecz"
                                 },
                                 {
-                                    avatar: <Avatar alt="Jędrzej Jędrzejewski" src="/static/images/avatar/2.jpg" />,
+                                    avatar: <Avatar alt="Jędrzej Jędrzejewski" src="/static/images/avatar/2.jpg"/>,
                                     author: "Jędrzej Jędrzejewski",
                                     date: new Date(),
                                     content: "Na pewno będę! Napisze długi komentarz tak żeby przetestować możliwości responsywności tej strony internetowej"
@@ -99,11 +100,10 @@ export const Board = ({token, logout}) => {
                         />
                     </Grid>))
                 }
-                <MatchProtocolDialog
-                    open={isProtocolOpened}
-                    onClose={handleCloseProtocol}
-                    matchId={protocolMatchId}
-                    token={token}/>
+                {withMaterialDialog(MatchProtocol, isProtocolOpened, handleCloseProtocol, "Protokół pomeczowy")({
+                    token: token,
+                    matchId: protocolMatchId
+                })}
             </Grid>
             <Fab variant={"extended"} color="primary" aria-label="add" className={classes.fab}
                  onClick={() => setNewMatchClicked(true)}>
