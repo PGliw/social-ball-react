@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import friends from "./friends";
-import Friend from "./Friend";
 import Invitation from "./Invitation";
 import "./FriendsList.css";
 import { API_METHODS, withTokenFetchFromApi } from "../../api/baseFetch";
@@ -13,7 +12,6 @@ export default class InvitationList extends Component {
             searchText: ""
             , orderBy: "name"
             , order: "ascending"
-            , ddd: "test"
             , acquaitances: this.props.acquaitances
         };
         console.log(this.props);
@@ -31,17 +29,18 @@ export default class InvitationList extends Component {
             , acquaitances
         } = this.state;
 
-        const friendsList = friends
-            .filter(friend => friend.name.toLowerCase().includes(this.state.searchText.toLowerCase()))
+        const invitationsList = acquaitances
+            .filter(friend => friend.requestSenderId.username.toLowerCase().includes(this.state.searchText.toLowerCase()))
             .sort((a, b) => a[orderBy] > b[orderBy] ? 1 : 0)
             .map(friend => (
-                <Invitation
-                    name={friend.name}
-                    picSquare={friend.pic_square}
-                    friendCount={friend.friend_count}
-                    nickname={friend.nickname}
-                // key={friend.name}
-                />
+                friend.status === "pending" ? //zaproszenia - oczekujacy
+                    <Invitation
+                        name={friend.requestSenderId.firstName + " " + requestSenderId.lastName}
+                        picSquare={friend.requestSenderId.image}
+                        nickname={friend.requestSenderId.username}
+                    // key={friend.name}
+                    />
+                    : null
             ));
 
         return (
@@ -50,7 +49,7 @@ export default class InvitationList extends Component {
                     &nbsp;
                 </div>
                 <ul>
-                    {friendsList}
+                    {invitationsList}
                 </ul>
             </div>
         );

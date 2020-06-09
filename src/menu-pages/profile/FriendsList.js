@@ -12,7 +12,6 @@ export default class FriendsList extends Component {
             searchText: ""
             , orderBy: "name"
             , order: "ascending"
-            , ddd: "test"
             , acquaitances: this.props.acquaitances
         };
         console.log(this.props);
@@ -30,17 +29,20 @@ export default class FriendsList extends Component {
             , acquaitances
         } = this.state;
 
-        const friendsList = friends
-            .filter(friend => friend.name.toLowerCase().includes(this.state.searchText.toLowerCase()))
+        const friendsList = acquaitances
+            .filter(friend => friend.requestSender.username.toLowerCase().includes(this.state.searchText.toLowerCase()))
             .sort((a, b) => a[orderBy] > b[orderBy] ? 1 : 0)
             .map(friend => (
-                <Friend
-                    name={friend.name}
-                    picSquare={friend.pic_square}
-                    friendCount={friend.friend_count}
-                    nickname={friend.nickname}
-                // key={friend.name}
-                />
+                friend.status === "accepted" ? //znajomi - zaakceptowani
+                    <Friend
+                        name={friend.requestSender.firstName + " " + friend.requestSender.lastName}
+                        picSquare={friend.requestSender.image}
+                        nickname={friend.requestSender.username}
+                        added={true}
+                        id={friend.requestSender.id}
+                    // key={friend.name}
+                    />
+                    : null
             ));
 
         return (
