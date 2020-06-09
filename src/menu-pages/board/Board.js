@@ -6,6 +6,7 @@ import NavDrawer from "../NavDrawer";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Redirect} from "react-router-dom";
 import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
+import {MatchProtocolDialog} from "../../forms/match_protocol/MatchProtocolDialog";
 
 const useStyles = makeStyles((theme) => ({
         root: {
@@ -29,6 +30,8 @@ export const Board = ({token, logout}) => {
     const [loading, setLoading] = useState(false);
     const [allMatches, setAllMatches] = useState([]);
     const [positions, setPositions] = useState(null);
+    const [isProtocolOpened, setProtocolOpened] = useState(false);
+    const [protocolMatchId, setProtocolMatchId] = useState(null);
 
     const handleAllMatches = (newAllMatches) => {
         console.log(newAllMatches);
@@ -57,6 +60,16 @@ export const Board = ({token, logout}) => {
         fetchFromAdiWithToken(API_METHODS.GET, 'positions', setLoading, setError, setPositions);
     }, [token]);
 
+    const handleOpenProtocol = (matchId) => {
+        setProtocolMatchId(matchId);
+        setProtocolOpened(true);
+    };
+
+    const handleCloseProtocol = () => {
+        setProtocolOpened(false);
+        setProtocolMatchId(null);
+    };
+
     if (newMatchClicked === true) {
         return <Redirect to={"/new-match"} push/>
     } else
@@ -66,6 +79,7 @@ export const Board = ({token, logout}) => {
                 {allMatches.map(footballMatch => (
                     <Grid item>
                         <MatchCard
+                            openProtocol={() => handleOpenProtocol(footballMatch.id)}
                             footballMatch={footballMatch}
                             comments={[ // TODO fetch comments from API
                                 {
@@ -85,6 +99,11 @@ export const Board = ({token, logout}) => {
                         />
                     </Grid>))
                 }
+                <MatchProtocolDialog
+                    open={isProtocolOpened}
+                    onClose={handleCloseProtocol}
+                    matchId={protocolMatchId}
+                    token={token}/>
             </Grid>
             <Fab variant={"extended"} color="primary" aria-label="add" className={classes.fab}
                  onClick={() => setNewMatchClicked(true)}>

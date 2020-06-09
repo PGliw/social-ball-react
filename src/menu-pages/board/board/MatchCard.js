@@ -19,6 +19,7 @@ import Avatar from '@material-ui/core/Avatar';
 import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import {PositionPicker} from "./PositionPicker";
 import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -112,6 +113,7 @@ export default function MatchCard(props) {
                 subheader={formatDate(startDateTime)}
             />
             <CardContent>
+                <Button onClick={props.openProtocol}>Protokół pomeczowy</Button>
                 {
                     props.positions && match.teams && match.teams.length > 0 ?
                         <PositionPicker teams={match.teams} positions={props.positions}/>
