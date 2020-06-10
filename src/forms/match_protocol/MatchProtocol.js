@@ -20,6 +20,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import {isEmpty, notNullOrEmptyValues} from "../../utils/hepers";
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref}/>),
@@ -76,16 +77,31 @@ export const MatchProtocol = ({token, matchId}) => {
     const [isProtocolAdded, setProtocolAdded] = useState(false);
     const [data, setData] = useState([]);
 
-    const eventToData = (ev) => {
+    const eventResponseToData = (ev) => {
         // return {type: ev.type, dateTime: ev.dateTime, team: ev.teamName, matchMember: ev.matchMemberResponse}
-        const matchMemberName = ev.matchMemberResponse.user ? ev.matchMemberResponse.user.firstName + ev.matchMemberResponse.user.lastName : "Nieznany";
+        const matchMemberName = firstAndLastNameOf(ev.matchMemberResponse);
         return {type: ev.type, dateTime: ev.dateTime, team: ev.teamName, matchMember: matchMemberName}
     };
 
+    const dataToEventDto = (dt) => {
+        if (match && match.teams && match.teams.length > 0) {
+            const type = dt.type;
+            const matchedTeam = match.teams.find(team => team.name === dt.team);
+            const matchedPlayer = matchedTeam.teamMembers.map(member => dt.matchMember === firstAndLastNameOf(member));
+            const matchMemberId = matchedPlayer ? matchedPlayer.id : null;
+            const footballMatchId = match.id;
+            const dateTime = dt.dateTime ? dt.dateTime.toISOString() : null;
+            return {type, matchMemberId, footballMatchId, dateTime}
+        }
+    };
+
+    const firstAndLastNameOf = (matchMemberResponse) => {
+        return matchMemberResponse.user ? matchMemberResponse.user.firstName + ' ' + matchMemberResponse.user.lastName : "Nieznany"
+    };
 
     useEffect(() => {
         if (events) {
-            const newData = events.map(event => eventToData(event));
+            const newData = events.map(event => eventResponseToData(event));
             new Promise((resolve, reject) => {
                 setTimeout(() => {
                     setData(newData);
@@ -143,23 +159,16 @@ export const MatchProtocol = ({token, matchId}) => {
         }
     }, [token]);
 
-    useEffect(() => {
-        // if (match && match.teams) { // TODO
-        //     const teamLookup = match.teams.map((team) => {
-        //         return {[team.id]: team.name}
-        //     });
-        //     const newColumns = {...columns};
-        //     newColumns[2].lookup = teamLookup;
-        //     setColumns(columns);
-        // }
-    }, [match]);
-
     const handleCancel = () => {
         setEvents(existingEvents);
         setEditMode(false);
     };
 
     const handleSave = () => {
+        const eventsDtos = data.map(dataToEventDto).filter(dto => notNullOrEmptyValues(dto));
+        const protocolDto = {
+            events: eventsDtos
+        };
         const fetchFromApiWithToken = withTokenFetchFromApi(token);
         fetchFromApiWithToken(
             API_METHODS.POST,
@@ -167,7 +176,8 @@ export const MatchProtocol = ({token, matchId}) => {
             setLoading,
             setError,
             () => setProtocolAdded(true),
-            events);
+            protocolDto);
+        setEditMode(false);
     };
 
     const [columns, setColumns] = useState([
