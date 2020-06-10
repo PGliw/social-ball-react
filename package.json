@@ -19,6 +19,7 @@
     "date-fns": "^2.11.1",
     "expect": "latest",
     "gh-pages": "^2.2.0",
+    "material-table": "^1.60.0",
     "react": "^16.13.1",
     "react-beautiful-dnd": "latest",
     "react-blink-text": "^1.0.5",

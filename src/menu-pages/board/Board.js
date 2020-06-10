@@ -100,7 +100,7 @@ export const Board = ({token, logout}) => {
                         />
                     </Grid>))
                 }
-                {withMaterialDialog(MatchProtocol, isProtocolOpened, handleCloseProtocol, "Protokół pomeczowy")({
+                {withMaterialDialog(MatchProtocol, isProtocolOpened, handleCloseProtocol, null)({
                     token: token,
                     matchId: protocolMatchId
                 })}

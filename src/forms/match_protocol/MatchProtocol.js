@@ -1,15 +1,46 @@
-import React, {useEffect, useState} from "react";
+import React, {forwardRef, useEffect, useState} from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {FormControl, InputLabel, MenuItem, Paper, Select} from "@material-ui/core";
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
 import Button from "@material-ui/core/Button";
 import {EVENT_NAMES} from "../../api/constants";
+import MaterialTable from 'material-table'
+import Box from "@material-ui/core/Box";
+import AddBox from '@material-ui/icons/AddBox';
+import ArrowDownward from '@material-ui/icons/ArrowDownward';
+import Check from '@material-ui/icons/Check';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import Clear from '@material-ui/icons/Clear';
+import DeleteOutline from '@material-ui/icons/DeleteOutline';
+import Edit from '@material-ui/icons/Edit';
+import FilterList from '@material-ui/icons/FilterList';
+import FirstPage from '@material-ui/icons/FirstPage';
+import LastPage from '@material-ui/icons/LastPage';
+import Remove from '@material-ui/icons/Remove';
+import SaveAlt from '@material-ui/icons/SaveAlt';
+import Search from '@material-ui/icons/Search';
+import ViewColumn from '@material-ui/icons/ViewColumn';
+
+const tableIcons = {
+    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref}/>),
+    Check: forwardRef((props, ref) => <Check {...props} ref={ref}/>),
+    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref}/>),
+    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref}/>),
+    DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref}/>),
+    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref}/>),
+    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref}/>),
+    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref}/>),
+    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref}/>),
+    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref}/>),
+    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref}/>),
+    PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref}/>),
+    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref}/>),
+    Search: forwardRef((props, ref) => <Search {...props} ref={ref}/>),
+    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref}/>),
+    ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref}/>),
+    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref}/>)
+};
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,50 +68,40 @@ export const MatchProtocol = ({token, matchId}) => {
     const [isEditable, setEditable] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [existingEvents, setExistingEvents] = useState(null);
     const [events, setEvents] = useState(null);
     const [match, setMatch] = useState(null);
     const [isEditMode, setEditMode] = useState(false);
-    const [editButtonName, setEditButtonName] = useState("Edytuj");
     const [user, setUser] = useState(null);
-    const [protocolContent, setProtocolContent] = useState("Pobieranie informacji...");
-    const [newEvent, setNewEvent] = useState({
-        event: EVENT_NAMES.GOAL,
-        dateTime: new Date(),
-        team: "Tygrysy",
-        matchMember: "Abc"
-    });
+    const [isProtocolAdded, setProtocolAdded] = useState(false);
+    const [data, setData] = useState([]);
 
-    const renderProtocolContent = (matchArg, eventsArg) => {
-        if (matchArg && matchArg.hasProtocol === false) {
-            return "Brak protokołu pomeczowego"
-        } else if (eventsArg && eventsArg.length === 0) {
-            return "Brak zarejestrowanych zdarzeń"
-        } else if (!eventsArg || !matchArg) {
-            return "Pobieranie informacji..."
-        } else {
-            return eventsArg.map(ev => {
-                const matchMember = ev.matchMemberResponse;
-                const userName = matchMember.user ? matchMember.user.firstName + matchMember.user.lastName : "Nieznany";
-                const userId = matchMember.user ? matchMember.user.id : null;
-                return <TableRow key={ev.id}>
-                    <TableCell component="th" scope="row">{ev.type}</TableCell>
-                    <TableCell>{ev.dateTime}</TableCell>
-                    <TableCell>{ev.teamName}</TableCell>
-                    <TableCell onClick={() => handleUserClick(userId)}>{userName}</TableCell>
-                </TableRow>
-            });
-        }
+    const eventToData = (ev) => {
+        // return {type: ev.type, dateTime: ev.dateTime, team: ev.teamName, matchMember: ev.matchMemberResponse}
+        const matchMemberName = ev.matchMemberResponse.user ? ev.matchMemberResponse.user.firstName + ev.matchMemberResponse.user.lastName : "Nieznany";
+        return {type: ev.type, dateTime: ev.dateTime, team: ev.teamName, matchMember: matchMemberName}
     };
 
-    useEffect(() => {
-        const newProtocolContent = renderProtocolContent(match, events);
-        setProtocolContent(newProtocolContent);
-    }, [match, events]);
-
 
     useEffect(() => {
-        console.log(user);
-        console.log(match);
+        if (events) {
+            const newData = events.map(event => eventToData(event));
+            new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    setData(newData);
+                    resolve();
+                }, 1000)
+            })
+        }
+    }, [events]);
+
+    useEffect(() => {
+        if (existingEvents) {
+            setEvents([...existingEvents]);
+        }
+    }, [existingEvents]);
+
+    useEffect(() => {
         if (user && user.email && match && match.organizer && user.email === match.organizer.email) {
             setEditable(true);
         }
@@ -111,75 +132,130 @@ export const MatchProtocol = ({token, matchId}) => {
     }, [token]);
 
     useEffect(() => {
+        if (!isEditMode) {
+            const fetchFromApiWithToken = withTokenFetchFromApi(token);
+            fetchFromApiWithToken(
+                API_METHODS.GET,
+                `footballMatches/${matchId}/events`,
+                setLoading,
+                setError,
+                setExistingEvents);
+        }
+    }, [token]);
+
+    useEffect(() => {
+        // if (match && match.teams) { // TODO
+        //     const teamLookup = match.teams.map((team) => {
+        //         return {[team.id]: team.name}
+        //     });
+        //     const newColumns = {...columns};
+        //     newColumns[2].lookup = teamLookup;
+        //     setColumns(columns);
+        // }
+    }, [match]);
+
+    const handleCancel = () => {
+        setEvents(existingEvents);
+        setEditMode(false);
+    };
+
+    const handleSave = () => {
         const fetchFromApiWithToken = withTokenFetchFromApi(token);
         fetchFromApiWithToken(
-            API_METHODS.GET,
+            API_METHODS.POST,
             `footballMatches/${matchId}/events`,
             setLoading,
             setError,
-            setEvents);
-    }, [token]);
-
-    const handleUserClick = (userId) => {
-        // TODO
-        console.log(userId);
+            () => setProtocolAdded(true),
+            events);
     };
 
-    const handleEditButton = () => {
-        if (isEditMode) {
-            setEditButtonName("Edytuj");
-            setEditMode(false);
-        } else {
-            setEditButtonName("Zakończ edycję");
-            setEditMode(true);
-        }
-    };
+    const [columns, setColumns] = useState([
+        {
+            title: 'Zdarzenie',
+            field: 'type',
+            // lookup: EVENT_NAMES
+        },
+        {title: 'Minuta', field: 'dateTime', type: 'time'},
+        {
+            title: 'Drużyna',
+            field: 'team',
+            // lookup: {},
+        },
+        {
+            title: 'Gracz',
+            field: 'matchMember',
+            // lookup: {},
+        },
+    ]);
 
-    const handleNewEventTypeChange = (newEventType) => {
-        const updatedNewEvent = {...newEvent};
-        updatedNewEvent["event"] = newEventType;
-        setNewEvent(updatedNewEvent);
-    };
+    if (match && match.hasProtocol === false && !isEditMode) {
+        return <Box>
+            <h3>Brak protokołu pomeczowego</h3>
+            {isEditable ? <Button onClick={() => setEditMode(false)}>Dodaj</Button> : null}
+        </Box>
+    } else if (events && events.length === 0 && !isEditMode) {
+        return <Box>
+            <h3>Brak zarejestrowanych zdarzeń</h3>
+            {isEditable ? <Button onClick={() => setEditMode(true)}>Dodaj</Button> : null}
+        </Box>
+    } else if (!data || !match) {
+        return "Pobieranie informacji..."
+    } else if (isEditMode) {
+        return (
+            <Box>
+                <MaterialTable
+                    title="Protokół pomeczowy"
+                    columns={columns}
+                    data={data}
+                    icons={tableIcons}
+                    editable={{
+                        onRowAdd: newData =>
+                            new Promise((resolve, reject) => {
+                                setTimeout(() => {
+                                    setData([...data, newData]);
 
-    return (
-        <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Zdarzenie</TableCell>
-                        <TableCell>Minuta</TableCell>
-                        <TableCell>Drużyna</TableCell>
-                        <TableCell>Gracz</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    <TableRow>
-                        {protocolContent}
-                    </TableRow>
-                    {isEditMode
-                        ?
-                        <TableRow>
-                            <TableCell>
-                                <FormControl>
-                                    <InputLabel id="event_name">Zdarzenie</InputLabel>
-                                    <Select labelId="event_name"
-                                            onChange={e => handleNewEventTypeChange(e.target.value)}
-                                            value={newEvent.event}>
-                                        {
-                                            Object.values(EVENT_NAMES).map(eventName => <MenuItem
-                                                value={eventName}>eventName</MenuItem>)
-                                        }
-                                    </Select>
-                                </FormControl>
-                            </TableCell>
+                                    resolve();
+                                }, 1000)
+                            }),
+                        onRowUpdate: (newData, oldData) =>
+                            new Promise((resolve, reject) => {
+                                setTimeout(() => {
+                                    const dataUpdate = [...data];
+                                    const index = oldData.tableData.id;
+                                    dataUpdate[index] = newData;
+                                    setData([...dataUpdate]);
 
-                            <TableCell>Drużyna</TableCell>
-                            <TableCell>Gracz</TableCell>
-                        </TableRow>
-                        : null}
-                </TableBody>
-            </Table>
-            {isEditable ? <Button onClick={handleEditButton}>{editButtonName}</Button> : null}
-        </TableContainer>
-    );
+                                    resolve();
+                                }, 1000)
+                            }),
+                        onRowDelete: oldData =>
+                            new Promise((resolve, reject) => {
+                                setTimeout(() => {
+                                    const dataDelete = [...data];
+                                    const index = oldData.tableData.id;
+                                    dataDelete.splice(index, 1);
+                                    setData([...dataDelete]);
+
+                                    resolve()
+                                }, 1000)
+                            }),
+                    }}
+                />
+                <Button onClick={handleCancel}>Anuluj</Button>
+                <Button onClick={handleSave}>Zapisz</Button>
+            </Box>);
+    } else {
+        return <Box>
+            <MaterialTable
+                title="Protokół pomeczowy"
+                columns={columns}
+                icons={tableIcons}
+                data={data}/>
+            {isEditable && !isProtocolAdded ? <Button onClick={() => setEditMode(true)}>Edytuj</Button> : null}
+            {isProtocolAdded ? <h2>✅ Dodano</h2> : null}
+        </Box>
+    }
 };
+
+
