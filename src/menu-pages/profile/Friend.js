@@ -8,6 +8,8 @@ import Dialog from "@material-ui/core/Dialog";
 import { Box, Link } from "@material-ui/core";
 import ProfilePlaceholder from "../../assets/profile-placeholder.png";
 import RoundedImage from "react-rounded-image";
+import { API_METHODS, withTokenFetchFromApi } from "../../api/baseFetch";
+
 const useStyles = makeStyles((theme) => ({
     box: {
         padding: theme.spacing(1),
@@ -25,8 +27,42 @@ export default function Friend(props) {
     const classes = useStyles();
 
     const [open, setOpen] = useState(false);
+    const [statistics, setStatistics] = useState(null);
+    const [favoritePosition, setFavoritePosition] = useState(null);
+    const [user, setUser] = useState(null);
 
     const onDialogClose = () => setOpen(false);
+
+    useEffect(() => {
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            `profile/${id}`,
+            setLoading,
+            setError,
+            setUser);
+    }, [token]);
+
+    useEffect(() => {   //positions
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            `favouritePositions/${id}`,
+            setLoading,
+            setError,
+            setFavoritePosition);
+    }, [token]);
+
+    useEffect(() => {   //statistics
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            `statistics/${id}`,
+            setLoading,
+            setError,
+            setStatistics
+        );
+    }, [token]);
 
     return (
         <li className='friend'>
@@ -59,15 +95,16 @@ export default function Friend(props) {
                             imageWidth="160"
                             imageHeight="160"
                         />
-                        <h2 className={classes.header}>Jan Kowalski</h2>
-                        <p className={classes.positions}>Ulubione pozycje: napastnik</p>
+                        <h2>{user ? user.firstName + " " + user.lastName : null}</h2>
+                        <p className={classes.positions}>{favoritePosition ? favoritePosition.PositionResponse.side + " " + favoritePosition.PositionResponse.name : null}</p>
                         <p>
-                            172 rozegrane mecze | 221 godzin na boisku | 71 strzelonych goli
-                      </p>
+                            {statistics ? statistics.matchesPlayed + " " + statistics.hoursPlayed + " " + statistics.goalsScored : null}
+                        </p>
                         <Button
                             type="submit"
                             variant="contained"
                             color="primary"
+                            disabled={added}
                             className={classes.button}>
                             Wyślij zaproszenie do znajomych
                             </Button>
@@ -82,5 +119,6 @@ Friend.propTypes = {
     name: PropTypes.string.isRequired
     , picSquare: PropTypes.string.isRequired
     , nickname: PropTypes.string.isRequired
-    , friendCount: PropTypes.number
+    , added: PropTypes.bool.isRequired
+    , id: PropTypes.string.isRequired
 };
