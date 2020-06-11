@@ -51,15 +51,19 @@ export const MatchesTable = ({ token, logout, archiveMatches }) => {
     const [editMatchDialogOpen, setEditMatchDialogOpen] = useState(false);
     const [editResultDialogOpen, setEditResultDialogOpen] = useState(false);
     const [editable, setEditable] = useState(false);
+    const [matches, setMatches] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-
-    // useEffect(() => {
-    //     const fetchFromApiWithToken = withTokenFetchFromApi(token);
-    //     fetchFromApiWithToken(
-    //         API_METHODS.GET,
-    //         //todo
-    //     );
-    // }, [token]);
+    useEffect(() => {
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            `footballMatches?onlyMyMatches=${true}`,
+            setLoading,
+            setError,
+            setMatches);
+    }, [token]);
 
     const onDialogClose = () => {
         setEditMatchDialogOpen(false);
@@ -68,7 +72,7 @@ export const MatchesTable = ({ token, logout, archiveMatches }) => {
 
     function handleRowClick(id) {
         console.log('row')
-        setEditMatchDialogOpen(editResultDialogOpen ? false : true);
+        setEditMatchDialogOpen(editResultDialogOpen === true ? false : true);
         let match = rows.find((element) => {
             return element.id === id;
         })
@@ -82,6 +86,62 @@ export const MatchesTable = ({ token, logout, archiveMatches }) => {
         })
         setEditResultDialogOpen(match.organizacja && !match.maProtokol ? true : false);
     }
+
+    const matchesList2 = matches !== null ? matches.map((row) => (
+        showArchiveMatches === true ?
+            (row.statusTime === "past" ?
+                <TableRow key={row.id} onClick={() => handleRowClick(row.id)}>
+                    <TableCell component="th" scope="row">
+                        {row.beginningTime}
+                    </TableCell>
+                    <TableCell >{row.title}</TableCell>
+                    <TableCell >{row.teams}</TableCell>
+                    <TableCell onClick={() => handleResultClick(row.id)} > {row.maProtokol ? row.wynik : row.organizacja ? <u>Brak. Wprowadź protokół</u> : row.wynik}</TableCell>
+                    <TableCell >{row.pozycja}</TableCell>
+                    <TableCell > <h3 align="center">{row.isCurrentUserOrganizer === true ? '✅' : null}</h3></TableCell>
+                </TableRow>
+                : null)
+            : (row.statusTime === "past" ? null :
+                <TableRow key={row.id} onClick={() => handleRowClick(row.id)}>
+                    <TableCell component="th" scope="row">
+                        {row.beginningTime}
+                    </TableCell>
+                    <TableCell >{row.title}</TableCell>
+                    <TableCell >{row.teams}</TableCell>
+                    <TableCell >{row.statusTime === "trwa" ? <Blink text='Mecz trwa' fontSize='13'></Blink> : row.wynik}</TableCell>
+                    <TableCell >{row.pozycja}</TableCell>
+                    <TableCell > <h3 align="center">{row.isCurrentUserOrganizer === true ? '✅' : null}</h3></TableCell>
+                </TableRow>)
+
+    )) : null;
+
+    const matchesList = rows.map((row) => (
+        showArchiveMatches === true ?
+            (row.odbylSie === true ?
+                <TableRow key={row.id} onClick={() => handleRowClick(row.id)}>
+                    <TableCell component="th" scope="row">
+                        {row.data}
+                    </TableCell>
+                    <TableCell >{row.nazwa}</TableCell>
+                    <TableCell >{row.druzyny}</TableCell>
+                    <TableCell onClick={() => handleResultClick(row.id)} > {row.maProtokol ? row.wynik : row.organizacja ? <u>Brak. Wprowadź protokół</u> : row.wynik}</TableCell>
+                    <TableCell >{row.pozycja}</TableCell>
+                    <TableCell > <h3 align="center">{row.organizacja === true ? '✅' : null}</h3></TableCell>
+                </TableRow>
+                : null)
+            : (row.odbylSie === true ? null :
+                <TableRow key={row.id} onClick={() => handleRowClick(row.id)}>
+                    <TableCell component="th" scope="row">
+                        {row.data}
+                    </TableCell>
+                    <TableCell >{row.nazwa}</TableCell>
+                    <TableCell >{row.druzyny}</TableCell>
+                    <TableCell >{row.trwa === true ? <Blink text='Mecz trwa' fontSize='13'></Blink> : row.wynik}</TableCell>
+                    <TableCell >{row.pozycja}</TableCell>
+                    <TableCell > <h3 align="center">{row.organizacja === true ? '✅' : null}</h3></TableCell>
+                </TableRow>)
+
+    ));
 
     return (
         <TableContainer component={Paper}>
@@ -97,7 +157,8 @@ export const MatchesTable = ({ token, logout, archiveMatches }) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
+                    {matchesList}
+                    {/* {rows.map((row) => (
                         showArchiveMatches === true ?
                             (row.odbylSie === true ?
                                 <TableRow key={row.id} onClick={() => handleRowClick(row.id)}>
@@ -123,7 +184,7 @@ export const MatchesTable = ({ token, logout, archiveMatches }) => {
                                     <TableCell > <h3 align="center">{row.organizacja === true ? '✅' : null}</h3></TableCell>
                                 </TableRow>)
 
-                    ))}
+                    ))} */}
                 </TableBody>
             </Table>
             <Dialog

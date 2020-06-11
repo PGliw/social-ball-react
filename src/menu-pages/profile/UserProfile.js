@@ -3,7 +3,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Box, Grid, Link, Paper, Tab, Tabs, Dialog, DialogContent, Button } from "@material-ui/core";
 import ProfilePlaceholder from "../../assets/profile-placeholder.png";
 import { FriendsList } from "./FriendsList";
-import InvitationList from "./InvitationList";
+import { InvitationList } from "./InvitationList";
 import RoundedImage from "react-rounded-image";
 import { a11yProps } from "./Tabs";
 import TabPanel from "@material-ui/lab/TabPanel";
@@ -15,6 +15,7 @@ import { API_METHODS, withTokenFetchFromApi } from "../../api/baseFetch";
 import { UpdateDataForm } from "./UpdateDataForm";
 import { MatchesTable } from "./MatchesTable";
 import useForceUpdate from 'use-force-update';
+import { spacing } from '@material-ui/system';
 
 const options = {
     animationEnabled: true,
@@ -71,6 +72,9 @@ const useStyles = makeStyles((theme) => ({
     positions: {
         textAlign: "left",
     },
+    button: {
+        marginLeft: 10,
+    }
 }));
 
 TabPanel.propTypes = {
@@ -89,7 +93,7 @@ export const UserProfile = ({ token, logout }) => {
     const [title, setTitle] = useState("tresc");
     const [acquaitances, setAcquaitances] = useState([]);
     const [positions, setPositions] = useState(null);
-
+    const [stats, setStats] = useState(null);
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -143,6 +147,16 @@ export const UserProfile = ({ token, logout }) => {
             setUser);
     }, [token]);
 
+    useEffect(() => {
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            'statistics',
+            setLoading,
+            setError,
+            setStats);
+    }, [token]);
+
     const handleAllAcquaitances = (newAllAcquaitances) => {
         console.log('newAllAcquantiances');
         console.log(newAllAcquaitances);
@@ -192,27 +206,6 @@ export const UserProfile = ({ token, logout }) => {
 
     function testLog() { console.log('testlog') };
 
-    function userList() {
-        const users = ['James', 'Nora', 'Matthew', 'Joe', 'Susan'];
-
-        return (
-            <ul>
-                {users.map(name => (
-                    <li>
-                        <button>
-                            Click me!
-                </button>
-                    </li>
-                ))}
-            </ul>
-        );
-    };
-
-    // function userList() {
-    //     return (
-    //         <FriendsList acquaitances={acquaitances} />)
-    // }
-
     return (
         <NavDrawer token={token} logout={logout}>
             <Grid className={classes.root}>
@@ -231,12 +224,15 @@ export const UserProfile = ({ token, logout }) => {
                                 <h2>{user ? user.firstName + " " + user.lastName : null}</h2>
                                 <p className={classes.positions}>{positions && positions[0] ? "Ulubione pozycje: " + positions[0].positionId.side + " " + positions[0].positionId.name : null}</p>
                                 <p>
-                                    172 rozegrane mecze | 221 godzin na boisku | 71 strzelonych goli
-                                    </p>
+                                    {stats ? stats.matchesPlayed + " rozegranych meczów | " + stats.hoursPlayed + "  godzin na boisku | " + stats.goalsScored + " strzelonych goli" : null}
+                                </p>
+                                <p>
+                                    {stats ? stats.yellowCardsReceived + " otrzymanych żółtych kartek | " + stats.redCardsReceived + " otrzymanych czerwonych kartek | " + stats.fauls + "  faulowań" : null}
+                                </p>
                                 <Button variant="outlined" color="primary" onClick={showUploadWidget}>
                                     Aktualizuj zdjęcie
                                     </Button>
-                                <Button variant="outlined" color="primary" onClick={handleClick}>
+                                <Button className={classes.button} variant="outlined" color="primary" onClick={handleClick}>
                                     Zmień dane
                                     </Button>
                             </Box>
@@ -257,12 +253,11 @@ export const UserProfile = ({ token, logout }) => {
                             <TabPanel value={value} hidden={value !== "one"} index="one">
                                 {eventsArray.map((item, index) => Row({ index }))}
                             </TabPanel>
-                            <TabPanel onClick={() => { userList(); console.log('kk') }} value={value} hidden={value !== "two"} index="two">
-                                {/* {userList()} */}
+                            <TabPanel value={value} hidden={value !== "two"} index="two">
                                 <FriendsList token={token} logout={logout} />
                             </TabPanel>
                             <TabPanel value={value} hidden={value !== "three"} index="three">
-                                <InvitationList></InvitationList>
+                                <InvitationList token={token} logout={logout}></InvitationList>
                             </TabPanel>
                             <TabPanel value={value} hidden={value !== "four"} index="four">
                                 <MatchesTable archiveMatches={false}></MatchesTable>

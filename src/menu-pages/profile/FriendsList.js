@@ -73,7 +73,7 @@ export const FriendsList = ({ token, logout }) => {
     }, [token]);
 
     const friendsList = acquaitances !== null ? acquaitances
-        .filter(friend => user.id && user.id !== friend.requestSender.id ? friend.requestSender.lastName.toLowerCase().includes(searchText.toLowerCase()) : friend.requestReceiver.lastName.toLowerCase().includes(searchText.toLowerCase()))
+        .filter(friend => user && user.id && user.id !== friend.requestSender.id ? friend.requestSender.lastName.toLowerCase().includes(searchText.toLowerCase()) : friend.requestReceiver.lastName.toLowerCase().includes(searchText.toLowerCase()))
         .sort((a, b) => a[orderBy] > b[orderBy] ? 1 : 0)
         .map(friend => (
             <Friend
@@ -85,7 +85,7 @@ export const FriendsList = ({ token, logout }) => {
         )) : null;
 
     return (
-        { friends } === null ? console.log('null ac') : null,
+        // { friends } === null ? console.log('null ac') : null,
         < div >
             <form className="form-inline searchForm" role="form">
                 <div className="form-group">

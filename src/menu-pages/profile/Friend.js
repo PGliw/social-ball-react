@@ -32,6 +32,7 @@ export const Friend = ({ token, logout, id }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [positions, setPositions] = useState(null);
+    const [stats, setStats] = useState(null);
 
     const onDialogClose = () => setOpen(false);
 
@@ -78,6 +79,16 @@ export const Friend = ({ token, logout, id }) => {
             `statistics/${userId}`,
             setLoading,
             setError,
+            setStats);
+    }, [token]);
+
+    useEffect(() => {
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            `statistics/${userId}`,
+            setLoading,
+            setError,
             handlePosition);
     }, [token]);
 
@@ -87,14 +98,14 @@ export const Friend = ({ token, logout, id }) => {
 
             <h3>{user ? user.firstName + " " + user.lastName : null}</h3>
 
-            <div className="nickname">
+            {/* <div className="nickname">
                 Nickname: {user ? user.username : null}
-            </div>
+            </div> */}
             <br></br>
 
             <Button
                 type="submit"
-                variant="contained"
+                variant="outlined"
                 color="primary"
                 className="button"
                 onClick={() => { setOpen(true); }}
@@ -113,10 +124,13 @@ export const Friend = ({ token, logout, id }) => {
                             imageHeight="160"
                         />
                         <h2 className={classes.header}>{user ? user.firstName + " " + user.lastName : null}</h2>
-                        <p className={classes.positions}>{positions && positions[0] ? "Ulubione pozycje: " + positions[0].positionId.side + " " + positions[0].positionId.name : null}</p>
+                        <p className={classes.positions}>{positions && positions[0] ? "Ulubione pozycje: " + positions[0].positionId.side + " " + positions[0].positionId.name : "brak ulubionych pozycji"}</p>
                         <p>
-                            172 rozegrane mecze | 221 godzin na boisku | 71 strzelonych goli
-                      </p>
+                            {stats ? stats.matchesPlayed + " rozegranych meczów | " + stats.hoursPlayed + "  godzin na boisku | " + stats.goalsScored + " strzelonych goli" : null}
+                        </p>
+                        <p>
+                            {stats ? stats.yellowCardsReceived + " otrzymanych żółtych kartek | " + stats.redCardsReceived + " otrzymanych czerwonych kartek | " + stats.fauls + "  faulowań" : null}
+                        </p>
                         <Button
                             type="submit"
                             variant="contained"
@@ -132,10 +146,3 @@ export const Friend = ({ token, logout, id }) => {
         </li>
     );
 }
-
-Friend.propTypes = {
-    name: PropTypes.string.isRequired
-    , picSquare: PropTypes.string.isRequired
-    , nickname: PropTypes.string.isRequired
-    , id: PropTypes.number.isRequired
-};
