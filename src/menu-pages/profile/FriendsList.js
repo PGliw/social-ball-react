@@ -1,87 +1,128 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import friends from "./friends";
-import Friend from "./Friend";
+import { Friend } from "./Friend";
 import "./FriendsList.css";
 import { API_METHODS, withTokenFetchFromApi } from "../../api/baseFetch";
 
-export default class FriendsList extends Component {
-    constructor(props) {
-        super(props);
+export const FriendsList = ({ token, logout }) => {
+    // constructor(props) {
+    //     super(props);
 
-        this.state = {
-            searchText: ""
-            , orderBy: "name"
-            , order: "ascending"
-            , ddd: "test"
-            , acquaitances: this.props.acquaitances
-        };
-        console.log(this.props);
-    }
+    //     console.log('cons');
+    //     console.log(this.props);
 
-    handleChange(field, event) {
-        this.setState({ [field]: event.target.value });
-    }
+    //     this.state = {
+    //         searchText: ""
+    //         , orderBy: "name"
+    //         , order: "ascending"
+    //         , acquaitances: this.props.acquaitances
+    //     };
+    //     console.log(this.props.acquaitances);
+    // }
 
-    render() {
-        const {
-            searchText
-            , orderBy
-            , order
-            , acquaitances
-        } = this.state;
+    const [searchText, setSearchText] = useState("");
+    const [orderBy, setOrderBy] = useState("name");
+    const [order, setOrder] = useState("ascending");
+    const [acquaitances, setAcquaitances] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [user, setUser] = useState(null);
 
-        const friendsList = friends
-            .filter(friend => friend.name.toLowerCase().includes(this.state.searchText.toLowerCase()))
-            .sort((a, b) => a[orderBy] > b[orderBy] ? 1 : 0)
-            .map(friend => (
-                <Friend
-                    name={friend.name}
-                    picSquare={friend.pic_square}
-                    friendCount={friend.friend_count}
-                    nickname={friend.nickname}
-                // key={friend.name}
-                />
-            ));
+    // const handleChange = (field, event) => {
+    //     // this.forceUpdate();
+    //     setState({ [field]: event.target.value });
+    // }
 
-        return (
-            <div>
-                <form className="form-inline searchForm" role="form">
-                    <div className="form-group">
+    // render() {
+    //     const {
+    //         searchText
+    //         , orderBy
+    //         , order
+    //         , acquaitances
+    //     } = this.state;
 
-                        <input
-                            className="form-control"
-                            onChange={event => this.handleChange("searchText", event)}
-                            placeholder="Szukaj znajomych"
-                            value={searchText}
-                        />
+    //     console.log('render test');
+    //     console.log(acquaitances);
 
-                        <select
-                            className="input-medium"
-                            onChange={event => this.handleChange("orderBy", event)}
-                            value={orderBy}
-                        >
-                            <option value="name">Według imienia</option>
-                        </select>
+    const handleAllAcquaitances = (newAllAcquaitances) => {
+        console.log('newAllAcquantiances');
+        console.log(newAllAcquaitances);
+        setAcquaitances(newAllAcquaitances);
+        console.log('acuaitances');
+        console.log(acquaitances);
+    };
 
-                        <select
-                            className="input-medium"
-                            onChange={event => this.handleChange("order", event)}
-                            value={order}
-                        >
-                            <option value="descending">Malejąco</option>
-                            <option value="ascending">Rosnąco</option>
-                        </select>
+    useEffect(() => {
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            'profile',
+            setLoading,
+            setError,
+            setUser);
+    }, [token]);
 
-                    </div>
-                </form>
+    useEffect(() => {
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            'acquaitances?status=accepted',
+            setLoading,
+            setError,
+            handleAllAcquaitances);
+    }, [token]);
 
-                <div>
-                    &nbsp;
+    const friendsList = acquaitances !== null ? acquaitances
+        .filter(friend => user.id && user.id !== friend.requestSender.id ? friend.requestSender.lastName.toLowerCase().includes(searchText.toLowerCase()) : friend.requestReceiver.lastName.toLowerCase().includes(searchText.toLowerCase()))
+        .sort((a, b) => a[orderBy] > b[orderBy] ? 1 : 0)
+        .map(friend => (
+            <Friend
+                token={token}
+                logout={logout}
+                id={user.id && user.id !== friend.requestSender.id ? friend.requestSender.id : friend.requestReceiver.id}
+            // key={friend.name}
+            />
+        )) : null;
+
+    return (
+        { friends } === null ? console.log('null ac') : null,
+        < div >
+            <form className="form-inline searchForm" role="form">
+                <div className="form-group">
+
+                    <input
+                        className="form-control"
+                        onChange={event => setSearchText(event.target.value)}
+                        placeholder="Szukaj znajomych"
+                        value={searchText}
+                    />
+
+                    <select
+                        className="input-medium"
+                        onChange={event => setOrderBy(event.target.value)}
+                        value={orderBy}
+                    >
+                        <option value="name">Według imienia</option>
+                    </select>
+
+                    <select
+                        className="input-medium"
+                        onChange={event => setOrder(event.target.value)}
+                        value={order}
+                    >
+                        <option value="descending">Malejąco</option>
+                        <option value="ascending">Rosnąco</option>
+                    </select>
+
                 </div>
-                <ul>
-                    {order === "descending" ? friendsList.reverse() : friendsList}
-                </ul>
-            </div>
-        );
-    }
+            </form>
+
+            <div>
+                &nbsp;
+                </div>
+            <ul>
+                {order === "descending" ? friendsList.reverse() : friendsList}
+            </ul>
+        </div >
+    );
 }

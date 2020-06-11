@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import UserDialog from "./UserDialog";
@@ -8,6 +8,8 @@ import Dialog from "@material-ui/core/Dialog";
 import { Box, Link } from "@material-ui/core";
 import ProfilePlaceholder from "../../assets/profile-placeholder.png";
 import RoundedImage from "react-rounded-image";
+import { API_METHODS, withTokenFetchFromApi } from "../../api/baseFetch";
+
 const useStyles = makeStyles((theme) => ({
     box: {
         padding: theme.spacing(1),
@@ -21,21 +23,72 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function Friend(props) {
+export const Friend = ({ token, logout, id }) => {
     const classes = useStyles();
 
     const [open, setOpen] = useState(false);
+    const [userId, setUserId] = useState(id);
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [positions, setPositions] = useState(null);
 
     const onDialogClose = () => setOpen(false);
 
+    const handleUser = (newUser) => {
+        console.log('newUser');
+        console.log(newUser);
+        setUser(newUser);
+        console.log('newUser');
+        console.log(newUser);
+    };
+
+    const handlePosition = (newPosition) => {
+        console.log('newPosition');
+        console.log(newPosition);
+        setPositions(newPosition);
+        console.log('newPosition');
+        console.log(newPosition);
+    };
+
+    useEffect(() => {
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            `users/${userId}`,
+            setLoading,
+            setError,
+            handleUser);
+    }, [token]);
+
+    useEffect(() => {
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            `favouritePositions/${userId}`,
+            setLoading,
+            setError,
+            handlePosition);
+    }, [token]);
+
+    useEffect(() => {
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            `statistics/${userId}`,
+            setLoading,
+            setError,
+            handlePosition);
+    }, [token]);
+
     return (
         <li className='friend'>
-            <img className="profile-pic" src={props.picSquare} />
+            <img className="profile-pic" src={user && user.image ? user.image : ProfilePlaceholder} />
 
-            <h3>{props.name}</h3>
+            <h3>{user ? user.firstName + " " + user.lastName : null}</h3>
 
             <div className="nickname">
-                Nickname: {props.nickname}
+                Nickname: {user ? user.username : null}
             </div>
             <br></br>
 
@@ -53,14 +106,14 @@ export default function Friend(props) {
                 onClose={onDialogClose}>
                 <DialogContent >
                     <Box className={classes.box}>
-                        <RoundedImage className={classes.image} image={ProfilePlaceholder}
+                        <RoundedImage className={classes.image} image={user && user.image ? user.image : ProfilePlaceholder}
                             roundedColor="#e6e6e6"
                             roundedSize="13"
                             imageWidth="160"
                             imageHeight="160"
                         />
-                        <h2 className={classes.header}>Jan Kowalski</h2>
-                        <p className={classes.positions}>Ulubione pozycje: napastnik</p>
+                        <h2 className={classes.header}>{user ? user.firstName + " " + user.lastName : null}</h2>
+                        <p className={classes.positions}>{positions && positions[0] ? "Ulubione pozycje: " + positions[0].positionId.side + " " + positions[0].positionId.name : null}</p>
                         <p>
                             172 rozegrane mecze | 221 godzin na boisku | 71 strzelonych goli
                       </p>
@@ -68,7 +121,9 @@ export default function Friend(props) {
                             type="submit"
                             variant="contained"
                             color="primary"
-                            className={classes.button}>
+                            className={classes.button}
+                            disabled={true}
+                        >
                             Wyślij zaproszenie do znajomych
                             </Button>
                     </Box>
@@ -82,5 +137,5 @@ Friend.propTypes = {
     name: PropTypes.string.isRequired
     , picSquare: PropTypes.string.isRequired
     , nickname: PropTypes.string.isRequired
-    , friendCount: PropTypes.number
+    , id: PropTypes.number.isRequired
 };
