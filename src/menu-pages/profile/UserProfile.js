@@ -14,8 +14,11 @@ import logo from "../../assets/avatarPlaceholder.PNG";
 import { API_METHODS, withTokenFetchFromApi } from "../../api/baseFetch";
 import { UpdateDataForm } from "./UpdateDataForm";
 import { MatchesTable } from "./MatchesTable";
+<<<<<<< HEAD
 import useForceUpdate from 'use-force-update';
 import { spacing } from '@material-ui/system';
+=======
+>>>>>>> development
 
 const options = {
     animationEnabled: true,
@@ -91,13 +94,29 @@ export const UserProfile = ({ token, logout }) => {
     const [error, setError] = useState(null);
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState("tresc");
+<<<<<<< HEAD
     const [acquaitances, setAcquaitances] = useState([]);
     const [positions, setPositions] = useState(null);
     const [stats, setStats] = useState(null);
+=======
+    const [acquaitances, setAcquaitances] = useState(null);
+    const [statistics, setStatistics] = useState(null);
+    const [favoritePosition, setFavoritePosition] = useState(null);
+    const [userMatches, setUserMatches] = useState(null);
+
+>>>>>>> development
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
+<<<<<<< HEAD
+=======
+    const handleAllAcquaitances = (newAllAcquaitances) => {
+        console.log(newAllAcquaitances);
+        setAcquaitances(newAllAcquaitances);
+    };
+
+>>>>>>> development
     const onImageUploaded = (error, result) => {
         if (result && result.event === 'success' && result.info && result.info.url) {
             console.log(result);
@@ -129,6 +148,7 @@ export const UserProfile = ({ token, logout }) => {
             newUserDto);
     };
 
+<<<<<<< HEAD
     const handlePosition = (newPosition) => {
         console.log('newPosition');
         console.log(newPosition);
@@ -137,6 +157,8 @@ export const UserProfile = ({ token, logout }) => {
         console.log(newPosition);
     };
 
+=======
+>>>>>>> development
     useEffect(() => {
         const fetchFromApiWithToken = withTokenFetchFromApi(token);
         fetchFromApiWithToken(
@@ -151,6 +173,7 @@ export const UserProfile = ({ token, logout }) => {
         const fetchFromApiWithToken = withTokenFetchFromApi(token);
         fetchFromApiWithToken(
             API_METHODS.GET,
+<<<<<<< HEAD
             'statistics',
             setLoading,
             setError,
@@ -173,6 +196,53 @@ export const UserProfile = ({ token, logout }) => {
             setLoading,
             setError,
             handlePosition);
+=======
+            'acquaitances',
+            setLoading,
+            setError,
+            handleAllAcquaitances);
+    }, [token]);
+
+    useEffect(() => {   //positions
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            'favouritePositions',
+            setLoading,
+            setError,
+            setFavoritePosition);
+    }, [token]);
+
+    useEffect(() => {   //statistics
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            'statistics',
+            setLoading,
+            setError,
+            setStatistics
+        );
+    }, [token]);
+
+    useEffect(() => {   //acquaitances
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            'acquaitances',
+            setLoading,
+            setError,
+            handleAllAcquaitances);
+    }, [token]);
+
+    useEffect(() => {   //acquaitances
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            'footballMatches',
+            setLoading,
+            setError,
+            handleAllAcquaitances);
+>>>>>>> development
     }, [token]);
 
     const Row = ({ index }) => (
@@ -198,6 +268,7 @@ export const UserProfile = ({ token, logout }) => {
 
     const handleClick = (e) => setOpen(true);
 
+<<<<<<< HEAD
     const forceUpdate = useForceUpdate();
 
     const handleTest = (e) => { console.log(acquaitances); forceUpdate(); }
@@ -206,6 +277,8 @@ export const UserProfile = ({ token, logout }) => {
 
     function testLog() { console.log('testlog') };
 
+=======
+>>>>>>> development
     return (
         <NavDrawer token={token} logout={logout}>
             <Grid className={classes.root}>
@@ -222,17 +295,29 @@ export const UserProfile = ({ token, logout }) => {
                             </Box>
                             <Box className={classes.paperBox}>
                                 <h2>{user ? user.firstName + " " + user.lastName : null}</h2>
+<<<<<<< HEAD
                                 <p className={classes.positions}>{positions && positions[0] ? "Ulubione pozycje: " + positions[0].positionId.side + " " + positions[0].positionId.name : null}</p>
                                 <p>
                                     {stats ? stats.matchesPlayed + " rozegranych meczów | " + stats.hoursPlayed + "  godzin na boisku | " + stats.goalsScored + " strzelonych goli" : null}
                                 </p>
                                 <p>
                                     {stats ? stats.yellowCardsReceived + " otrzymanych żółtych kartek | " + stats.redCardsReceived + " otrzymanych czerwonych kartek | " + stats.fauls + "  faulowań" : null}
+=======
+                                {/* <p className={classes.positions}>Ulubione pozycje: napastnik</p> */}
+                                <p className={classes.positions}>{favoritePosition ? favoritePosition.PositionResponse.side + " " + favoritePosition.PositionResponse.name : null}</p>
+                                <p>
+                                    {/* 172 rozegrane mecze | 221 godzin na boisku | 71 strzelonych goli */}
+                                    {statistics ? statistics.matchesPlayed + " " + statistics.hoursPlayed + " " + statistics.goalsScored : null}
+>>>>>>> development
                                 </p>
                                 <Button variant="outlined" color="primary" onClick={showUploadWidget}>
                                     Aktualizuj zdjęcie
                                     </Button>
+<<<<<<< HEAD
                                 <Button className={classes.button} variant="outlined" color="primary" onClick={handleClick}>
+=======
+                                <Button variant="outlined" color="primary" onClick={handleClick}>
+>>>>>>> development
                                     Zmień dane
                                     </Button>
                             </Box>
@@ -245,19 +330,33 @@ export const UserProfile = ({ token, logout }) => {
                             <Tabs value={value} onChange={handleChange} variant="fullWidth"
                                 aria-label="wrapped label tabs example">
                                 <Tab value="one" label="Aktywność znajomych" wrapped {...a11yProps('one')} />
+<<<<<<< HEAD
                                 <Tab onClick={() => console.log('onclick')} value="two" label="Znajomi" wrapped {...a11yProps('two')} />
                                 <Tab value="three" label="Zaproszenia do znajomych" wrapped {...a11yProps('three')} />
                                 <Tab value="four" label="Moje mecze" wrapped {...a11yProps('four')} />
                                 <Tab value="five" label="Archiwum meczów" wrapped {...a11yProps('five')} />
+=======
+                                <Tab value="two" label="Znajomi" wrapped {...a11yProps('two')} />
+                                <Tab value="three" label="Zaproszenia do znajomych" wrapped {...a11yProps('three')} />
+                                <Tab value="four" label="Moje mecze" wrapped {...a11yProps('four')} />
+                                <Tab value="five" label="Archiwum meczy" wrapped {...a11yProps('five')} />
+>>>>>>> development
                             </Tabs>
                             <TabPanel value={value} hidden={value !== "one"} index="one">
                                 {eventsArray.map((item, index) => Row({ index }))}
                             </TabPanel>
                             <TabPanel value={value} hidden={value !== "two"} index="two">
+<<<<<<< HEAD
                                 <FriendsList token={token} logout={logout} />
                             </TabPanel>
                             <TabPanel value={value} hidden={value !== "three"} index="three">
                                 <InvitationList token={token} logout={logout}></InvitationList>
+=======
+                                <FriendsList acquaitances={acquaitances} />
+                            </TabPanel>
+                            <TabPanel value={value} hidden={value !== "three"} index="three">
+                                <InvitationList acquaitances={acquaitances}></InvitationList>
+>>>>>>> development
                             </TabPanel>
                             <TabPanel value={value} hidden={value !== "four"} index="four">
                                 <MatchesTable archiveMatches={false}></MatchesTable>
@@ -275,7 +374,11 @@ export const UserProfile = ({ token, logout }) => {
                 classes={{ paper: classes.dialogPaper }}
             >
                 <DialogContent>
+<<<<<<< HEAD
                     <UpdateDataForm token={token} logout={logout}></UpdateDataForm>
+=======
+                    <UpdateDataForm></UpdateDataForm>
+>>>>>>> development
                 </DialogContent>
             </Dialog>
         </NavDrawer>
