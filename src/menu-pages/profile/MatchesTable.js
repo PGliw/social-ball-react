@@ -158,33 +158,6 @@ export const MatchesTable = ({ token, logout, archiveMatches }) => {
                 </TableHead>
                 <TableBody>
                     {matchesList}
-                    {/* {rows.map((row) => (
-                        showArchiveMatches === true ?
-                            (row.odbylSie === true ?
-                                <TableRow key={row.id} onClick={() => handleRowClick(row.id)}>
-                                    <TableCell component="th" scope="row">
-                                        {row.data}
-                                    </TableCell>
-                                    <TableCell >{row.nazwa}</TableCell>
-                                    <TableCell >{row.druzyny}</TableCell>
-                                    <TableCell onClick={() => handleResultClick(row.id)} > {row.maProtokol ? row.wynik : row.organizacja ? <u>Brak. Wprowadź protokół</u> : row.wynik}</TableCell>
-                                    <TableCell >{row.pozycja}</TableCell>
-                                    <TableCell > <h3 align="center">{row.organizacja === true ? '✅' : null}</h3></TableCell>
-                                </TableRow>
-                                : null)
-                            : (row.odbylSie === true ? null :
-                                <TableRow key={row.id} onClick={() => handleRowClick(row.id)}>
-                                    <TableCell component="th" scope="row">
-                                        {row.data}
-                                    </TableCell>
-                                    <TableCell >{row.nazwa}</TableCell>
-                                    <TableCell >{row.druzyny}</TableCell>
-                                    <TableCell >{row.trwa === true ? <Blink text='Mecz trwa' fontSize='13'></Blink> : row.wynik}</TableCell>
-                                    <TableCell >{row.pozycja}</TableCell>
-                                    <TableCell > <h3 align="center">{row.organizacja === true ? '✅' : null}</h3></TableCell>
-                                </TableRow>)
-
-                    ))} */}
                 </TableBody>
             </Table>
             <Dialog

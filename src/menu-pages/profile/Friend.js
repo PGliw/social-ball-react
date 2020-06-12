@@ -27,7 +27,6 @@ export const Friend = ({ token, logout, id }) => {
     const classes = useStyles();
 
     const [open, setOpen] = useState(false);
-<<<<<<< HEAD
     const [userId, setUserId] = useState(id);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -63,19 +62,10 @@ export const Friend = ({ token, logout, id }) => {
             handleUser);
     }, [token]);
 
-=======
-    const [statistics, setStatistics] = useState(null);
-    const [favoritePosition, setFavoritePosition] = useState(null);
-    const [user, setUser] = useState(null);
-
-    const onDialogClose = () => setOpen(false);
-
->>>>>>> development
     useEffect(() => {
         const fetchFromApiWithToken = withTokenFetchFromApi(token);
         fetchFromApiWithToken(
             API_METHODS.GET,
-<<<<<<< HEAD
             `favouritePositions/${userId}`,
             setLoading,
             setError,
@@ -100,33 +90,6 @@ export const Friend = ({ token, logout, id }) => {
             setLoading,
             setError,
             handlePosition);
-=======
-            `profile/${id}`,
-            setLoading,
-            setError,
-            setUser);
-    }, [token]);
-
-    useEffect(() => {   //positions
-        const fetchFromApiWithToken = withTokenFetchFromApi(token);
-        fetchFromApiWithToken(
-            API_METHODS.GET,
-            `favouritePositions/${id}`,
-            setLoading,
-            setError,
-            setFavoritePosition);
-    }, [token]);
-
-    useEffect(() => {   //statistics
-        const fetchFromApiWithToken = withTokenFetchFromApi(token);
-        fetchFromApiWithToken(
-            API_METHODS.GET,
-            `statistics/${id}`,
-            setLoading,
-            setError,
-            setStatistics
-        );
->>>>>>> development
     }, [token]);
 
     return (
@@ -160,7 +123,6 @@ export const Friend = ({ token, logout, id }) => {
                             imageWidth="160"
                             imageHeight="160"
                         />
-<<<<<<< HEAD
                         <h2 className={classes.header}>{user ? user.firstName + " " + user.lastName : null}</h2>
                         <p className={classes.positions}>{positions && positions[0] ? "Ulubione pozycje: " + positions[0].positionId.side + " " + positions[0].positionId.name : "brak ulubionych pozycji"}</p>
                         <p>
@@ -168,25 +130,14 @@ export const Friend = ({ token, logout, id }) => {
                         </p>
                         <p>
                             {stats ? stats.yellowCardsReceived + " otrzymanych żółtych kartek | " + stats.redCardsReceived + " otrzymanych czerwonych kartek | " + stats.fauls + "  faulowań" : null}
-=======
-                        <h2>{user ? user.firstName + " " + user.lastName : null}</h2>
-                        <p className={classes.positions}>{favoritePosition ? favoritePosition.PositionResponse.side + " " + favoritePosition.PositionResponse.name : null}</p>
-                        <p>
-                            {statistics ? statistics.matchesPlayed + " " + statistics.hoursPlayed + " " + statistics.goalsScored : null}
->>>>>>> development
                         </p>
                         <Button
                             type="submit"
                             variant="contained"
                             color="primary"
-<<<<<<< HEAD
                             className={classes.button}
                             disabled={true}
                         >
-=======
-                            disabled={added}
-                            className={classes.button}>
->>>>>>> development
                             Wyślij zaproszenie do znajomych
                             </Button>
                     </Box>
@@ -195,14 +146,3 @@ export const Friend = ({ token, logout, id }) => {
         </li>
     );
 }
-<<<<<<< HEAD
-=======
-
-Friend.propTypes = {
-    name: PropTypes.string.isRequired
-    , picSquare: PropTypes.string.isRequired
-    , nickname: PropTypes.string.isRequired
-    , added: PropTypes.bool.isRequired
-    , id: PropTypes.string.isRequired
-};
->>>>>>> development
