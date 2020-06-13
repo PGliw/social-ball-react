@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import UserDialog from "./UserDialog";
@@ -23,61 +23,89 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function Friend(props) {
+export const Friend = ({ token, logout, id }) => {
     const classes = useStyles();
 
     const [open, setOpen] = useState(false);
-    const [statistics, setStatistics] = useState(null);
-    const [favoritePosition, setFavoritePosition] = useState(null);
+    const [userId, setUserId] = useState(id);
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [positions, setPositions] = useState(null);
+    const [stats, setStats] = useState(null);
 
     const onDialogClose = () => setOpen(false);
+
+    const handleUser = (newUser) => {
+        console.log('newUser');
+        console.log(newUser);
+        setUser(newUser);
+        console.log('newUser');
+        console.log(newUser);
+    };
+
+    const handlePosition = (newPosition) => {
+        console.log('newPosition');
+        console.log(newPosition);
+        setPositions(newPosition);
+        console.log('newPosition');
+        console.log(newPosition);
+    };
 
     useEffect(() => {
         const fetchFromApiWithToken = withTokenFetchFromApi(token);
         fetchFromApiWithToken(
             API_METHODS.GET,
-            `profile/${id}`,
+            `users/${userId}`,
             setLoading,
             setError,
-            setUser);
+            handleUser);
     }, [token]);
 
-    useEffect(() => {   //positions
+    useEffect(() => {
         const fetchFromApiWithToken = withTokenFetchFromApi(token);
         fetchFromApiWithToken(
             API_METHODS.GET,
-            `favouritePositions/${id}`,
+            `favouritePositions/${userId}`,
             setLoading,
             setError,
-            setFavoritePosition);
+            handlePosition);
     }, [token]);
 
-    useEffect(() => {   //statistics
+    useEffect(() => {
         const fetchFromApiWithToken = withTokenFetchFromApi(token);
         fetchFromApiWithToken(
             API_METHODS.GET,
-            `statistics/${id}`,
+            `statistics/${userId}`,
             setLoading,
             setError,
-            setStatistics
-        );
+            setStats);
+    }, [token]);
+
+    useEffect(() => {
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            `statistics/${userId}`,
+            setLoading,
+            setError,
+            handlePosition);
     }, [token]);
 
     return (
         <li className='friend'>
-            <img className="profile-pic" src={props.picSquare} />
+            <img className="profile-pic" src={user && user.image ? user.image : ProfilePlaceholder} />
 
-            <h3>{props.name}</h3>
+            <h3>{user ? user.firstName + " " + user.lastName : null}</h3>
 
-            <div className="nickname">
-                Nickname: {props.nickname}
-            </div>
+            {/* <div className="nickname">
+                Nickname: {user ? user.username : null}
+            </div> */}
             <br></br>
 
             <Button
                 type="submit"
-                variant="contained"
+                variant="outlined"
                 color="primary"
                 className="button"
                 onClick={() => { setOpen(true); }}
@@ -89,23 +117,27 @@ export default function Friend(props) {
                 onClose={onDialogClose}>
                 <DialogContent >
                     <Box className={classes.box}>
-                        <RoundedImage className={classes.image} image={ProfilePlaceholder}
+                        <RoundedImage className={classes.image} image={user && user.image ? user.image : ProfilePlaceholder}
                             roundedColor="#e6e6e6"
                             roundedSize="13"
                             imageWidth="160"
                             imageHeight="160"
                         />
-                        <h2>{user ? user.firstName + " " + user.lastName : null}</h2>
-                        <p className={classes.positions}>{favoritePosition ? favoritePosition.PositionResponse.side + " " + favoritePosition.PositionResponse.name : null}</p>
+                        <h2 className={classes.header}>{user ? user.firstName + " " + user.lastName : null}</h2>
+                        <p className={classes.positions}>{positions && positions[0] ? "Ulubione pozycje: " + positions[0].positionId.side + " " + positions[0].positionId.name : "brak ulubionych pozycji"}</p>
                         <p>
-                            {statistics ? statistics.matchesPlayed + " " + statistics.hoursPlayed + " " + statistics.goalsScored : null}
+                            {stats ? stats.matchesPlayed + " rozegranych meczów | " + stats.hoursPlayed + "  godzin na boisku | " + stats.goalsScored + " strzelonych goli" : null}
+                        </p>
+                        <p>
+                            {stats ? stats.yellowCardsReceived + " otrzymanych żółtych kartek | " + stats.redCardsReceived + " otrzymanych czerwonych kartek | " + stats.fauls + "  faulowań" : null}
                         </p>
                         <Button
                             type="submit"
                             variant="contained"
                             color="primary"
-                            disabled={added}
-                            className={classes.button}>
+                            className={classes.button}
+                            disabled={true}
+                        >
                             Wyślij zaproszenie do znajomych
                             </Button>
                     </Box>
@@ -114,11 +146,3 @@ export default function Friend(props) {
         </li>
     );
 }
-
-Friend.propTypes = {
-    name: PropTypes.string.isRequired
-    , picSquare: PropTypes.string.isRequired
-    , nickname: PropTypes.string.isRequired
-    , added: PropTypes.bool.isRequired
-    , id: PropTypes.string.isRequired
-};

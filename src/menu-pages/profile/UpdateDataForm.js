@@ -11,7 +11,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { SERVER_URL } from "../../config";
 import { Redirect } from "react-router-dom";
-import { API_METHODS, fetchFromApi } from "../../api/baseFetch";
+import { API_METHODS, fetchFromApi, withTokenFetchFromApi } from "../../api/baseFetch";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -33,8 +33,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export function UpdateDataForm() {
+export const UpdateDataForm = ({ token, logout }) => {
     const classes = useStyles();
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const [firstName, setFirstName] = useState(null);
     const [lastName, setLastName] = useState(null);
@@ -53,8 +56,8 @@ export function UpdateDataForm() {
     const [submitButtonEnabled, setSubmitButtonEnabled] = useState(false);
 
     const [isUpdateSuccessful, setUpdateSuccessful] = useState(null);
-    const [isLoading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    // const [isLoading, setLoading] = useState(false);
+    // const [error, setError] = useState(null);
     const [header, setHeader] = useState("");
 
     useEffect(() => {
@@ -92,24 +95,63 @@ export function UpdateDataForm() {
         isUpdateSuccessful
     ]);
 
-    const onSubmit = (e) => {
-        e.preventDefault();
-        fetchFromApi(
-            API_METHODS.PUT,
-            "users",
+    useEffect(() => {
+        console.log('useEffect');
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            'profile',
             setLoading,
             setError,
-            () => setUpdateSuccessful(true),
-            {
-                firstName: firstName,
-                lastName: lastName,
-                dateOfBirth: birthday.toISOString().split('T')[0],
-                password: password,
-                email: email,
-                username: firstName,
-            }
-        );
+            setUser);
+    }, [token]);
+
+    // const onSubmit = (e) => {
+    //     e.preventDefault();
+    //     fetchFromApi(
+    //         API_METHODS.PUT,
+    //         "users",
+    //         setLoading,
+    //         setError,
+    //         () => setUpdateSuccessful(true),
+    //         {
+    //             firstName: firstName,
+    //             lastName: lastName,
+    //             dateOfBirth: birthday.toISOString().split('T')[0],
+    //             password: password,
+    //             email: email,
+    //             username: firstName,
+    //         }
+    //     );
+    //     setHeader("✅ Zaktualizowano");
+    // };
+
+    const onSubmit = (e) => {
+        console.log('onSubmit');
+        const newUser = { ...user };
+        newUser.firstName = firstName;
+        newUser.lastName = lastName;
+        newUser.email = email;
+        newUser.birthday = birthday;
+        newUser.password = password;
+        newUser.firstName = firstName;
+        console.log('test');
+        updateUser(newUser);
         setHeader("✅ Zaktualizowano");
+        setUpdateSuccessful(true)
+    };
+
+    const updateUser = (newUserDto) => {
+        console.log('updateUser');
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        console.log('updateUser');
+        fetchFromApiWithToken(
+            API_METHODS.PUT,
+            'profile',
+            setLoading,
+            setError,
+            setUser,
+            newUserDto);
     };
 
     return (
