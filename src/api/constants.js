@@ -21,3 +21,9 @@ export const EVENT_NAMES = {
     RED_CARD: "Czerwona kartka",
     ASSIST: "Asysta",
 };
+
+export const TIME = {
+    PAST: "past",
+    PRESENT: "present",
+    FUTURE: "future",
+};

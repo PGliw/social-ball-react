@@ -20,6 +20,7 @@ import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import {PositionPicker} from "./PositionPicker";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import {formatDate} from "../../../utils/helpers"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -50,11 +51,6 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const formatDate = (date) => {
-    var options = {year: 'numeric', month: 'long', day: 'numeric'};
-    return date.toLocaleDateString('pl-PL', options);
-};
-
 function Comment(props) {
     const classes = useStyles();
 
@@ -80,14 +76,14 @@ export default function MatchCard(props) {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
     const match = props.footballMatch;
-    const author = match.organizer.firstName + match.organizer.lastName;
+    const author = match.details.organizer;
     const authorAvatar = author.image ?
         <Avatar alt={author} src="/static/images/avatar/2.jpg"/>
         :
         <Avatar alt={author} src={author.image}/>;
     const startDateTime = new Date(match.beginningTime);
     const endDateTime = new Date(match.endingTime);
-    const [team1, team2] = props.footballMatch.teams;
+    const [team1, team2] = props.footballMatch.details.teams;
     const team1ConfirmedMembers = team1 ? team1.teamMembers.filter(teamMember => teamMember.user) : [];
     const team2ConfirmedMembers = team2 ? team2.teamMembers.filter(teamMember => teamMember.user) : [];
 
@@ -95,10 +91,7 @@ export default function MatchCard(props) {
         setExpanded(!expanded);
     };
 
-    const formatDate = (date) => {
-        const options = {year: 'numeric', month: 'long', day: 'numeric'};
-        return date.toLocaleDateString('pl-PL', options);
-    };
+
 
     return (
         <Card className={classes.root}>
@@ -109,7 +102,7 @@ export default function MatchCard(props) {
                         <MoreVertIcon/>
                     </IconButton>
                 }
-                title={author}
+                title={author.firstName + " " + author.lastName}
                 subheader={formatDate(startDateTime)}
             />
             <CardContent>

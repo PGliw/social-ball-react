@@ -32,6 +32,7 @@ export const fetchFromApi = (method, pathSuffix, handleLoading, handleError, han
             handleSuccess(responseBody);
         }
     }).catch(error => {
+        console.error(error);
         if (error.message) {
             handleError(error.message)
         } else {
@@ -40,5 +41,5 @@ export const fetchFromApi = (method, pathSuffix, handleLoading, handleError, han
     });
 };
 
-export const withTokenFetchFromApi = (token) => (method, pathSuffix, handleLoading, handleError, handleSuccess, body, headers = {'Authorization': 'Bearer ' + token}, defaultErrorMessage = 'Nieznany błąd') =>
+export const withTokenFetchFromApi = (token, logout) => (method, pathSuffix, handleLoading, handleError, handleSuccess, body, headers = {'Authorization': 'Bearer ' + token}, defaultErrorMessage = 'Nieznany błąd') =>
     fetchFromApi(method, pathSuffix, handleLoading, handleError, handleSuccess, body, headers, defaultErrorMessage);

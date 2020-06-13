@@ -47,7 +47,7 @@ export const Board = ({token, logout}) => {
             const fetchFromProtectedApi = withTokenFetchFromApi(token);
             fetchFromProtectedApi(
                 API_METHODS.GET,
-                'footballMatches',
+                'footballMatches?detailed=true',
                 setLoading,
                 setError,
                 handleAllMatches,

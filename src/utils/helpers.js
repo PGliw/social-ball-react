@@ -11,3 +11,8 @@ export function notNullOrEmptyValues(obj) {
     }
     return state;
 }
+
+export const formatDate = (date) => {
+    const options = {year: 'numeric', month: 'long', day: 'numeric'};
+    return date.toLocaleDateString('pl-PL', options);
+};
