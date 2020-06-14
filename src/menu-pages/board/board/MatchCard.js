@@ -17,10 +17,14 @@ import Grid from '@material-ui/core/Grid';
 import LocationIcon from '@material-ui/icons/LocationOn';
 import Avatar from '@material-ui/core/Avatar';
 import AvatarGroup from '@material-ui/lab/AvatarGroup';
-import {PositionPicker} from "./PositionPicker";
+import {MatchSquad} from "./MatchSquad";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import {formatDate} from "../../../utils/helpers"
+import {TIME} from "../../../api/constants";
+import {TShirtPlayer} from "../../../forms/new_match/teambuilder/TShirtPlayer";
+import ProfilePlaceholder from "../../../assets/profile-placeholder.png";
+import RoundedImage from "react-rounded-image";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -49,7 +53,22 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 32,
         backgroundColor: theme.palette.grey[200],
         boxShadow: "none"
-    }
+    },
+    pastMatchStatus: {
+        background: "#bfbfbf",
+        color: "#4a4a4a",
+        padding: '2px',
+    },
+    presentMatchStatus: {
+        background: "#fafaaa",
+        color: "#3c008a",
+        padding: '2px',
+    },
+    futureMatchStatus: {
+        background: "#abffce",
+        padding: '2px',
+    },
+
 }));
 
 function Comment(props) {
@@ -92,8 +111,39 @@ export default function MatchCard(props) {
         setExpanded(!expanded);
     };
 
+    const renderTimeStatus = (match) => {
+        const statusTime = match.statusTime;
+        switch (statusTime) {
+            case TIME.PAST:
+                return <div className={classes.pastMatchStatus}>Mecz zakończony ({match.score ? match.score : "- : -"})</div>;
+            case TIME.PRESENT: {
+                const actualTime = new Date() - startDateTime;
+                return <div className={classes.presentMatchStatus}>W trakcie spotkania</div>;
+            }
+            case TIME.FUTURE:
+                return <div className={classes.futureMatchStatus}>Propozycja meczu</div>;
+            default:
+                console.error("Invalid match status time: " + statusTime);
+        }
+    };
+
+    const matchMemberMapper = (matchMember, team) => {
+        if (matchMember.user) {
+            const user = matchMember.user;
+            return <RoundedImage image={user && user.image ? user.image : ProfilePlaceholder}
+                                 roundedColor={team.shirtColours}
+                                 roundedSize="13"
+                                 imageWidth="100"
+                                 imageHeight="100"
+            />
+        }  else {
+            return TShirtPlayer({color: team.shirtColours})
+        }
+    };
+
     return (
         <Card className={classes.root}>
+            {renderTimeStatus(props.footballMatch)}
             <CardHeader
                 avatar={authorAvatar}
                 action={
@@ -108,7 +158,7 @@ export default function MatchCard(props) {
                 <Button onClick={props.openProtocol}>Protokół pomeczowy</Button>
                 {
                     props.positions && match.details.teams && match.details.teams.length > 0 ?
-                        <PositionPicker teams={match.details.teams} positions={props.positions}/>
+                        <MatchSquad teams={match.details.teams} positions={props.positions} matchMemberMapper={matchMemberMapper}/>
                         : null
                 }
                 <Grid container spacing={2}>

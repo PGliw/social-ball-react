@@ -2,7 +2,7 @@ import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {POSITION_NAMES, SIDE_NAMES} from "../../../api/constants";
 import {TShirtPlayer} from "../../../forms/new_match/teambuilder/TShirtPlayer";
-import styles from "./PositionPicker.module.css"
+import styles from "../../../forms/new_match/teambuilder/TeamBuilder.module.css"
 import Soccer_field from "../../../assets/Soccer_field.png";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +35,8 @@ const PitchHalf = (props) => {
     );
 };
 
-export const PositionPicker = ({teams, positions}) => {
+// matchMemberMapper: (matchMember, team) => (color) => Component({})
+export const MatchSquad = ({teams, positions, matchMemberMapper = ((matchMember, team) => TShirtPlayer({color: team.shirtColours})) }) => {
         const classes = useStyles();
         const withPositions = (positions) => (team) => {
             const teamMembers = team.teamMembers.map(teamMember => {
@@ -52,14 +53,10 @@ export const PositionPicker = ({teams, positions}) => {
         const team2 = withPositions(positions)(teams[1]);
 
 
-        const withNullPlayer = (player) => {
-            if (player) return player.id;
-            else return null;
-        };
-
-        const lineOfPlayersToLine = (lineOfPlayers, color) => {
+        const lineOfPlayersToLine = (lineOfPlayers, team) => {
             return <div className={classes.lineStyle}>
-                {lineOfPlayers.map(item => TShirtPlayer({color: color}))}
+                {/*{lineOfPlayers.map(item => TShirtPlayer({color: color}))}*/}
+                {lineOfPlayers.map(matchMember => matchMemberMapper(matchMember, team))}
             </div>;
         };
 
@@ -75,11 +72,10 @@ export const PositionPicker = ({teams, positions}) => {
                     playersLines.push(sideNames.map(sideName => team.teamMembers.find(teamMember => teamMember.position.name === positionName && teamMember.position.side === sideName)).filter(teamMember => !!teamMember));
                 }
             });
-            console.log(playersLines);
             return <PitchHalf
                 isRightSide={isRightSide}
             >
-                {playersLines.map(playersLine => lineOfPlayersToLine(playersLine, team.shirtColours))}
+                {playersLines.map(playersLine => lineOfPlayersToLine(playersLine, team))}
             </PitchHalf>
 
         };
