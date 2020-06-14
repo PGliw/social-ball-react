@@ -33,11 +33,17 @@ export const Board = ({token, logout}) => {
     const [positions, setPositions] = useState(null);
     const [isProtocolOpened, setProtocolOpened] = useState(false);
     const [protocolMatchId, setProtocolMatchId] = useState(null);
+    const [filteredMatches, setFilteredMatches] = useState([]);
+    const [matchFilterPredicate, setMatchFilterPredicate] = useState(() => _ => true);
 
     const handleAllMatches = (newAllMatches) => {
         console.log(newAllMatches);
         setAllMatches(newAllMatches);
     };
+
+    useEffect(() => {
+        setFilteredMatches(allMatches.filter(_ => true))
+    }, [matchFilterPredicate, allMatches]);
 
     useEffect(() => {
         if (error) alert(error);
@@ -71,17 +77,40 @@ export const Board = ({token, logout}) => {
         setProtocolMatchId(null);
     };
 
+    const updateOneMatch = (index, newMatch) => {
+        const newMatches = [...allMatches];
+        newMatches[index] = newMatch;
+        setAllMatches(newMatches);
+    };
+
+    const handleRefreshMatch = (matchId) => {
+        const idx = allMatches.findIndex(match => match.id === matchId);
+        if (idx >= 0) {
+            const fetchFromProtectedApi = withTokenFetchFromApi(token);
+            fetchFromProtectedApi(
+                API_METHODS.GET,
+                `footballMatches/${matchId}`,
+                setLoading,
+                setError,
+                (newMatch) => updateOneMatch(idx, newMatch)
+            );
+        } else {
+            console.error("Match with id=" + matchId + " not found");
+        }
+    };
+
     if (newMatchClicked === true) {
         return <Redirect to={"/new-match"} push/>
     } else
         return <NavDrawer token={token} logout={logout}>
             <Grid container direction="column" spacing={3} alignItems="center" style={{marginTop: "30px"}}
                   className={classes.root}>
-                {allMatches.map(footballMatch => (
+                {filteredMatches.map(footballMatch => (
                     <Grid item>
                         <MatchCard
                             openProtocol={() => handleOpenProtocol(footballMatch.id)}
                             footballMatch={footballMatch}
+                            refreshMatch={() => handleRefreshMatch(footballMatch.id)}
                             comments={[ // TODO fetch comments from API
                                 {
                                     avatar: <Avatar alt="Natalia Wcisło" src="/static/images/avatar/2.jpg"/>,

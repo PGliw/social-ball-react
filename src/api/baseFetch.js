@@ -1,10 +1,10 @@
 import {SERVER_URL} from "../config";
 
 export const API_METHODS = {
-  POST: 'POST',
-  PUT: 'PUT',
-  DELETE: 'DELETE',
-  GET: 'GET',
+    POST: 'POST',
+    PUT: 'PUT',
+    DELETE: 'DELETE',
+    GET: 'GET',
 };
 
 export const fetchFromApi = (method, pathSuffix, handleLoading, handleError, handleSuccess, body = null, headers = {}, defaultErrorMessage = 'Nieznany błąd') => {
@@ -21,9 +21,12 @@ export const fetchFromApi = (method, pathSuffix, handleLoading, handleError, han
     const initBlock = body === null ? baseInitBlock : {...baseInitBlock, body: JSON.stringify(body)};
     fetch(`${SERVER_URL}/${pathSuffix}`, initBlock)
         .then((response) => {
-        handleLoading(false);
-        return response.json();
-    }).then(responseBody => {
+            handleLoading(false);
+            if (response.status === 401) {
+                throw new Error(401);
+            }
+            return response.json();
+        }).then(responseBody => {
         if (isError && responseBody && responseBody.message) {
             handleError(responseBody.message);
         } else if (isError) {
@@ -32,7 +35,6 @@ export const fetchFromApi = (method, pathSuffix, handleLoading, handleError, han
             handleSuccess(responseBody);
         }
     }).catch(error => {
-        console.error(error);
         if (error.message) {
             handleError(error.message)
         } else {
@@ -41,5 +43,5 @@ export const fetchFromApi = (method, pathSuffix, handleLoading, handleError, han
     });
 };
 
-export const withTokenFetchFromApi = (token, logout) => (method, pathSuffix, handleLoading, handleError, handleSuccess, body, headers = {'Authorization': 'Bearer ' + token}, defaultErrorMessage = 'Nieznany błąd') =>
+export const withTokenFetchFromApi = (token) => (method, pathSuffix, handleLoading, handleError, handleSuccess, body, headers = {'Authorization': 'Bearer ' + token}, defaultErrorMessage = 'Nieznany błąd') =>
     fetchFromApi(method, pathSuffix, handleLoading, handleError, handleSuccess, body, headers, defaultErrorMessage);
