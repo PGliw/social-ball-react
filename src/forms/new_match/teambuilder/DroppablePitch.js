@@ -1,8 +1,7 @@
 import React from 'react';
 import styles from "./TeamBuilder.module.css";
 import Soccer_field from "../../../assets/Soccer_field.png";
-import {DroppablePitchHalf} from "./DroppablePitchHalf";
-
+import {DroppablePitchHalf, PitchHalf} from "./DroppablePitchHalf";
 
 export function DroppablePitch(props) {
     const [team1, team2] = props.teams;

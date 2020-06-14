@@ -12,3 +12,18 @@ export const POSITION_NAMES = {
     MIDFIELD: "pomocnik",
     FORWARD: "napastnik",
 };
+
+export const EVENT_NAMES = {
+    GOAL: "Gol",
+    FOUL: "Faul",
+    INJURY: "Kontuzja",
+    YELLOW_CARD: "Żółta kartka",
+    RED_CARD: "Czerwona kartka",
+    ASSIST: "Asysta",
+};
+
+export const TIME = {
+    PAST: "past",
+    PRESENT: "present",
+    FUTURE: "future",
+};

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -17,12 +17,23 @@ import Grid from '@material-ui/core/Grid';
 import LocationIcon from '@material-ui/icons/LocationOn';
 import Avatar from '@material-ui/core/Avatar';
 import AvatarGroup from '@material-ui/lab/AvatarGroup';
-import {PositionPicker} from "./PositionPicker";
+import {MatchSquad} from "./MatchSquad";
 import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import {formatDate} from "../../../utils/helpers"
+import {TIME} from "../../../api/constants";
+import {TShirtPlayer} from "../../../forms/new_match/teambuilder/TShirtPlayer";
+import ProfilePlaceholder from "../../../assets/profile-placeholder.png";
+import RoundedImage from "react-rounded-image";
+import {TShirtCsv} from "../../../assets/TShirtCsv";
+import Tooltip from "@material-ui/core/Tooltip";
+import {withMaterialDialog} from "../../../hoc/withMaterialDialog";
+import {MatchProtocol} from "../../../forms/match_protocol/MatchProtocol";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        maxWidth: 600,
+        maxWidth: 900,
+        minWidth: 600,
     },
     media: {
         height: 0,
@@ -46,13 +57,25 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 32,
         backgroundColor: theme.palette.grey[200],
         boxShadow: "none"
+    },
+    pastMatchStatus: {
+        background: "#bfbfbf",
+        color: "#4a4a4a",
+        padding: '2px',
+    },
+    presentMatchStatus: {
+        background: "#fafaaa",
+        color: "#3c008a",
+        padding: '2px',
+    },
+    futureMatchStatus: {
+        background: "#abffce",
+        padding: '2px',
+    },
+    openProtocolButton: {
+        float: "right",
     }
 }));
-
-const formatDate = (date) => {
-    var options = {year: 'numeric', month: 'long', day: 'numeric'};
-    return date.toLocaleDateString('pl-PL', options);
-};
 
 function Comment(props) {
     const classes = useStyles();
@@ -79,14 +102,15 @@ export default function MatchCard(props) {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
     const match = props.footballMatch;
-    const author = match.organizer.firstName + match.organizer.lastName;
+    const author = match.details.organizer;
     const authorAvatar = author.image ?
         <Avatar alt={author} src="/static/images/avatar/2.jpg"/>
         :
         <Avatar alt={author} src={author.image}/>;
     const startDateTime = new Date(match.beginningTime);
     const endDateTime = new Date(match.endingTime);
-    const [team1, team2] = props.footballMatch.teams;
+    const [team1, team2] = props.footballMatch.details.teams;
+    const [isProtocolOpened, setProtocolOpened] = useState(false);
     const team1ConfirmedMembers = team1 ? team1.teamMembers.filter(teamMember => teamMember.user) : [];
     const team2ConfirmedMembers = team2 ? team2.teamMembers.filter(teamMember => teamMember.user) : [];
 
@@ -94,147 +118,197 @@ export default function MatchCard(props) {
         setExpanded(!expanded);
     };
 
-    const formatDate = (date) => {
-        const options = {year: 'numeric', month: 'long', day: 'numeric'};
-        return date.toLocaleDateString('pl-PL', options);
+    const renderTimeStatus = (match) => {
+        const statusTime = match.statusTime;
+        switch (statusTime) {
+            case TIME.PAST:
+                return <div className={classes.pastMatchStatus}>Mecz zakończony
+                    ({match.score ? match.score : "- : -"})
+                    <Button className={classes.openProtocolButton} onClick={() => setProtocolOpened(true)}>
+                        Protokół pomeczowy
+                    </Button>
+                    <div style={{clear: "both"}}/>
+                </div>;
+            case TIME.PRESENT: {
+                const actualTime = new Date() - startDateTime; // TODO display minute and second of the match
+                return <div className={classes.presentMatchStatus}>W trakcie spotkania</div>;
+            }
+            case TIME.FUTURE:
+                return <div className={classes.futureMatchStatus}>Propozycja meczu</div>;
+            default:
+                console.error("Invalid match status time: " + statusTime);
+        }
+    };
+
+    const matchMemberMapper = (matchMember, team) => {
+        if (matchMember.user) {
+            const user = matchMember.user;
+            let toolTipTitle = "Zobacz profil";
+            if (props.currentUser && props.currentUser.id === matchMember.user.id) {
+                toolTipTitle = "Zrezygnuj";
+            }
+            return <Tooltip title={toolTipTitle}>
+                <div>
+                    <RoundedImage image={user && user.image ? user.image : ProfilePlaceholder}
+                                  roundedColor={team.shirtColours}
+                                  roundedSize="13"
+                                  imageWidth="80"
+                                  imageHeight="80"
+                    />
+                </div>
+            </Tooltip>
+        } else {
+            return <Tooltip title="Dołącz do gry">
+                {TShirtPlayer({color: team.shirtColours})}
+            </Tooltip>
+        }
     };
 
     return (
-        <Card className={classes.root}>
-            <CardHeader
-                avatar={authorAvatar}
-                action={
-                    <IconButton aria-label="settings">
-                        <MoreVertIcon/>
-                    </IconButton>
-                }
-                title={author}
-                subheader={formatDate(startDateTime)}
-            />
-            <CardContent>
-                {
-                    props.positions && match.teams && match.teams.length > 0 ?
-                        <PositionPicker teams={match.teams} positions={props.positions}/>
-                        : null
-                }
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={6}>
-                                <Typography variant="h6">
-                                    {match.title}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Grid container direction="row" justify="flex-end">
-                                    <Grid item>
-                                        <Typography variant="caption" color="textSecondary">
-                                            {match.pitch ? match.pitch.name : ''}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item>
-                                        <LocationIcon style={{fontSize: 16}} color="disabled"/>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                        <Typography variant="subtitle2" color="textSecondary">
-                            {startDateTime.toLocaleDateString()}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container direction="row" justify="center" alignItems="center" spacing={3}>
-                            <Grid item align="right">
-                                <Typography variant="subtitle2" color="textSecondary">
-                                    {team1 ? team1.name : ''}
-                                </Typography>
-                                <AvatarGroup max={4}>
-                                    {team1ConfirmedMembers.map(teamMember => {
-                                            const alt = teamMember.user.firstName + " " + teamMember.user.lastName;
-                                            const src = teamMember.user.image ? teamMember.user.image : "/static/images/avatar/1.jpg"; // TODO
-                                            return <Avatar alt={alt} src={src}/>
-                                        }
-                                    )}
-
-                                </AvatarGroup>
-                            </Grid>
-                            <Grid item align="center">
-                                vs
-                            </Grid>
-                            <Grid item align="left">
-                                <Typography variant="subtitle2" color="textSecondary">
-                                    {team2 ? team2.name : ''}
-                                </Typography>
-                                <AvatarGroup max={4}>
-                                    {team1ConfirmedMembers.map(teamMember => {
-                                            const alt = teamMember.user.firstName + " " + teamMember.user.lastName;
-                                            const src = teamMember.user.image ? teamMember.user.image : "/static/images/avatar/1.jpg"; // TODO
-                                            return <Avatar alt={alt} src={src}/>
-                                        }
-                                    )}
-                                </AvatarGroup>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                            {match.description}
-                        </Typography>
-                    </Grid>
-                </Grid>
-            </CardContent>
-            <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
-                    <FavoriteIcon/>
-                </IconButton>
-                <IconButton aria-label="share">
-                    <ShareIcon/>
-                </IconButton>
-                <IconButton
-                    className={clsx(classes.expand, {
-                        [classes.expandOpen]: expanded,
-                    })}
-                    onClick={handleExpandClick}
-                    aria-expanded={expanded}
-                    aria-label="show more"
-                >
-                    <ExpandMoreIcon/>
-                </IconButton>
-            </CardActions>
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Fragment>
+            <Card className={classes.root}>
+                {renderTimeStatus(props.footballMatch)}
+                <CardHeader
+                    avatar={authorAvatar}
+                    action={
+                        <IconButton aria-label="settings">
+                            <MoreVertIcon/>
+                        </IconButton>
+                    }
+                    title={author.firstName + " " + author.lastName}
+                    subheader={formatDate(startDateTime)}
+                />
                 <CardContent>
+                    {
+                        props.positions && match.details.teams && match.details.teams.length > 0 ?
+                            <MatchSquad teams={match.details.teams} positions={props.positions}
+                                        matchMemberMapper={matchMemberMapper}/>
+                            : null
+                    }
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Grid container className={classes.messageArea} spacing={1}>
-                                {props.comments.map((comment) =>
-                                    <Comment
-                                        avatar={comment.avatar}
-                                        author={comment.author}
-                                        date={comment.date}
-                                        content={comment.content}
-                                    />
-                                )}
+                            <Grid container spacing={3}>
+                                <Grid item xs={6}>
+                                    <Typography variant="h6">
+                                        {match.title}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Grid container direction="row" justify="flex-end">
+                                        <Grid item>
+                                            <Typography variant="caption" color="textSecondary">
+                                                {match.pitch ? match.pitch.name : ''}
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item>
+                                            <LocationIcon style={{fontSize: 16}} color="disabled"/>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Typography variant="subtitle2" color="textSecondary">
+                                {startDateTime.toLocaleDateString()}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Grid container direction="row" justify="center" alignItems="center" spacing={3}>
+                                <Grid item align="right">
+                                    <Typography variant="subtitle2" color="textSecondary">
+                                        {team1 ? team1.name : ''}
+                                    </Typography>
+                                    <AvatarGroup max={4}>
+                                        {team1ConfirmedMembers.map(teamMember => {
+                                                const alt = teamMember.user.firstName + " " + teamMember.user.lastName;
+                                                const src = teamMember.user.image ? teamMember.user.image : "/static/images/avatar/1.jpg"; // TODO
+                                                return <Avatar alt={alt} src={src}/>
+                                            }
+                                        )}
+
+                                    </AvatarGroup>
+                                </Grid>
+                                <Grid item align="center">
+                                    vs
+                                </Grid>
+                                <Grid item align="left">
+                                    <Typography variant="subtitle2" color="textSecondary">
+                                        {team2 ? team2.name : ''}
+                                    </Typography>
+                                    <AvatarGroup max={4}>
+                                        {team2ConfirmedMembers.map(teamMember => {
+                                                const alt = teamMember.user.firstName + " " + teamMember.user.lastName;
+                                                const src = teamMember.user.image ? teamMember.user.image : "/static/images/avatar/1.jpg"; // TODO
+                                                return <Avatar alt={alt} src={src}/>
+                                            }
+                                        )}
+                                    </AvatarGroup>
+                                </Grid>
                             </Grid>
                         </Grid>
                         <Grid item xs={12}>
-                            <Grid container xs={12} spacing={1} fullWidth>
-                                <Grid item>
-                                    <Avatar alt="Natalia Wcisło" src="/static/images/avatar/2.jpg"/>
-                                </Grid>
-                                <Grid item xs>
-                                    <TextField
-                                        id="firstName"
-                                        fullWidth
-                                        variant="outlined"
-                                        size="small"
-                                        placeholder="Napisz komentarz..."
-                                    />
-                                </Grid>
-                            </Grid>
+                            <Typography variant="body2" color="textSecondary" component="p">
+                                {match.description}
+                            </Typography>
                         </Grid>
                     </Grid>
                 </CardContent>
-            </Collapse>
-        </Card>
+                <CardActions disableSpacing>
+                    <IconButton aria-label="add to favorites">
+                        <FavoriteIcon/>
+                    </IconButton>
+                    <IconButton aria-label="share">
+                        <ShareIcon/>
+                    </IconButton>
+                    <IconButton
+                        className={clsx(classes.expand, {
+                            [classes.expandOpen]: expanded,
+                        })}
+                        onClick={handleExpandClick}
+                        aria-expanded={expanded}
+                        aria-label="show more"
+                    >
+                        <ExpandMoreIcon/>
+                    </IconButton>
+                </CardActions>
+                <Collapse in={expanded} timeout="auto" unmountOnExit>
+                    <CardContent>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <Grid container className={classes.messageArea} spacing={1}>
+                                    {props.comments.map((comment) =>
+                                        <Comment
+                                            avatar={comment.avatar}
+                                            author={comment.author}
+                                            date={comment.date}
+                                            content={comment.content}
+                                        />
+                                    )}
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Grid container xs={12} spacing={1} fullWidth>
+                                    <Grid item>
+                                        <Avatar alt="Natalia Wcisło" src="/static/images/avatar/2.jpg"/>
+                                    </Grid>
+                                    <Grid item xs>
+                                        <TextField
+                                            id="firstName"
+                                            fullWidth
+                                            variant="outlined"
+                                            size="small"
+                                            placeholder="Napisz komentarz..."
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </CardContent>
+                </Collapse>
+            </Card>
+            {withMaterialDialog(MatchProtocol, isProtocolOpened, () => setProtocolOpened(false), null)({
+                token: props.token,
+                match: props.footballMatch,
+
+            })}
+        </Fragment>
     );
 }
