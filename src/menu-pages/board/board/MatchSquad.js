@@ -67,7 +67,7 @@ export const MatchSquad = ({teams, positions, matchMemberMapper = ((matchMember,
             positionNames.forEach(positionName => {
                 if (positionName === POSITION_NAMES.GOALKEEPER) {
                     const foundGoalkeeper = team.teamMembers.find(teamMember => teamMember.position.name === positionName);
-                    playersLines.push([foundGoalkeeper]);
+                    playersLines.push(!!foundGoalkeeper ? [foundGoalkeeper] : []);
                 } else {
                     playersLines.push(sideNames.map(sideName => team.teamMembers.find(teamMember => teamMember.position.name === positionName && teamMember.position.side === sideName)).filter(teamMember => !!teamMember));
                 }

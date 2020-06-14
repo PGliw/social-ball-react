@@ -87,8 +87,6 @@ export const MatchProtocol = ({token, match}) => {
         return matchMembersLookup;
     };
 
-    const matchMembersLookup = createMatchMemberLookup();
-
     const eventResponseToData = (ev) => {
         // return {type: ev.type, dateTime: ev.dateTime, team: ev.teamName, matchMember: ev.matchMemberResponse}
         // const matchMemberName = firstAndLastNameOf(ev.matchMemberResponse);
@@ -185,6 +183,11 @@ export const MatchProtocol = ({token, match}) => {
         setEditMode(false);
     };
 
+
+    if (!match.teams || !match.teams.length < 2) {
+        return <p>Brak informacji o drużynach</p>
+    }
+    const matchMembersLookup = createMatchMemberLookup();
     const columns = [
         {
             title: 'Zdarzenie',
