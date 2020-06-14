@@ -6,18 +6,6 @@ import "./FriendsList.css";
 import { API_METHODS, withTokenFetchFromApi } from "../../api/baseFetch";
 
 export const InvitationList = ({ token, logout }) => {
-    // constructor(props) {
-    //     super(props);
-
-    //     this.state = {
-    //         searchText: ""
-    //         , orderBy: "name"
-    //         , order: "ascending"
-    //         , ddd: "test"
-    //         , acquaitances: this.props.acquaitances
-    //     };
-    //     console.log(this.props);
-    // }
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -44,14 +32,6 @@ export const InvitationList = ({ token, logout }) => {
             setAcquaitances);
     }, [token]);
 
-    // render() {
-    //     const {
-    //         searchText
-    //         , orderBy
-    //         , order
-    //         , acquaitances
-    //     } = this.state;
-
     const invitationList = acquaitances !== null ? acquaitances
         .filter(friend => user ? user.id === friend.requestReceiver.id : null)
         .map(friend => (
@@ -59,7 +39,6 @@ export const InvitationList = ({ token, logout }) => {
                 token={token}
                 logout={logout}
                 id={friend.requestSender.id}
-            // key={friend.name}
             />
         )) : null;
 
