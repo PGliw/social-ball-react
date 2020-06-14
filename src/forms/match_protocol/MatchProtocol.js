@@ -20,7 +20,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import {isEmpty, notNullOrEmptyValues} from "../../utils/helpers";
+import {getKeyByValue, isEmpty, notNullOrEmptyValues} from "../../utils/helpers";
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref}/>),
@@ -64,40 +64,68 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export const MatchProtocol = ({token, matchId}) => {
+export const MatchProtocol = ({token, match}) => {
     const classes = useStyles();
-    const [isEditable, setEditable] = useState(false);
+    const isEditable = match.currentUserOrganizer;
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [existingEvents, setExistingEvents] = useState(null);
     const [events, setEvents] = useState(null);
-    const [match, setMatch] = useState(null);
     const [isEditMode, setEditMode] = useState(false);
-    const [user, setUser] = useState(null);
     const [isProtocolAdded, setProtocolAdded] = useState(false);
     const [data, setData] = useState([]);
+    const [protocolReloader, setProtocolReoalder] = useState(false);
+
+
+    const createMatchMemberLookup = () => {
+        const teamMemberLists = match.details.teams.map(team => team.teamMembers);
+        const matchMembers = [...teamMemberLists[0], ...teamMemberLists[1]];
+        const matchMembersLookup = {};
+        matchMembers.forEach((obj) => {
+            matchMembersLookup[obj.id] = firstAndLastNameOf(obj);
+        });
+        return matchMembersLookup;
+    };
+
+    const matchMembersLookup = createMatchMemberLookup();
 
     const eventResponseToData = (ev) => {
         // return {type: ev.type, dateTime: ev.dateTime, team: ev.teamName, matchMember: ev.matchMemberResponse}
-        const matchMemberName = firstAndLastNameOf(ev.matchMemberResponse);
-        return {type: ev.type, dateTime: ev.dateTime, team: ev.teamName, matchMember: matchMemberName}
-    };
-
-    const dataToEventDto = (dt) => {
-        if (match && match.teams && match.teams.length > 0) {
-            const type = dt.type;
-            const matchedTeam = match.teams.find(team => team.name === dt.team);
-            const matchedPlayer = matchedTeam.teamMembers.map(member => dt.matchMember === firstAndLastNameOf(member));
-            const matchMemberId = matchedPlayer ? matchedPlayer.id : null;
-            const footballMatchId = match.id;
-            const dateTime = dt.dateTime ? dt.dateTime.toISOString() : null;
-            return {type, matchMemberId, footballMatchId, dateTime}
+        // const matchMemberName = firstAndLastNameOf(ev.matchMemberResponse);
+        const typeKey = getKeyByValue(EVENT_NAMES, ev.type);
+        return {
+            id: ev.id,
+            type: typeKey,
+            dateTime: ev.dateTime ? new Date(ev.dateTime) : null,
+            matchMember: ev.matchMemberResponse.id
         }
     };
 
-    const firstAndLastNameOf = (matchMemberResponse) => {
-        return matchMemberResponse.user ? matchMemberResponse.user.firstName + ' ' + matchMemberResponse.user.lastName : "Nieznany"
+    const dataToEventDto = (dt) => {
+        const type = EVENT_NAMES[dt.type];
+        const matchMemberId = dt.matchMember ? dt.matchMember : null;
+        let dateTime = null;
+        if (dt.dateTime
+            && dt.dateTime.getMonth
+            && typeof dt.dateTime.getMonth === 'function'
+            && match
+            && match.beginningTime
+        ) {
+            const matchStartDate = new Date(match.beginningTime);
+            dateTime = new Date(matchStartDate.getTime());
+            dateTime.setHours(dt.dateTime.getHours());
+            dateTime.setMinutes(dt.dateTime.getMinutes());
+            dateTime.setSeconds(dt.dateTime.getSeconds());
+            dateTime = dt.dateTime.toISOString();
+        } else {
+            console.log("Invalid date obj: " + dt.dateTime);
+        }
+        return {id: dt.id, type, matchMemberId, dateTime}
     };
+
+    function firstAndLastNameOf(matchMemberResponse) {
+        return matchMemberResponse.user ? matchMemberResponse.user.firstName + ' ' + matchMemberResponse.user.lastName : "Nieznany"
+    }
 
     useEffect(() => {
         if (events) {
@@ -118,41 +146,11 @@ export const MatchProtocol = ({token, matchId}) => {
     }, [existingEvents]);
 
     useEffect(() => {
-        if (user && user.email && match && match.organizer && user.email === match.organizer.email) {
-            setEditable(true);
-        }
-    }, [user, match]);
-
-    useEffect(() => {
         if (!isEditMode) {
             const fetchFromApiWithToken = withTokenFetchFromApi(token);
             fetchFromApiWithToken(
                 API_METHODS.GET,
-                'profile',
-                setLoading,
-                setError,
-                setUser);
-        }
-    }, [token]);
-
-    useEffect(() => {
-        if (!isEditMode) {
-            const fetchFromApiWithToken = withTokenFetchFromApi(token);
-            fetchFromApiWithToken(
-                API_METHODS.GET,
-                `footballMatches/${matchId}`,
-                setLoading,
-                setError,
-                setMatch);
-        }
-    }, [token]);
-
-    useEffect(() => {
-        if (!isEditMode) {
-            const fetchFromApiWithToken = withTokenFetchFromApi(token);
-            fetchFromApiWithToken(
-                API_METHODS.GET,
-                `footballMatches/${matchId}/events`,
+                `footballMatches/${match.id}/events`,
                 setLoading,
                 setError,
                 setExistingEvents);
@@ -164,40 +162,42 @@ export const MatchProtocol = ({token, matchId}) => {
         setEditMode(false);
     };
 
+    const handleProtocolAdded = () => {
+        setProtocolReoalder(!protocolReloader);
+        setProtocolAdded(true);
+    };
+
     const handleSave = () => {
-        const eventsDtos = data.map(dataToEventDto).filter(dto => notNullOrEmptyValues(dto));
+        console.log(data);
+        const eventsDtos = data.map(dataToEventDto).filter(dto => !!dto && !!dto.matchMemberId);
         const protocolDto = {
             events: eventsDtos
         };
+        console.log(protocolDto);
         const fetchFromApiWithToken = withTokenFetchFromApi(token);
         fetchFromApiWithToken(
             API_METHODS.POST,
-            `footballMatches/${matchId}/events`,
+            `footballMatches/${match.id}/events`,
             setLoading,
             setError,
-            () => setProtocolAdded(true),
+            handleProtocolAdded,
             protocolDto);
         setEditMode(false);
     };
 
-    const [columns, setColumns] = useState([
+    const columns = [
         {
             title: 'Zdarzenie',
             field: 'type',
-            // lookup: EVENT_NAMES
+            lookup: EVENT_NAMES
         },
-        {title: 'Minuta', field: 'dateTime', type: 'time'},
-        {
-            title: 'Drużyna',
-            field: 'team',
-            // lookup: {},
-        },
+        {title: 'Czas zdarzenia', field: 'dateTime', type: 'time'},
         {
             title: 'Gracz',
             field: 'matchMember',
-            // lookup: {},
+            lookup: matchMembersLookup,
         },
-    ]);
+    ];
 
     if (match && match.hasProtocol === false && !isEditMode) {
         return <Box>
@@ -223,6 +223,7 @@ export const MatchProtocol = ({token, matchId}) => {
                         onRowAdd: newData =>
                             new Promise((resolve, reject) => {
                                 setTimeout(() => {
+                                    console.log([...data, newData]);
                                     setData([...data, newData]);
 
                                     resolve();
@@ -234,6 +235,7 @@ export const MatchProtocol = ({token, matchId}) => {
                                     const dataUpdate = [...data];
                                     const index = oldData.tableData.id;
                                     dataUpdate[index] = newData;
+                                    console.log([...dataUpdate]);
                                     setData([...dataUpdate]);
 
                                     resolve();

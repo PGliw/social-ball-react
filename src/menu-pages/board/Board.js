@@ -31,10 +31,9 @@ export const Board = ({token, logout}) => {
     const [loading, setLoading] = useState(false);
     const [allMatches, setAllMatches] = useState([]);
     const [positions, setPositions] = useState(null);
-    const [isProtocolOpened, setProtocolOpened] = useState(false);
-    const [protocolMatchId, setProtocolMatchId] = useState(null);
     const [filteredMatches, setFilteredMatches] = useState([]);
     const [matchFilterPredicate, setMatchFilterPredicate] = useState(() => _ => true);
+    const [user, setUser] = useState(null);
 
     const handleAllMatches = (newAllMatches) => {
         console.log(newAllMatches);
@@ -63,19 +62,21 @@ export const Board = ({token, logout}) => {
     );
 
     useEffect(() => {
+            const fetchFromApiWithToken = withTokenFetchFromApi(token);
+            fetchFromApiWithToken(
+                API_METHODS.GET,
+                'profile',
+                setLoading,
+                setError,
+                setUser);
+        },
+        [token]
+    );
+
+    useEffect(() => {
         const fetchFromAdiWithToken = withTokenFetchFromApi(token);
         fetchFromAdiWithToken(API_METHODS.GET, 'positions', setLoading, setError, setPositions);
     }, [token]);
-
-    const handleOpenProtocol = (matchId) => {
-        setProtocolMatchId(matchId);
-        setProtocolOpened(true);
-    };
-
-    const handleCloseProtocol = () => {
-        setProtocolOpened(false);
-        setProtocolMatchId(null);
-    };
 
     const updateOneMatch = (index, newMatch) => {
         const newMatches = [...allMatches];
@@ -108,9 +109,10 @@ export const Board = ({token, logout}) => {
                 {filteredMatches.map(footballMatch => (
                     <Grid item>
                         <MatchCard
-                            openProtocol={() => handleOpenProtocol(footballMatch.id)}
                             footballMatch={footballMatch}
                             refreshMatch={() => handleRefreshMatch(footballMatch.id)}
+                            currentUser={user}
+                            token={token}
                             comments={[ // TODO fetch comments from API
                                 {
                                     avatar: <Avatar alt="Natalia Wcisło" src="/static/images/avatar/2.jpg"/>,
@@ -129,10 +131,6 @@ export const Board = ({token, logout}) => {
                         />
                     </Grid>))
                 }
-                {withMaterialDialog(MatchProtocol, isProtocolOpened, handleCloseProtocol, null)({
-                    token: token,
-                    matchId: protocolMatchId
-                })}
             </Grid>
             <Fab variant={"extended"} color="primary" aria-label="add" className={classes.fab}
                  onClick={() => setNewMatchClicked(true)}>

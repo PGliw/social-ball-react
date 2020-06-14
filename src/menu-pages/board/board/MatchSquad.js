@@ -36,7 +36,7 @@ const PitchHalf = (props) => {
 };
 
 // matchMemberMapper: (matchMember, team) => (color) => Component({})
-export const MatchSquad = ({teams, positions, matchMemberMapper = ((matchMember, team) => TShirtPlayer({color: team.shirtColours})) }) => {
+export const MatchSquad = ({teams, positions, matchMemberMapper = ((matchMember, team) => TShirtPlayer({color: team.shirtColours}))}) => {
         const classes = useStyles();
         const withPositions = (positions) => (team) => {
             const teamMembers = team.teamMembers.map(teamMember => {
