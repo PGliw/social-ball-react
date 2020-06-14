@@ -1,8 +1,9 @@
 // fake data generator
 import React from "react";
 import styles from "./TeamBuilder.module.css";
-import {DroppableLine} from "./DroppableLine";
+import {DroppableLine, Line} from "./DroppableLine";
 import {DragDropContext} from 'react-beautiful-dnd';
+import {TShirtPlayer} from "./TShirtPlayer";
 
 
 // a little function to help us with reordering the result
@@ -30,7 +31,6 @@ const move = (source, destination, droppableSource, droppableDestination) => {
 
     return result;
 };
-
 
 export function DroppablePitchHalf(props) {
     const players = props.players;
@@ -105,6 +105,7 @@ export function DroppablePitchHalf(props) {
                 key={droppableName}
                 color={color}
                 droppableId={droppableName} items={items}
+                playerComponent={TShirtPlayer}
                 dropDisabled={dropDisabled || false}/>
         );
     });

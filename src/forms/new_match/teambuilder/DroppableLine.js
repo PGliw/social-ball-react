@@ -1,9 +1,7 @@
-import {Player} from "./Player";
 import React from "react";
-import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
+import {Draggable, Droppable} from 'react-beautiful-dnd';
 
-const getListStyle = isDraggingOver => ({
-    background: isDraggingOver ? 'rgba(130, 255, 151, 0.5)' : 'transparent',
+export const lineStyle = {
     display: 'flex',
     // justifyContent: 'space-between',
     flexDirection: 'column',
@@ -11,6 +9,11 @@ const getListStyle = isDraggingOver => ({
     border: '2px solid green',
     justifyContent: 'center',
     flexBasis: '100%',
+};
+
+const getDroppableLineStyle = isDraggingOver => ({
+    background: isDraggingOver ? 'rgba(130, 255, 151, 0.5)' : 'transparent',
+    ...lineStyle
 });
 
 const getItemStyle = (isDragging, draggableStyle) => ({
@@ -26,11 +29,36 @@ const getItemStyle = (isDragging, draggableStyle) => ({
     ...draggableStyle
 });
 
+
+// const
+const withDraggable = (component, props, id, index) => {
+    return (
+        <Draggable
+            key={id}
+            draggableId={id}
+            index={index}>
+            {(provided, snapshot) => (
+                <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    style={getItemStyle(
+                        snapshot.isDragging,
+                        provided.draggableProps.style
+                    )}>
+                    {component({...props})}
+                </div>
+            )}
+        </Draggable>
+    );
+};
+
 export function DroppableLine(props) {
     const droppableId = props.droppableId;
     const items = props.items;
     const color = props.color;
-    const isDropDisabled  = props.dropDisabled;
+    const isDropDisabled = props.dropDisabled;
+    const component = props.playerComponent;
 
     return (
         <Droppable
@@ -38,34 +66,17 @@ export function DroppableLine(props) {
             isDropDisabled={isDropDisabled || false}>
             {(provided, snapshot) => {
                 return (
-                <div
-                    ref={provided.innerRef}
-                    style={getListStyle(snapshot.isDraggingOver)}
-                >
-                    {items.map((item, index) => (
-                        <Draggable
-                            key={item.id}
-                            draggableId={item.id}
-                            index={index}>
-                            {(provided, snapshot) => (
-                                <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    style={getItemStyle(
-                                        snapshot.isDragging,
-                                        provided.draggableProps.style
-                                    )}>
-                                    {/*{item.content}*/}
-                                    <Player color={color}/>
-                                </div>
-                            )}
-                        </Draggable>
-                    ))}
-                    {provided.placeholder}
-                </div>
-            )}}
+                    <div
+                        ref={provided.innerRef}
+                        style={getDroppableLineStyle(snapshot.isDraggingOver)}
+                    >
+                        {items.map((item, index) => withDraggable(component, {...props}, item.id, index))}
+                        {provided.placeholder}
+                    </div>
+                )
+            }}
         </Droppable>
     );
 }
+
 

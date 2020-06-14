@@ -1,30 +1,39 @@
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import Box from "@material-ui/core/Box";
 import {POSITION_NAMES, SIDE_NAMES} from "../../../api/constants";
-import Grid from "@material-ui/core/Grid";
-import SoccerFieldImage from "../../../assets/Soccer_field.png";
+import {TShirtPlayer} from "../../../forms/new_match/teambuilder/TShirtPlayer";
+import styles from "./PositionPicker.module.css"
+import Soccer_field from "../../../assets/Soccer_field.png";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-    },
-    paper: {
-        padding: theme.spacing(1),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    },
-    footballPitch: {
-        backgroundImage: `url(${SoccerFieldImage})`,
-        backgroundRepeat: 'no-repeat',
-        //backgroundSize: '100% auto',
-        backgroundSize: 'contain',
-    },
-    playersLine: {
-        //height: '300px'
+    lineStyle: {
+        display: 'flex',
+        // justifyContent: 'space-between',
+        flexDirection: 'column',
+        padding: '2px',
+        border: '2px solid green',
+        justifyContent: 'center',
+        flexBasis: '100%',
     }
 }));
 
+
+const Pitch = (props) => {
+    return <div className={styles.pitchContainer}>
+        <img className={styles.responsivePitch} draggable="false" src={Soccer_field} alt="Soccer field"/>
+        {props.children}
+    </div>
+};
+
+const PitchHalf = (props) => {
+    const isRightSide = props.isRightSide;
+    const pitchHalfStyle = isRightSide === true ? {right: "7%"} : {left: "7%"};
+    return (
+        <div className={styles.pitchHalf} style={pitchHalfStyle}>
+            {props.children}
+        </div>
+    );
+};
 
 export const PositionPicker = ({teams, positions}) => {
         const classes = useStyles();
@@ -48,64 +57,39 @@ export const PositionPicker = ({teams, positions}) => {
             else return null;
         };
 
+        const lineOfPlayersToLine = (lineOfPlayers, color) => {
+            return <div className={classes.lineStyle}>
+                {lineOfPlayers.map(item => TShirtPlayer({color: color}))}
+            </div>;
+        };
+
         const linesOfTeam = (team, isRightSide = false) => {
             const positionNames = [POSITION_NAMES.GOALKEEPER, POSITION_NAMES.DEFENDER, POSITION_NAMES.MIDFIELD, POSITION_NAMES.FORWARD];
             const sideNames = [SIDE_NAMES.LEFT, SIDE_NAMES.MIDDLE_LEFT, SIDE_NAMES.MIDDLE, SIDE_NAMES.MIDDLE_RIGHT, SIDE_NAMES.RIGHT];
-            if (isRightSide) {
-                positionNames.reverse();
-                sideNames.reverse();
-            }
-            return positionNames.map(positionName => {
-                let playersLines = [];
+            let playersLines = [];
+            positionNames.forEach(positionName => {
                 if (positionName === POSITION_NAMES.GOALKEEPER) {
                     const foundGoalkeeper = team.teamMembers.find(teamMember => teamMember.position.name === positionName);
-                    playersLines.push([null, null, foundGoalkeeper, null, null]);
+                    playersLines.push([foundGoalkeeper]);
                 } else {
-                    playersLines.push(sideNames.map(sideName => team.teamMembers.find(teamMember => teamMember.position.name === positionName && teamMember.position.side === sideName)));
+                    playersLines.push(sideNames.map(sideName => team.teamMembers.find(teamMember => teamMember.position.name === positionName && teamMember.position.side === sideName)).filter(teamMember => !!teamMember));
                 }
-                return (
-                    playersLines.map(playersLine =>
-                        <Box p={1} bgcolor="grey.300" display="flex" flexDirection={"column"} className={classes.playersLine}>
-                            {
-                                playersLine.map(player =>
-                                    <Box p={1}
-                                         bgcolor="grey.300">
-                                        {withNullPlayer(player)}
-                                    </Box>
-                                )
-                            }
-                        </Box>
-                    )
-                );
             });
+            console.log(playersLines);
+            return <PitchHalf
+                isRightSide={isRightSide}
+            >
+                {playersLines.map(playersLine => lineOfPlayersToLine(playersLine, team.shirtColours))}
+            </PitchHalf>
+
         };
 
-
-        const team1Lines = linesOfTeam(team1);
-        const team2Lines = linesOfTeam(team2, true);
-
         return (
-            <Grid container className={classes.footballPitch}>
-                <Grid item xs={6}>
-                    <Box
-                        display="flex"
-                        flexWrap="nowrap"
-                        p={1}
-                        m={1}
-                    >
-                        {team1Lines}
-                    </Box>
-                </Grid>
-                <Grid item xs={6}>
-                    <Box
-                        display="flex"
-                        flexWrap="nowrap"
-                        p={1}
-                        m={1}
-                    >
-                        {team2Lines}
-                    </Box>
-                </Grid>
-            </Grid>);
+            <Pitch>
+                {linesOfTeam(team1)}
+                {linesOfTeam(team2, true)}
+            </Pitch>);
     }
 ;
+
+
