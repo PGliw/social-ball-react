@@ -31,6 +31,9 @@ import {withMaterialDialog} from "../../../hoc/withMaterialDialog";
 import {MatchProtocol} from "../../../forms/match_protocol/MatchProtocol";
 import {Confirmation} from "../../../common/Confirmation";
 import {API_METHODS, withTokenFetchFromApi} from "../../../api/baseFetch";
+import Paper from "@material-ui/core/Paper";
+import MenuList from "@material-ui/core/MenuList";
+import MenuItem from "@material-ui/core/MenuItem";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -79,36 +82,46 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function Comment(props) {
+const Comment = (props) => {
     const classes = useStyles();
+    const [isPopupOpened, setPopupOpened] = useState(false);
+    const cardProps = {
+        avatar: props.avatar,
+        title: props.author,
+        subheader: props.content,
+    };
+    if (!!props.deletable && !!props.onDelete) {
+        cardProps.action =
+            <Fragment>
+                <IconButton aria-label="settings" onClick={() => setPopupOpened(!isPopupOpened)}>
+                    <MoreVertIcon/>
+                </IconButton>
+                {
+                    isPopupOpened
+                        ? <Paper>
+                            <MenuList>
+                                <MenuItem onClick={props.onDelete}>Usuń</MenuItem>
+                            </MenuList>
+                        </Paper>
+                        : null
+                }
+            </Fragment>
+    }
 
     return (
         <Grid item xs={12}>
             <Card className={classes.comment}>
-                <CardHeader
-                    avatar={props.avatar}
-                    action={
-                        <IconButton aria-label="settings">
-                            <MoreVertIcon/>
-                        </IconButton>
-                    }
-                    title={props.author}
-                    subheader={props.content}
-                />
+                <CardHeader {...cardProps}/>
             </Card>
         </Grid>
     )
-}
+};
 
 export default function MatchCard(props) {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
     const match = props.footballMatch;
     const author = match.details.organizer;
-    const authorAvatar = author.image ?
-        <Avatar alt={author} src="/static/images/avatar/2.jpg"/>
-        :
-        <Avatar alt={author} src={author.image}/>;
     const startDateTime = new Date(match.beginningTime);
     const endDateTime = new Date(match.endingTime);
     const [team1, team2] = props.footballMatch.details.teams;
@@ -120,12 +133,27 @@ export default function MatchCard(props) {
     const [error, setError] = useState(null);
     const [newMatchMemberDto, setNewMatchMemberDto] = useState(null);
     const [confirmationMessage, setConfirmationMessage] = useState(null);
+    const [comments, setComments] = useState(null);
+    const [areCommentsLoading, setCommentsLoading] = useState(null);
+    const [newCommentContent, setNewCommentContent] = useState(null);
+
+    const handleNewCommentContentChange = (event) => {
+        setNewCommentContent(event.target.value);
+    };
 
     useEffect(() => {
         if (error) {
             console.error(error); // TODO
+            alert(error)
         }
     }, [error]);
+
+    useEffect(() => {
+        if (!comments && expanded) {
+            fetchComments();
+        }
+    }, [expanded]);
+
 
     useEffect(() => {
         if (newMatchMemberDto) {
@@ -143,6 +171,83 @@ export default function MatchCard(props) {
         setConfirmationSuccessful(true);
         props.refreshMatch();
         resetNewMatchMemberDto();
+    };
+
+
+    const handleNewComments = (commentsResponse) => {
+        setComments(commentsResponse)
+    };
+
+    const fetchComments = () => {
+        const fetchFromProtectedApi = withTokenFetchFromApi(props.token);
+        fetchFromProtectedApi(
+            API_METHODS.GET,
+            `comments?matchId=${props.footballMatch.id}`,
+            setCommentsLoading,
+            setError,
+            handleNewComments
+        );
+    };
+
+    const deleteComment = (commentId) => {
+        const fetchFromProtectedApi = withTokenFetchFromApi(props.token);
+        fetchFromProtectedApi(
+            API_METHODS.DELETE,
+            `comments/${commentId}`,
+            setCommentsLoading,
+            setError,
+            fetchComments
+        );
+    };
+
+    const addComment = () => {
+        const commentDto = {
+            dateOfAddition: new Date().toISOString(),
+            content: newCommentContent,
+            relatedMatchId: props.footballMatch.id,
+            relatedMatchMemberId: props.footballMatch.currentUserMatchMemberId
+        };
+        console.log(commentDto);
+        const fetchFromProtectedApi = withTokenFetchFromApi(props.token);
+        fetchFromProtectedApi(
+            API_METHODS.POST,
+            `comments`,
+            setCommentsLoading,
+            setError,
+            fetchComments,
+            commentDto
+        );
+    };
+
+    const getAvatarOf = (user) => {
+        if (!!user) {
+            if (!!user.image) {
+                return <Avatar alt={user.firstName} src={user.image}/>
+            } else if (!!user.firstName) {
+                return <Avatar alt={user.firstName}>
+                    {user.firstName.charAt(0)}
+                </Avatar>
+            }
+        }
+        return <Avatar alt="Nieznany" src={ProfilePlaceholder}/>
+    };
+
+    const commentResponseToComment = (commentResponse) => {
+        const commentProps = {
+            avatar: [getAvatarOf(!!commentResponse.relatedMatchMember ? commentResponse.relatedMatchMember.user : null)],
+            author: [!!commentResponse.relatedMatchMember && !!commentResponse.relatedMatchMember.user
+                ? commentResponse.relatedMatchMember.user.firstName
+                : "Nieznany"],
+            date: [new Date(commentResponse.dateOfAddition)],
+            content: [commentResponse.content],
+        };
+        if (!!props.footballMatch.currentUserMatchMemberId
+            && !!commentResponse.relatedMatchMember
+            && commentResponse.relatedMatchMember.id === props.footballMatch.currentUserMatchMemberId) {
+            commentProps.deletable = true;
+            commentProps.onDelete = () => deleteComment(commentResponse.id);
+        }
+        return <Comment {...commentProps}/>
     };
 
 
@@ -260,7 +365,7 @@ export default function MatchCard(props) {
             <Card className={classes.root}>
                 {renderTimeStatus(props.footballMatch)}
                 <CardHeader
-                    avatar={authorAvatar}
+                    avatar={getAvatarOf(author)}
                     action={
                         <IconButton aria-label="settings">
                             <MoreVertIcon/>
@@ -308,13 +413,7 @@ export default function MatchCard(props) {
                                         {team1 ? team1.name : ''}
                                     </Typography>
                                     <AvatarGroup max={4}>
-                                        {team1ConfirmedMembers.map(teamMember => {
-                                                const alt = teamMember.user.firstName + " " + teamMember.user.lastName;
-                                                const src = teamMember.user.image ? teamMember.user.image : "/static/images/avatar/1.jpg"; // TODO
-                                                return <Avatar alt={alt} src={src}/>
-                                            }
-                                        )}
-
+                                        {team1ConfirmedMembers.map(teamMember => getAvatarOf(teamMember.user))}
                                     </AvatarGroup>
                                 </Grid>
                                 <Grid item align="center">
@@ -325,12 +424,7 @@ export default function MatchCard(props) {
                                         {team2 ? team2.name : ''}
                                     </Typography>
                                     <AvatarGroup max={4}>
-                                        {team2ConfirmedMembers.map(teamMember => {
-                                                const alt = teamMember.user.firstName + " " + teamMember.user.lastName;
-                                                const src = teamMember.user.image ? teamMember.user.image : "/static/images/avatar/1.jpg"; // TODO
-                                                return <Avatar alt={alt} src={src}/>
-                                            }
-                                        )}
+                                        {team2ConfirmedMembers.map(teamMember => getAvatarOf(teamMember.user))}
                                     </AvatarGroup>
                                 </Grid>
                             </Grid>
@@ -365,31 +459,43 @@ export default function MatchCard(props) {
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <Grid container className={classes.messageArea} spacing={1}>
-                                    {props.comments.map((comment) =>
-                                        <Comment
-                                            avatar={comment.avatar}
-                                            author={comment.author}
-                                            date={comment.date}
-                                            content={comment.content}
-                                        />
-                                    )}
+                                    {!!comments && comments.length > 0
+                                        ? comments.map((comment) => commentResponseToComment(comment))
+                                        : <p>Brak komentarzy</p>
+                                    }
                                 </Grid>
                             </Grid>
                             <Grid item xs={12}>
-                                <Grid container xs={12} spacing={1} fullWidth>
-                                    <Grid item>
-                                        <Avatar alt="Natalia Wcisło" src="/static/images/avatar/2.jpg"/>
-                                    </Grid>
-                                    <Grid item xs>
-                                        <TextField
-                                            id="firstName"
-                                            fullWidth
-                                            variant="outlined"
-                                            size="small"
-                                            placeholder="Napisz komentarz..."
-                                        />
-                                    </Grid>
-                                </Grid>
+                                {
+                                    !!props.footballMatch.currentUserPositionName
+                                        ?
+                                        <Grid container xs={12} spacing={1} fullWidth>
+                                            <Grid item>{getAvatarOf(props.currentUser)}</Grid>
+                                            <Grid item xs>
+                                                <TextField
+                                                    id="new-comment"
+                                                    fullWidth
+                                                    variant="outlined"
+                                                    size="small"
+                                                    placeholder="Napisz komentarz..."
+                                                    value={newCommentContent}
+                                                    onChange={handleNewCommentContentChange}
+                                                />
+                                            </Grid>
+                                            {
+                                                !!newCommentContent && newCommentContent.length > 0
+                                                    ? <Grid item>
+                                                        <Button onClick={addComment}>Opublikuj</Button>
+                                                    </Grid>
+                                                    : null
+                                            }
+                                        </Grid>
+                                        :
+                                        <p>
+                                            Tylko uczestnicy meczu mogą komentować. Wybierz pozycję, aby dodać
+                                            komentarz.
+                                        </p>
+                                }
                             </Grid>
                         </Grid>
                     </CardContent>
