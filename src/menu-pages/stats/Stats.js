@@ -33,7 +33,7 @@ export const Stats = ({token, logout}) => {
                     xl={3}
                     xs={12}
                 >
-                    <ShotsCard />
+                    <ShotsCard token={token} logout={logout} />
                 </Grid>
                 <Grid
                     item
@@ -42,7 +42,7 @@ export const Stats = ({token, logout}) => {
                     xl={3}
                     xs={12}
                 >
-                    <GoalsCard />
+                    <GoalsCard token={token} logout={logout} />
                 </Grid>
                 <Grid
                     item
@@ -51,7 +51,7 @@ export const Stats = ({token, logout}) => {
                     xl={3}
                     xs={12}
                 >
-                    <YellowCardsCard />
+                    <YellowCardsCard token={token} logout={logout} />
                 </Grid>
                 <Grid
                     item
@@ -60,7 +60,7 @@ export const Stats = ({token, logout}) => {
                     xl={3}
                     xs={12}
                 >
-                    <RedCardsCard />
+                    <RedCardsCard token={token} logout={logout} />
                 </Grid>
                 <Grid
                     item
@@ -69,7 +69,7 @@ export const Stats = ({token, logout}) => {
                     xl={9}
                     xs={12}
                 >
-                    <BarCard />
+                    <BarCard token={token} logout={logout} />
                 </Grid>
                 <Grid
                     item
@@ -78,7 +78,7 @@ export const Stats = ({token, logout}) => {
                     xl={9}
                     xs={12}
                 >
-                    <PieChartCard />
+                    <PieChartCard token={token} logout={logout} />
                 </Grid>
             </Grid>
         </NavDrawer>
