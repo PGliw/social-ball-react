@@ -29,6 +29,8 @@ import {TShirtCsv} from "../../../assets/TShirtCsv";
 import Tooltip from "@material-ui/core/Tooltip";
 import {withMaterialDialog} from "../../../hoc/withMaterialDialog";
 import {MatchProtocol} from "../../../forms/match_protocol/MatchProtocol";
+import {Confirmation} from "../../../common/Confirmation";
+import {API_METHODS, withTokenFetchFromApi} from "../../../api/baseFetch";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -113,6 +115,57 @@ export default function MatchCard(props) {
     const [isProtocolOpened, setProtocolOpened] = useState(false);
     const team1ConfirmedMembers = team1 ? team1.teamMembers.filter(teamMember => teamMember.user) : [];
     const team2ConfirmedMembers = team2 ? team2.teamMembers.filter(teamMember => teamMember.user) : [];
+    const [isConfirmationLoading, setConfirmationLoading] = useState(false);
+    const [isConfirmationSuccessful, setConfirmationSuccessful] = useState(null);
+    const [error, setError] = useState(null);
+    const [newMatchMemberDto, setNewMatchMemberDto] = useState(null);
+    const [confirmationMessage, setConfirmationMessage] = useState(null);
+
+    useEffect(() => {
+        if (error) {
+            console.error(error); // TODO
+        }
+    }, [error]);
+
+    useEffect(() => {
+        if (newMatchMemberDto) {
+            if (newMatchMemberDto.userId) {
+                setConfirmationMessage("Czy chcesz zagrać na wybranej pozycji?")
+            } else {
+                setConfirmationMessage("Czy chcesz zrezygnować z gry na dotychczasowej pozycji?")
+            }
+        } else {
+            setConfirmationMessage(null);
+        }
+    }, [newMatchMemberDto]);
+
+    const handleImportantActionSuccess = () => {
+        setConfirmationSuccessful(true);
+        props.refreshMatch();
+        resetNewMatchMemberDto();
+    };
+
+
+    const putMatchMember = () => {
+        if (!!newMatchMemberDto) {
+            const fetchFromProtectedApi = withTokenFetchFromApi(props.token);
+            fetchFromProtectedApi(
+                API_METHODS.PUT,
+                `matchMembers/${newMatchMemberDto.id}`,
+                setConfirmationLoading,
+                setError,
+                handleImportantActionSuccess,
+                newMatchMemberDto
+            );
+        } else {
+            console.error("Cannot put - newMatchMemberDto is null");
+        }
+    };
+
+    const resetNewMatchMemberDto = () => {
+        setNewMatchMemberDto(null);
+        setConfirmationSuccessful(null);
+    };
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -143,12 +196,32 @@ export default function MatchCard(props) {
     const matchMemberMapper = (matchMember, team) => {
         if (matchMember.user) {
             const user = matchMember.user;
-            let toolTipTitle = "Zobacz profil";
+            let toolTipTitle;
+            let onClick;
             if (props.currentUser && props.currentUser.id === matchMember.user.id) {
                 toolTipTitle = "Zrezygnuj";
+                // resign onClick
+                onClick = () => {
+                    const dto = {
+                        id: matchMember.id,
+                        positionId: matchMember.positionId,
+                        teamId: matchMember.teamId,
+                        userId: null,
+                        confirmed: false, // TODO ?
+                    };
+                    setNewMatchMemberDto(dto);
+                };
+            } else {
+                toolTipTitle = "Zobacz profil";
+                // resign onClick
+                onClick = () => {
+                    // TODO
+                    console.log("Profil");
+                };
             }
+
             return <Tooltip title={toolTipTitle}>
-                <div>
+                <div onClick={onClick}>
                     <RoundedImage image={user && user.image ? user.image : ProfilePlaceholder}
                                   roundedColor={team.shirtColours}
                                   roundedSize="13"
@@ -157,9 +230,27 @@ export default function MatchCard(props) {
                     />
                 </div>
             </Tooltip>
+        } else if (props.footballMatch && !!props.footballMatch.currentUserPositionName) {
+            return <Tooltip title="Już bierzesz udział w tym meczu. Żeby zmienić pozycje, zrezygnuj z dotychczasowej">
+                <div>
+                    {TShirtPlayer({color: team.shirtColours})}
+                </div>
+            </Tooltip>
         } else {
+            const onClick = () => {
+                const dto = {
+                    id: matchMember.id,
+                    positionId: matchMember.positionId,
+                    teamId: matchMember.teamId,
+                    userId: props.currentUser.id,
+                    confirmed: false, // TODO ?
+                };
+                setNewMatchMemberDto(dto);
+            };
             return <Tooltip title="Dołącz do gry">
-                {TShirtPlayer({color: team.shirtColours})}
+                <div onClick={onClick}>
+                    {TShirtPlayer({color: team.shirtColours})}
+                </div>
             </Tooltip>
         }
     };
@@ -307,7 +398,13 @@ export default function MatchCard(props) {
             {withMaterialDialog(MatchProtocol, isProtocolOpened, () => setProtocolOpened(false), null)({
                 token: props.token,
                 match: props.footballMatch,
-
+            })}
+            {withMaterialDialog(Confirmation, !!confirmationMessage, resetNewMatchMemberDto, "Potwierdzenie")({
+                message: confirmationMessage,
+                isLoading: isConfirmationLoading,
+                onYes: putMatchMember,
+                onNo: resetNewMatchMemberDto,
+                isSuccessful: isConfirmationSuccessful,
             })}
         </Fragment>
     );

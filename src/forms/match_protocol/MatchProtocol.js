@@ -20,7 +20,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import {getKeyByValue, isEmpty, notNullOrEmptyValues} from "../../utils/helpers";
+import {getKeyByValue} from "../../utils/helpers";
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref}/>),
@@ -79,13 +79,21 @@ export const MatchProtocol = ({token, match}) => {
 
     const createMatchMemberLookup = () => {
         const teamMemberLists = match.details.teams.map(team => team.teamMembers);
-        const matchMembers = [...teamMemberLists[0], ...teamMemberLists[1]];
-        const matchMembersLookup = {};
-        matchMembers.forEach((obj) => {
-            matchMembersLookup[obj.id] = firstAndLastNameOf(obj);
-        });
-        return matchMembersLookup;
+        const teamLookups = [{}, {}];
+        for (let i = 0; i < 2; i++) {
+            teamMemberLists[i].forEach((obj) => {
+                teamLookups[i][obj.id] = firstAndLastNameOf(obj) + ` (${match.details.teams[i].name})`;
+            });
+        }
+        return {...teamLookups[0], ...teamLookups[1]};
     };
+
+    function firstAndLastNameOf(matchMemberResponse) {
+        return matchMemberResponse.user ?
+            matchMemberResponse.user.firstName + ' ' + matchMemberResponse.user.lastName
+            :
+            `Nieznany #${matchMemberResponse.id}`
+    }
 
     const eventResponseToData = (ev) => {
         // return {type: ev.type, dateTime: ev.dateTime, team: ev.teamName, matchMember: ev.matchMemberResponse}
@@ -120,10 +128,6 @@ export const MatchProtocol = ({token, match}) => {
         }
         return {id: dt.id, type, matchMemberId, dateTime}
     };
-
-    function firstAndLastNameOf(matchMemberResponse) {
-        return matchMemberResponse.user ? matchMemberResponse.user.firstName + ' ' + matchMemberResponse.user.lastName : "Nieznany"
-    }
 
     useEffect(() => {
         if (events) {
@@ -184,9 +188,10 @@ export const MatchProtocol = ({token, match}) => {
     };
 
 
-    if (!match.teams || !match.teams.length < 2) {
+    if (!match.details || !match.details.teams || match.details.teams.length < 2) {
         return <p>Brak informacji o drużynach</p>
     }
+
     const matchMembersLookup = createMatchMemberLookup();
     const columns = [
         {
