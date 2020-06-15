@@ -25,7 +25,6 @@ import {TIME} from "../../../api/constants";
 import {TShirtPlayer} from "../../../forms/new_match/teambuilder/TShirtPlayer";
 import ProfilePlaceholder from "../../../assets/profile-placeholder.png";
 import RoundedImage from "react-rounded-image";
-import {TShirtCsv} from "../../../assets/TShirtCsv";
 import Tooltip from "@material-ui/core/Tooltip";
 import {withMaterialDialog} from "../../../hoc/withMaterialDialog";
 import {MatchProtocol} from "../../../forms/match_protocol/MatchProtocol";
@@ -34,6 +33,7 @@ import {API_METHODS, withTokenFetchFromApi} from "../../../api/baseFetch";
 import Paper from "@material-ui/core/Paper";
 import MenuList from "@material-ui/core/MenuList";
 import MenuItem from "@material-ui/core/MenuItem";
+import {OtherUserProfile} from "../../profile/OtherUserProfile";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -136,6 +136,8 @@ export default function MatchCard(props) {
     const [comments, setComments] = useState(null);
     const [areCommentsLoading, setCommentsLoading] = useState(null);
     const [newCommentContent, setNewCommentContent] = useState(null);
+    const [displayedFriendId, setDisplayedFriendId] = useState(null);
+    const [displayedFriend, setDisplayedFriend] = useState(null);
 
     const handleNewCommentContentChange = (event) => {
         setNewCommentContent(event.target.value);
@@ -153,6 +155,21 @@ export default function MatchCard(props) {
             fetchComments();
         }
     }, [expanded]);
+
+    useEffect(() => {
+        if (displayedFriendId) {
+            const fetchFromApiWithToken = withTokenFetchFromApi(props.token);
+            fetchFromApiWithToken(
+                API_METHODS.GET,
+                `users/${displayedFriendId}`,
+                () => {
+                }, // TODO
+                setError,
+                setDisplayedFriend)
+        } else {
+            setDisplayedFriend(null);
+        }
+    }, [displayedFriendId]);
 
 
     useEffect(() => {
@@ -300,7 +317,6 @@ export default function MatchCard(props) {
 
     const matchMemberMapper = (matchMember, team) => {
         if (matchMember.user) {
-            const user = matchMember.user;
             let toolTipTitle;
             let onClick;
             if (props.currentUser && props.currentUser.id === matchMember.user.id) {
@@ -318,20 +334,19 @@ export default function MatchCard(props) {
                 };
             } else {
                 toolTipTitle = "Zobacz profil";
-                // resign onClick
                 onClick = () => {
-                    // TODO
-                    console.log("Profil");
-                };
+                    setDisplayedFriendId(matchMember.user.id)
+                }
             }
 
             return <Tooltip title={toolTipTitle}>
                 <div onClick={onClick}>
-                    <RoundedImage image={user && user.image ? user.image : ProfilePlaceholder}
-                                  roundedColor={team.shirtColours}
-                                  roundedSize="13"
-                                  imageWidth="80"
-                                  imageHeight="80"
+                    <RoundedImage
+                        image={matchMember.user && matchMember.user.image ? matchMember.user.image : ProfilePlaceholder}
+                        roundedColor={team.shirtColours}
+                        roundedSize="13"
+                        imageWidth="80"
+                        imageHeight="80"
                     />
                 </div>
             </Tooltip>
@@ -512,6 +527,16 @@ export default function MatchCard(props) {
                 onNo: resetNewMatchMemberDto,
                 isSuccessful: isConfirmationSuccessful,
             })}
+            {withMaterialDialog(OtherUserProfile,
+                !!displayedFriendId,
+                () => setDisplayedFriendId(null),
+                displayedFriend ? displayedFriend.firstName + " " + displayedFriend.lastName : null
+            )(
+                {
+                    token: props.token,
+                    user: displayedFriend,
+                    userId: displayedFriendId,
+                })}
         </Fragment>
     );
 }

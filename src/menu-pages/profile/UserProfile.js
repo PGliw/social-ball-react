@@ -250,10 +250,10 @@ export const UserProfile = ({token, logout}) => {
                                     {eventsArray.map((item, index) => Row({index}))}
                                 </TabPanel>
                                 <TabPanel value={value} hidden={value !== "two"} index="two">
-                                    <FriendsList token={token}/>
+                                    <FriendsList token={token} user={user}/>
                                 </TabPanel>
                                 <TabPanel value={value} hidden={value !== "three"} index="three">
-                                    <InvitationList token={token}/>
+                                    <InvitationList token={token} user={user}/>
                                 </TabPanel>
                                 <TabPanel value={value} hidden={value !== "four"} index="four">
                                     <MatchesTable token={token}

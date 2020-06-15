@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import friends from "./friends";
-import Friend from "./Friend";
+import Friend from "./OtherUserProfile";
 import { Invitation } from "./Invitation";
 import "./FriendsList.css";
 import { API_METHODS, withTokenFetchFromApi } from "../../api/baseFetch";
