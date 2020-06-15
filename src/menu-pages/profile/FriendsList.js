@@ -47,8 +47,7 @@ export const FriendsList = ({token, user, logout}) => {
                     <FriendListItem
                         token={token}
                         logout={logout}
-                        id={user && user.id && user.id !== friend.requestSender.id ? friend.requestSender.id : friend.requestReceiver.id}
-                        // key={friend.name}
+                        userId={user && user.id && user.id !== friend.requestSender.id ? friend.requestSender.id : friend.requestReceiver.id}
                     />
                 )) : null
         };

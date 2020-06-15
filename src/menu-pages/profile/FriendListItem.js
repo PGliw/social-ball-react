@@ -27,10 +27,12 @@ export const FriendListItem = ({token, logout, userId}) => {
     const [error, setError] = useState(null);
 
     const handleUser = (newUser) => {
+        console.log(newUser);
         setUser(newUser);
     };
 
     useEffect(() => {
+        console.log(userId);
         const fetchFromApiWithToken = withTokenFetchFromApi(token);
         fetchFromApiWithToken(
             API_METHODS.GET,

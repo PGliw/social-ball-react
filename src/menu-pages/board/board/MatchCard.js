@@ -224,7 +224,6 @@ export default function MatchCard(props) {
             relatedMatchId: props.footballMatch.id,
             relatedMatchMemberId: props.footballMatch.currentUserMatchMemberId
         };
-        console.log(commentDto);
         const fetchFromProtectedApi = withTokenFetchFromApi(props.token);
         fetchFromProtectedApi(
             API_METHODS.POST,

@@ -234,7 +234,7 @@ export const UserProfile = ({token, logout}) => {
                             </Box>
                         </Paper>
                     </Grid>
-                    <Grid item xs={12} md={9}>
+                    <Grid item xs={12}>
                         <Paper className={classes.paper}>
                             <TabContext value={value}>
                                 <Tabs value={value} onChange={handleChange} variant="fullWidth"

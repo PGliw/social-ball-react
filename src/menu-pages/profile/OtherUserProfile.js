@@ -34,7 +34,6 @@ export const OtherUserProfile = ({token, userId, user}) => {
     };
 
     const handleFriendship = (friendshipDto) => {
-        console.log(friendshipDto);
         setFriendshipStatus(friendshipDto.status);
     };
 
@@ -60,7 +59,6 @@ export const OtherUserProfile = ({token, userId, user}) => {
     }, [token]);
 
     useEffect(() => {
-        console.log(token);
         const fetchFromApiWithToken = withTokenFetchFromApi(token);
         fetchFromApiWithToken(
             API_METHODS.GET,
