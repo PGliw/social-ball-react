@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
-import { Button } from "@material-ui/core";
-import { API_METHODS, withTokenFetchFromApi } from "../../api/baseFetch";
+import {Box, Button} from "@material-ui/core";
+import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ProfilePlaceholder from "../../assets/profile-placeholder.png";
 import RoundedImage from "react-rounded-image";
 import DialogContent from "@material-ui/core/DialogContent";
 import Dialog from "@material-ui/core/Dialog";
-import { Box, Link } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     box: {
@@ -22,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export const Invitation = ({ token, logout, id }) => {
+export const Invitation = ({token, logout, id}) => {
     const classes = useStyles();
 
     const [user, setUser] = useState(null);
@@ -97,7 +96,7 @@ export const Invitation = ({ token, logout, id }) => {
 
     return (
         <li className='friend'>
-            <img className="profile-pic" src={user && user.image ? user.image : ProfilePlaceholder} />
+            <img className="profile-pic" src={user && user.image ? user.image : ProfilePlaceholder}/>
 
             <h3>{user ? user.firstName + " " + user.lastName : null}</h3>
 
@@ -108,12 +107,16 @@ export const Invitation = ({ token, logout, id }) => {
 
             <div className="status">
                 <Button variant="outlined" color="primary" disabled={requestDone}
-                    onClick={() => { acceptRequest(); }}>
+                        onClick={() => {
+                            acceptRequest();
+                        }}>
                     Akceptuj
                 </Button>
                 &nbsp;
                 <Button variant="outlined" color="primary" disabled={requestDone}
-                    onClick={() => { denyRequest(); }}>
+                        onClick={() => {
+                            denyRequest();
+                        }}>
                     Odrzuć
                 </Button>
                 &nbsp;
@@ -122,11 +125,13 @@ export const Invitation = ({ token, logout, id }) => {
                     variant="outlined"
                     color="primary"
                     className="button"
-                    onClick={() => { setOpen(true); }}
+                    onClick={() => {
+                        setOpen(true);
+                    }}
                 >
                     Zobacz profil
-                            </Button>
-                <h2 >{header}</h2>
+                </Button>
+                <h2>{header}</h2>
 
             </div>
 
@@ -134,13 +139,14 @@ export const Invitation = ({ token, logout, id }) => {
             <Dialog
                 open={open}
                 onClose={onDialogClose}>
-                <DialogContent >
+                <DialogContent>
                     <Box className={classes.box}>
-                        <RoundedImage className={classes.image} image={user && user.image ? user.image : ProfilePlaceholder}
-                            roundedColor="#e6e6e6"
-                            roundedSize="13"
-                            imageWidth="160"
-                            imageHeight="160"
+                        <RoundedImage className={classes.image}
+                                      image={user && user.image ? user.image : ProfilePlaceholder}
+                                      roundedColor="#e6e6e6"
+                                      roundedSize="13"
+                                      imageWidth="160"
+                                      imageHeight="160"
                         />
                         <h2 className={classes.header}>{user ? user.firstName + " " + user.lastName : null}</h2>
                         <p className={classes.positions}>{positions && positions[0] ? "Ulubione pozycje: " + positions[0].positionId.side + " " + positions[0].positionId.name : "brak ulubionych pozycji"}</p>
@@ -158,7 +164,7 @@ export const Invitation = ({ token, logout, id }) => {
                             disabled={!rejected}
                         >
                             Wyślij zaproszenie do znajomych
-                            </Button>
+                        </Button>
                     </Box>
                 </DialogContent>
             </Dialog>

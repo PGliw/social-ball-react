@@ -27,3 +27,10 @@ export const TIME = {
     PRESENT: "present",
     FUTURE: "future",
 };
+
+export const FRIENDSHIP_STATUS = {
+    ACCEPTED: "accepted",
+    REJECTED: "rejected",
+    NONE: "none",
+    PENDING: "pending",
+};

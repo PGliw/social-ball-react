@@ -5,6 +5,7 @@ import {Box} from "@material-ui/core";
 import ProfilePlaceholder from "../../assets/profile-placeholder.png";
 import RoundedImage from "react-rounded-image";
 import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
+import {FRIENDSHIP_STATUS} from "../../api/constants";
 
 const useStyles = makeStyles((theme) => ({
     box: {
@@ -25,9 +26,16 @@ export const OtherUserProfile = ({token, userId, user}) => {
     const [error, setError] = useState(null);
     const [positions, setPositions] = useState(null);
     const [stats, setStats] = useState(null);
+    const [isRequestSent, setRequestSent] = useState(false);
+    const [friendshipStatus, setFriendshipStatus] = useState(null);
 
     const handlePosition = (newPosition) => {
         setPositions(newPosition);
+    };
+
+    const handleFriendship = (friendshipDto) => {
+        console.log(friendshipDto);
+        setFriendshipStatus(friendshipDto.status);
     };
 
     useEffect(() => {
@@ -51,6 +59,59 @@ export const OtherUserProfile = ({token, userId, user}) => {
             handlePosition);
     }, [token]);
 
+    useEffect(() => {
+        console.log(token);
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            `acquaitances/withUser/${userId}`,
+            setLoading,
+            setError,
+            handleFriendship);
+    }, [token, isRequestSent]);
+
+    const sendInvitation = () => {
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.PUT,
+            `acquaitances/send?receiverId=${userId}`,
+            setLoading,
+            setError,
+            () => setRequestSent(true));
+    };
+
+    const renderFriendshipStatus = (status) => {
+        switch (status) {
+            case FRIENDSHIP_STATUS.ACCEPTED:
+                return <p>Jesteście znajomymi</p>;
+            case FRIENDSHIP_STATUS.REJECTED:
+                return <p>Zaproszenie zostało odrzucone</p>;
+            case FRIENDSHIP_STATUS.NONE:
+                return <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    disabled={false}
+                    onClick={sendInvitation}
+                >
+                    Wyślij zaproszenie do znajomych
+                </Button>;
+            case FRIENDSHIP_STATUS.PENDING:
+                return <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    disabled={true}
+                >
+                    Zaproszenie zostało wysłane
+                </Button>;
+            default:
+                return <p>Przetwarzanie...</p>
+        }
+    };
+
     return (
         <Box className={classes.box}>
             <RoundedImage className={classes.image}
@@ -68,15 +129,9 @@ export const OtherUserProfile = ({token, userId, user}) => {
             <p>
                 {stats ? stats.yellowCardsReceived + " otrzymanych żółtych kartek | " + stats.redCardsReceived + " otrzymanych czerwonych kartek | " + stats.fauls + "  faulowań" : null}
             </p>
-            <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                disabled={true}
-            >
-                Wyślij zaproszenie do znajomych
-            </Button>
+            {
+                renderFriendshipStatus(friendshipStatus)
+            }
         </Box>
     );
 };
