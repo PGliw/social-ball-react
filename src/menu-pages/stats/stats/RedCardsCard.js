@@ -63,7 +63,7 @@ export const RedCardsCard = props => {
             >
               CZERWONE KARTKI
             </Typography>
-            <Typography variant="h3">0</Typography>
+            <Typography variant="h3">{props.redCardsReceived}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
@@ -71,20 +71,6 @@ export const RedCardsCard = props => {
             </Avatar>
           </Grid>
         </Grid>
-        <div className={classes.difference}>
-          <Typography
-            className={classes.differenceValue}
-            variant="body2"
-          >
-              
-          </Typography>
-          <Typography
-            className={classes.caption}
-            variant="caption"
-          >
-              
-          </Typography>
-        </div>
       </CardContent>
     </Card>
   );

@@ -63,7 +63,7 @@ export const GoalsCard = props => {
             >
               GOLE
             </Typography>
-            <Typography variant="h3">12</Typography>
+            <Typography variant="h3">{props.goalsScored}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
@@ -71,21 +71,6 @@ export const GoalsCard = props => {
             </Avatar>
           </Grid>
         </Grid>
-        <div className={classes.difference}>
-          <ArrowDownwardIcon className={classes.differenceIcon} />
-          <Typography
-            className={classes.differenceValue}
-            variant="body2"
-          >
-            12%
-          </Typography>
-          <Typography
-            className={classes.caption}
-            variant="caption"
-          >
-            od ostatniego miesiąca
-          </Typography>
-        </div>
       </CardContent>
     </Card>
   );
