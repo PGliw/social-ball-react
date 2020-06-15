@@ -113,20 +113,6 @@ export const Board = ({token, logout}) => {
                             refreshMatch={() => handleRefreshMatch(footballMatch.id)}
                             currentUser={user}
                             token={token}
-                            comments={[ // TODO fetch comments from API
-                                {
-                                    avatar: <Avatar alt="Natalia Wcisło" src="/static/images/avatar/2.jpg"/>,
-                                    author: "Natalia Wcisło",
-                                    date: new Date(),
-                                    content: "Polecam ten mecz"
-                                },
-                                {
-                                    avatar: <Avatar alt="Jędrzej Jędrzejewski" src="/static/images/avatar/2.jpg"/>,
-                                    author: "Jędrzej Jędrzejewski",
-                                    date: new Date(),
-                                    content: "Na pewno będę! Napisze długi komentarz tak żeby przetestować możliwości responsywności tej strony internetowej"
-                                }
-                            ]}
                             positions={positions}
                         />
                     </Grid>))
