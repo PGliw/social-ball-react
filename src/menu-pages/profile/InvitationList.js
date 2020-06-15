@@ -3,7 +3,7 @@ import {Invitation} from "./Invitation";
 import "./FriendsList.css";
 import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
 
-export const InvitationList = ({token, user, logout}) => {
+export const InvitationList = ({token, user, logout, onFriendsChange}) => {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -29,6 +29,7 @@ export const InvitationList = ({token, user, logout}) => {
                     token={token}
                     logout={logout}
                     userId={friend.requestSender.id}
+                    onFriendsChange={onFriendsChange}
                 />
             )) : null;
     };

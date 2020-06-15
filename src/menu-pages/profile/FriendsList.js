@@ -4,7 +4,7 @@ import "./FriendsList.css";
 import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
 import {FriendListItem} from "./FriendListItem";
 
-export const FriendsList = ({token, user, logout}) => {
+export const FriendsList = ({token, user, logout, refresher}) => {
 
         const [searchText, setSearchText] = useState("");
         const [orderBy, setOrderBy] = useState("name");
@@ -14,11 +14,7 @@ export const FriendsList = ({token, user, logout}) => {
         const [error, setError] = useState(null);
 
         const handleAllAcquaitances = (newAllAcquaitances) => {
-            console.log('newAllAcquantiances');
-            console.log(newAllAcquaitances);
             setAcquaitances(newAllAcquaitances);
-            console.log('acuaitances');
-            console.log(acquaitances);
         };
 
         useEffect(() => {
@@ -29,16 +25,16 @@ export const FriendsList = ({token, user, logout}) => {
                 setLoading,
                 setError,
                 handleAllAcquaitances);
-        }, [token]);
+        }, [token, refresher]);
 
         const mapAcquitancesToFriendsList = (acqs) => {
             const predicate = (friend) => {
-                if (!friend || !friend.requestSender || !friend.requestSender) {
+                if (!friend || !friend.requestReceiver || !friend.requestSender) {
                     return false;
                 }
                 return user && user.id && user.id !== friend.requestSender.id
-                    ? friend.requestSender.lastName.toLowerCase().includes(searchText.toLowerCase())
-                    : friend.requestReceiver.lastName.toLowerCase().includes(searchText.toLowerCase());
+                    ? friend.requestSender.firstName.toLowerCase().includes(searchText.toLowerCase())
+                    : friend.requestReceiver.firstName.toLowerCase().includes(searchText.toLowerCase());
             };
             return !!acqs ? acqs
                 .filter(predicate)

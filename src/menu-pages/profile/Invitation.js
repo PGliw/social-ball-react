@@ -1,12 +1,9 @@
 import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
-import {Box, Button} from "@material-ui/core";
+import {Button} from "@material-ui/core";
 import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ProfilePlaceholder from "../../assets/profile-placeholder.png";
-import RoundedImage from "react-rounded-image";
-import DialogContent from "@material-ui/core/DialogContent";
-import Dialog from "@material-ui/core/Dialog";
 import {withMaterialDialog} from "../../hoc/withMaterialDialog";
 import {OtherUserProfile} from "./OtherUserProfile";
 
@@ -23,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export const Invitation = ({token, logout, userId}) => {
+export const Invitation = ({token, logout, userId, onFriendsChange}) => {
     const classes = useStyles();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -54,6 +51,7 @@ export const Invitation = ({token, logout, userId}) => {
             () => {
                 setHeader("✅ Dodano");
                 setRequestDone(true);
+                onFriendsChange();
             }
         );
     };
@@ -77,17 +75,11 @@ export const Invitation = ({token, logout, userId}) => {
             <h3>{user ? user.firstName + " " + user.lastName : null}</h3>
             <br/>
             <div className="status">
-                <Button variant="outlined" color="primary" disabled={requestDone}
-                        onClick={() => {
-                            acceptRequest();
-                        }}>
+                <Button variant="outlined" color="primary" disabled={requestDone} onClick={acceptRequest}>
                     Akceptuj
                 </Button>
                 &nbsp;
-                <Button variant="outlined" color="primary" disabled={requestDone}
-                        onClick={() => {
-                            denyRequest();
-                        }}>
+                <Button variant="outlined" color="primary" disabled={requestDone} onClick={denyRequest}>
                     Odrzuć
                 </Button>
                 &nbsp;
@@ -96,9 +88,7 @@ export const Invitation = ({token, logout, userId}) => {
                     variant="outlined"
                     color="primary"
                     className="button"
-                    onClick={() => {
-                        setOpen(true);
-                    }}
+                    onClick={() => setOpen(true)}
                 >
                     Zobacz profil
                 </Button>

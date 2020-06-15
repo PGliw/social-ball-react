@@ -95,6 +95,7 @@ export const UserProfile = ({token, logout}) => {
         const [acquaintances, setAcquaintances] = useState([]);
         const [positions, setPositions] = useState(null);
         const [stats, setStats] = useState(null);
+        const [friendsListRefresher, setFriendsListRefresher] = useState(false);
         const handleChange = (event, newValue) => {
             setValue(newValue);
         };
@@ -250,10 +251,11 @@ export const UserProfile = ({token, logout}) => {
                                     {eventsArray.map((item, index) => Row({index}))}
                                 </TabPanel>
                                 <TabPanel value={value} hidden={value !== "two"} index="two">
-                                    <FriendsList token={token} user={user}/>
+                                    <FriendsList token={token} user={user} refresher={friendsListRefresher}/>
                                 </TabPanel>
                                 <TabPanel value={value} hidden={value !== "three"} index="three">
-                                    <InvitationList token={token} user={user}/>
+                                    <InvitationList token={token} user={user}
+                                                    onFriendsChange={() => setFriendsListRefresher(!friendsListRefresher)}/>
                                 </TabPanel>
                                 <TabPanel value={value} hidden={value !== "four"} index="four">
                                     <MatchesTable token={token}
