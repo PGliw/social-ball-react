@@ -21,16 +21,17 @@ export const InvitationList = ({token, user, logout}) => {
     }, [token]);
 
 
-    const invitationList = acquaitances !== null ? acquaitances
-        .filter(friend => user ? user.id === friend.requestReceiver.id : null)
-        .map(friend => (
-            <Invitation
-                token={token}
-                logout={logout}
-                id={friend.requestSender.id}
-                // key={friend.name}
-            />
-        )) : null;
+    const renderInvitations = (acquaitances) => {
+        return acquaitances !== null ? acquaitances
+            .filter(friend => user ? user.id === friend.requestReceiver.id : null)
+            .map(friend => (
+                <Invitation
+                    token={token}
+                    logout={logout}
+                    userId={friend.requestSender.id}
+                />
+            )) : null;
+    };
 
     return (
         <div>
@@ -38,7 +39,7 @@ export const InvitationList = ({token, user, logout}) => {
                 &nbsp;
             </div>
             <ul>
-                {invitationList}
+                {renderInvitations(acquaitances)}
             </ul>
         </div>
     );

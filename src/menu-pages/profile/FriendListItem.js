@@ -43,7 +43,8 @@ export const FriendListItem = ({token, logout, userId}) => {
     }, [token]);
 
     return <li className='friend'>
-        <img className="profile-pic" src={user && user.image ? user.image : ProfilePlaceholder}/>
+        <img className="profile-pic" src={user && user.image ? user.image : ProfilePlaceholder}
+             alt={user ? user.firstName + " " + user.lastName : 'obrazek usera'}/>
         <h3>{user ? user.firstName + " " + user.lastName : null}</h3>
         <br/>
         <Button
