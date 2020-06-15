@@ -95,6 +95,7 @@ export const UserProfile = ({token, logout}) => {
         const [acquaintances, setAcquaintances] = useState([]);
         const [positions, setPositions] = useState(null);
         const [stats, setStats] = useState(null);
+        const [friendsListRefresher, setFriendsListRefresher] = useState(false);
         const handleChange = (event, newValue) => {
             setValue(newValue);
         };
@@ -234,7 +235,7 @@ export const UserProfile = ({token, logout}) => {
                             </Box>
                         </Paper>
                     </Grid>
-                    <Grid item xs={12} md={9}>
+                    <Grid item xs={12}>
                         <Paper className={classes.paper}>
                             <TabContext value={value}>
                                 <Tabs value={value} onChange={handleChange} variant="fullWidth"
@@ -250,10 +251,11 @@ export const UserProfile = ({token, logout}) => {
                                     {eventsArray.map((item, index) => Row({index}))}
                                 </TabPanel>
                                 <TabPanel value={value} hidden={value !== "two"} index="two">
-                                    <FriendsList token={token}/>
+                                    <FriendsList token={token} user={user} refresher={friendsListRefresher}/>
                                 </TabPanel>
                                 <TabPanel value={value} hidden={value !== "three"} index="three">
-                                    <InvitationList token={token}/>
+                                    <InvitationList token={token} user={user}
+                                                    onFriendsChange={() => setFriendsListRefresher(!friendsListRefresher)}/>
                                 </TabPanel>
                                 <TabPanel value={value} hidden={value !== "four"} index="four">
                                     <MatchesTable token={token}

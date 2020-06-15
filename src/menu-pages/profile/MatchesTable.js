@@ -55,7 +55,7 @@ export const MatchesTable = ({token, filterPredicate}) => {
 
     useEffect(() => {
         console.log(matches);
-    }, [matches]);
+    }, [matches]); // TODO
 
     const onDialogClose = () => {
         setEditMatchDialogOpen(false);
@@ -110,7 +110,7 @@ export const MatchesTable = ({token, filterPredicate}) => {
                 <DialogContent>
                     {/* <MatchCard></MatchCard> */}
                     tu match card
-                    <br></br>
+                    <br/>
                     {editable ? ' mozliwa edycja meczu' : ' niemozliwa edycja meczu '}
                 </DialogContent>
             </Dialog>

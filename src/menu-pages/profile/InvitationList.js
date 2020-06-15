@@ -1,38 +1,14 @@
-import React, { useEffect, useState } from "react";
-import friends from "./friends";
-import Friend from "./Friend";
-import { Invitation } from "./Invitation";
+import React, {useEffect, useState} from "react";
+import {Invitation} from "./Invitation";
 import "./FriendsList.css";
-import { API_METHODS, withTokenFetchFromApi } from "../../api/baseFetch";
+import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
 
-export const InvitationList = ({ token, logout }) => {
-    // constructor(props) {
-    //     super(props);
-
-    //     this.state = {
-    //         searchText: ""
-    //         , orderBy: "name"
-    //         , order: "ascending"
-    //         , ddd: "test"
-    //         , acquaitances: this.props.acquaitances
-    //     };
-    //     console.log(this.props);
-    // }
+export const InvitationList = ({token, user, logout, onFriendsChange}) => {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [user, setUser] = useState(null);
     const [acquaitances, setAcquaitances] = useState([]);
 
-    useEffect(() => {
-        const fetchFromApiWithToken = withTokenFetchFromApi(token);
-        fetchFromApiWithToken(
-            API_METHODS.GET,
-            'profile',
-            setLoading,
-            setError,
-            setUser);
-    }, [token]);
 
     useEffect(() => {
         const fetchFromApiWithToken = withTokenFetchFromApi(token);
@@ -44,33 +20,28 @@ export const InvitationList = ({ token, logout }) => {
             setAcquaitances);
     }, [token]);
 
-    // render() {
-    //     const {
-    //         searchText
-    //         , orderBy
-    //         , order
-    //         , acquaitances
-    //     } = this.state;
 
-    const invitationList = acquaitances !== null ? acquaitances
-        .filter(friend => user ? user.id === friend.requestReceiver.id : null)
-        .map(friend => (
-            <Invitation
-                token={token}
-                logout={logout}
-                id={friend.requestSender.id}
-            // key={friend.name}
-            />
-        )) : null;
+    const renderInvitations = (acquaitances) => {
+        return acquaitances !== null ? acquaitances
+            .filter(friend => user ? user.id === friend.requestReceiver.id : null)
+            .map(friend => (
+                <Invitation
+                    token={token}
+                    logout={logout}
+                    userId={friend.requestSender.id}
+                    onFriendsChange={onFriendsChange}
+                />
+            )) : null;
+    };
 
     return (
         <div>
             <div>
                 &nbsp;
-                </div>
+            </div>
             <ul>
-                {invitationList}
+                {renderInvitations(acquaitances)}
             </ul>
         </div>
     );
-}
+};
