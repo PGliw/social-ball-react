@@ -2,18 +2,18 @@ import React, {Fragment, useEffect, useState} from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Box, Button, Dialog, DialogContent, Grid, Link, Paper, Tab, Tabs} from "@material-ui/core";
 import ProfilePlaceholder from "../../assets/profile-placeholder.png";
-import {FriendsList} from "./FriendsList";
-import {InvitationList} from "./InvitationList";
+import {FriendsList} from "./profile/FriendsList";
+import {InvitationList} from "./profile/InvitationList";
 import RoundedImage from "react-rounded-image";
-import {a11yProps} from "./Tabs";
+import {a11yProps} from "./profile/Tabs";
 import TabPanel from "@material-ui/lab/TabPanel";
 import * as PropTypes from "prop-types";
 import TabContext from "@material-ui/lab/TabContext";
 import NavDrawer from "../NavDrawer";
 import logo from "../../assets/avatarPlaceholder.PNG";
 import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
-import {UpdateDataForm} from "./UpdateDataForm";
-import {MatchesTable} from "./MatchesTable";
+import {UpdateDataForm} from "./profile/UpdateDataForm";
+import {MatchesTable} from "./profile/MatchesTable";
 import {TIME} from "../../api/constants";
 import {withMaterialDialog} from "../../hoc/withMaterialDialog";
 import {MatchProtocol} from "../../forms/match_protocol/MatchProtocol";
@@ -264,11 +264,11 @@ export const UserProfile = ({token, logout}) => {
                                                     onFriendsChange={() => setFriendsListRefresher(!friendsListRefresher)}/>
                                 </TabPanel>
                                 <TabPanel value={value} hidden={value !== "four"} index="four">
-                                    <MatchesTable token={token}
+                                    <MatchesTable token={token} user={user}
                                                   filterPredicate={match => match.statusTime === TIME.PRESENT || match.statusTime === TIME.FUTURE}/>
                                 </TabPanel>
                                 <TabPanel value={value} hidden={value !== "five"} index="five">
-                                    <MatchesTable token={token}
+                                    <MatchesTable token={token} user={user}
                                                   filterPredicate={match => match.statusTime === TIME.PAST}/>
                                 </TabPanel>
                             </TabContext>
