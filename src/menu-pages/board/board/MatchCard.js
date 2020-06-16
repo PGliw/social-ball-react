@@ -25,7 +25,6 @@ import {TIME} from "../../../api/constants";
 import {TShirtPlayer} from "../../../forms/new_match/teambuilder/TShirtPlayer";
 import ProfilePlaceholder from "../../../assets/profile-placeholder.png";
 import RoundedImage from "react-rounded-image";
-import {TShirtCsv} from "../../../assets/TShirtCsv";
 import Tooltip from "@material-ui/core/Tooltip";
 import {withMaterialDialog} from "../../../hoc/withMaterialDialog";
 import {MatchProtocol} from "../../../forms/match_protocol/MatchProtocol";
@@ -34,6 +33,7 @@ import {API_METHODS, withTokenFetchFromApi} from "../../../api/baseFetch";
 import Paper from "@material-ui/core/Paper";
 import MenuList from "@material-ui/core/MenuList";
 import MenuItem from "@material-ui/core/MenuItem";
+import {OtherUserProfile} from "../../profile/profile/OtherUserProfile";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -136,6 +136,8 @@ export default function MatchCard(props) {
     const [comments, setComments] = useState(null);
     const [areCommentsLoading, setCommentsLoading] = useState(null);
     const [newCommentContent, setNewCommentContent] = useState(null);
+    const [displayedFriendId, setDisplayedFriendId] = useState(null);
+    const [displayedFriend, setDisplayedFriend] = useState(null);
 
     const handleNewCommentContentChange = (event) => {
         setNewCommentContent(event.target.value);
@@ -153,6 +155,21 @@ export default function MatchCard(props) {
             fetchComments();
         }
     }, [expanded]);
+
+    useEffect(() => {
+        if (displayedFriendId) {
+            const fetchFromApiWithToken = withTokenFetchFromApi(props.token);
+            fetchFromApiWithToken(
+                API_METHODS.GET,
+                `users/${displayedFriendId}`,
+                () => {
+                }, // TODO
+                setError,
+                setDisplayedFriend)
+        } else {
+            setDisplayedFriend(null);
+        }
+    }, [displayedFriendId]);
 
 
     useEffect(() => {
@@ -207,7 +224,6 @@ export default function MatchCard(props) {
             relatedMatchId: props.footballMatch.id,
             relatedMatchMemberId: props.footballMatch.currentUserMatchMemberId
         };
-        console.log(commentDto);
         const fetchFromProtectedApi = withTokenFetchFromApi(props.token);
         fetchFromProtectedApi(
             API_METHODS.POST,
@@ -299,62 +315,76 @@ export default function MatchCard(props) {
     };
 
     const matchMemberMapper = (matchMember, team) => {
-        if (matchMember.user) {
-            const user = matchMember.user;
-            let toolTipTitle;
-            let onClick;
-            if (props.currentUser && props.currentUser.id === matchMember.user.id) {
-                toolTipTitle = "Zrezygnuj";
-                // resign onClick
-                onClick = () => {
-                    const dto = {
-                        id: matchMember.id,
-                        positionId: matchMember.positionId,
-                        teamId: matchMember.teamId,
-                        userId: null,
-                        confirmed: false, // TODO ?
-                    };
-                    setNewMatchMemberDto(dto);
-                };
-            } else {
-                toolTipTitle = "Zobacz profil";
-                // resign onClick
-                onClick = () => {
-                    // TODO
-                    console.log("Profil");
-                };
-            }
+        const isMatchPastAndCurrentUser = !!matchMember.user && match.statusTime === TIME.PAST && props.currentUser.id === matchMember.user.id;
+        const isMatchNotPastAndCurrentUser = !!matchMember.user && match.statusTime !== TIME.PAST && props.currentUser.id === matchMember.user.id;
+        const isOtherUser = !!matchMember.user && props.currentUser.id !== matchMember.user.id;
+        const isMatchPastAndFreePlace = match.statusTime === TIME.PAST && !matchMember.user;
+        const isMatchNotPastAndFreePlaceAndUserIsFree = match.statusTime !== TIME.PAST && !matchMember.user && !!props.footballMatch && !props.footballMatch.currentUserPositionName;
+        const isMatchNotPastAndFreePlaceAndUserIsNotFree = match.statusTime !== TIME.PAST && !matchMember.user && !!props.footballMatch && !!props.footballMatch.currentUserPositionName;
+        const isTShirt = !matchMember.user;
 
-            return <Tooltip title={toolTipTitle}>
-                <div onClick={onClick}>
-                    <RoundedImage image={user && user.image ? user.image : ProfilePlaceholder}
-                                  roundedColor={team.shirtColours}
-                                  roundedSize="13"
-                                  imageWidth="80"
-                                  imageHeight="80"
-                    />
-                </div>
-            </Tooltip>
-        } else if (props.footballMatch && !!props.footballMatch.currentUserPositionName) {
-            return <Tooltip title="Już bierzesz udział w tym meczu. Żeby zmienić pozycje, zrezygnuj z dotychczasowej">
-                <div>
-                    {TShirtPlayer({color: team.shirtColours})}
-                </div>
-            </Tooltip>
-        } else {
-            const onClick = () => {
+        let onClick;
+        let toolTipTitle;
+        if (isMatchPastAndCurrentUser) {
+            toolTipTitle = "Moja pozycja";
+            onClick = () => {
+            };
+        } else if (isMatchNotPastAndCurrentUser) {
+            toolTipTitle = "Zrezygnuj";
+            // resign onClick
+            onClick = () => {
+                const dto = {
+                    id: matchMember.id,
+                    positionId: matchMember.positionId,
+                    teamId: matchMember.teamId,
+                    userId: null,
+                    confirmed: false, // TODO ?
+                    footballMatchId: props.footballMatch.id,
+                };
+                setNewMatchMemberDto(dto);
+            };
+        } else if (isOtherUser) {
+            toolTipTitle = "Zobacz profil";
+            onClick = () => setDisplayedFriendId(matchMember.user.id)
+        } else if (isMatchPastAndFreePlace) {
+            onClick = () => {
+            };
+            toolTipTitle = "Mecz już minął";
+        } else if (isMatchNotPastAndFreePlaceAndUserIsFree) {
+            toolTipTitle = "Dołącz do meczu";
+            onClick = () => {
                 const dto = {
                     id: matchMember.id,
                     positionId: matchMember.positionId,
                     teamId: matchMember.teamId,
                     userId: props.currentUser.id,
                     confirmed: false, // TODO ?
+                    footballMatchId: props.footballMatch.id,
                 };
                 setNewMatchMemberDto(dto);
             };
-            return <Tooltip title="Dołącz do gry">
+        } else if (isMatchNotPastAndFreePlaceAndUserIsNotFree) {
+            toolTipTitle = "Już bierzesz udział w tym meczu. Żeby zmienić pozycje, zrezygnuj z dotychczasowej";
+            onClick = () => {
+            };
+        }
+
+        if (isTShirt) {
+            return <Tooltip title={toolTipTitle}>
                 <div onClick={onClick}>
                     {TShirtPlayer({color: team.shirtColours})}
+                </div>
+            </Tooltip>
+        } else {
+            return <Tooltip title={toolTipTitle}>
+                <div onClick={onClick}>
+                    <RoundedImage
+                        image={matchMember.user && matchMember.user.image ? matchMember.user.image : ProfilePlaceholder}
+                        roundedColor={team.shirtColours}
+                        roundedSize="13"
+                        imageWidth="80"
+                        imageHeight="80"
+                    />
                 </div>
             </Tooltip>
         }
@@ -512,6 +542,16 @@ export default function MatchCard(props) {
                 onNo: resetNewMatchMemberDto,
                 isSuccessful: isConfirmationSuccessful,
             })}
+            {withMaterialDialog(OtherUserProfile,
+                !!displayedFriendId,
+                () => setDisplayedFriendId(null),
+                displayedFriend ? displayedFriend.firstName + " " + displayedFriend.lastName : null
+            )(
+                {
+                    token: props.token,
+                    user: displayedFriend,
+                    userId: displayedFriendId,
+                })}
         </Fragment>
     );
 }

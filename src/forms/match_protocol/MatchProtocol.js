@@ -210,7 +210,7 @@ export const MatchProtocol = ({token, match}) => {
     if (match && match.hasProtocol === false && !isEditMode) {
         return <Box>
             <h3>Brak protokołu pomeczowego</h3>
-            {isEditable ? <Button onClick={() => setEditMode(false)}>Dodaj</Button> : null}
+            {isEditable ? <Button onClick={() => setEditMode(true)}>Dodaj</Button> : null}
         </Box>
     } else if (events && events.length === 0 && !isEditMode) {
         return <Box>
