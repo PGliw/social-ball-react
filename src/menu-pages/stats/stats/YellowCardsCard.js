@@ -63,7 +63,7 @@ export const YellowCardsCard = props => {
             >
               ŻÓŁTE KARTKI
             </Typography>
-            <Typography variant="h3">2</Typography>
+            <Typography variant="h3">{props.yellowCardsReceived}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
@@ -71,21 +71,6 @@ export const YellowCardsCard = props => {
             </Avatar>
           </Grid>
         </Grid>
-        <div className={classes.difference}>
-          <ArrowUpwardIcon className={classes.differenceIcon} />
-          <Typography
-            className={classes.differenceValue}
-            variant="body2"
-          >
-            50%
-          </Typography>
-          <Typography
-            className={classes.caption}
-            variant="caption"
-          >
-            od ostatniego miesiąca
-          </Typography>
-        </div>
       </CardContent>
     </Card>
   );

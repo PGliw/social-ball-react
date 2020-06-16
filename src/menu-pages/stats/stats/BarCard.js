@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from "react";
 import clsx from 'clsx';
 import { Bar } from 'react-chartjs-2';
 import { makeStyles } from '@material-ui/styles';
@@ -12,6 +12,9 @@ import {
 } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import {API_METHODS, withTokenFetchFromApi} from "../../../api/baseFetch";
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 
 export const data = {
   labels: ['1 Aug', '2 Aug', '3 Aug', '4 Aug', '5 Aug', '6 Aug'],
@@ -95,26 +98,74 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-export const BarCard = props => {
-  const { className, ...rest } = props;
-
+export const BarCard = ({token, logout}) => {
   const classes = useStyles();
+  const [data, setData] = useState({ labels: [], datasets: [] });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [monthsNumber, setMonthsNumber] = useState(6);
+
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  }
+
+  const transformData = (data) => {
+    // 0: {month: "JUNE 2020", matches: 8, players: 0}
+    // 1: {month: "MAY 2020", matches: 0, players: 0}
+    // 2: {month: "APRIL 2020", matches: 0, players: 0}
+    // 3: {month: "MARCH 2020", matches: 0, players: 0}
+
+    return {
+      labels: data.map(x => capitalizeFirstLetter(x.month)).reverse(),
+      datasets: [
+        {
+          label: 'Mecze',
+          backgroundColor: "#43ad32",
+          data: data.map(x => x.matches).reverse()
+        },
+        {
+          label: 'Zawodnicy',
+          backgroundColor: "#AAAAAA",
+          data: data.map(x => x.players).reverse()
+        }
+      ]
+    };
+  }
+
+  const fetchData = () => {
+    const fetchFromProtectedApi = withTokenFetchFromApi(token);
+    fetchFromProtectedApi(
+        API_METHODS.GET,
+        `statistics/time?monthsNumber=${monthsNumber}`,
+        setLoading,
+        setError,
+        data => setData(transformData(data.timeStats)),
+    );
+  }
+  
+  useEffect(fetchData, [token, monthsNumber]);
+
+  const handleChange = (event) => {
+    setMonthsNumber(event.target.value);
+  };
 
   return (
     <Card
-      {...rest}
-      className={clsx(classes.root, className)}
+      className={classes.root}
     >
       <CardHeader
         action={
-          <Button
-            size="small"
-            variant="text"
+          <Select
+            value={monthsNumber}
+            onChange={handleChange}
+            inputProps={{ 'aria-label': 'Without label' }}
           >
-            Ostatni tydzień <ArrowDropDownIcon />
-          </Button>
+            <MenuItem value={3}>Ostatni kwartał</MenuItem>
+            <MenuItem value={6}>Ostatnie pół roku</MenuItem>
+            <MenuItem value={12}>Ostatni rok</MenuItem>
+          </Select>
         }
-        title="Strzelone bramki"
+        title="Statystyki czasowe"
       />
       <Divider />
       <CardContent>

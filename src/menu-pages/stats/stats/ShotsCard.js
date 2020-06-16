@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {useEffect, useState} from "react";
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardContent, Grid, Typography, Avatar } from '@material-ui/core';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import SportsSoccerIcon from '@material-ui/icons/SportsSoccer';
+import SportsKabaddiIcon from '@material-ui/icons/SportsKabaddi';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -40,14 +40,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const ShotsCard = props => {
-  const { className, ...rest } = props;
-
   const classes = useStyles();
 
   return (
     <Card
-      {...rest}
-      className={clsx(classes.root, className)}
+      className={classes.root}
     >
       <CardContent>
         <Grid
@@ -61,31 +58,16 @@ export const ShotsCard = props => {
               gutterBottom
               variant="body2"
             >
-              STRZAŁY
+              FAULE
             </Typography>
-            <Typography variant="h3">68</Typography>
+            <Typography variant="h3">{props.fauls}</Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
-              <SportsSoccerIcon className={classes.icon} />
+              <SportsKabaddiIcon className={classes.icon} />
             </Avatar>
           </Grid>
         </Grid>
-        <div className={classes.difference}>
-          <ArrowUpwardIcon className={classes.differenceIcon} />
-          <Typography
-            className={classes.differenceValue}
-            variant="body2"
-          >
-            10%
-          </Typography>
-          <Typography
-            className={classes.caption}
-            variant="caption"
-          >
-            od ostatniego miesiąca
-          </Typography>
-        </div>
       </CardContent>
     </Card>
   );

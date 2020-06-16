@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from "react";
 import NavDrawer from '../NavDrawer';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
@@ -8,6 +8,7 @@ import {ShotsCard} from "./stats/ShotsCard";
 import {YellowCardsCard} from "./stats/YellowCardsCard";
 import {RedCardsCard} from "./stats/RedCardsCard";
 import {PieChartCard} from "./stats/PieChartCard";
+import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -18,6 +19,28 @@ const useStyles = makeStyles(theme => ({
 
 export const Stats = ({token, logout}) => {
     const classes = useStyles();
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [fauls, setFauls] = useState(null);
+    const [goalsScored, setGoalsScored] = useState(null);
+    const [yellowCardsReceived, setYellowCardsReceived] = useState(null);
+    const [redCardsReceived, setRedCardsReceived] = useState(null);
+
+    useEffect(() => {
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            'statistics',
+            setLoading,
+            setError,
+            (data) => {
+                setFauls(data.fauls);
+                setGoalsScored(data.goalsScored);
+                setYellowCardsReceived(data.yellowCardsReceived);
+                setRedCardsReceived(data.redCardsReceived);
+            }
+        );
+    }, [token]);
 
     return (
         <NavDrawer token={token} logout={logout} className={classes.root}>
@@ -33,7 +56,7 @@ export const Stats = ({token, logout}) => {
                     xl={3}
                     xs={12}
                 >
-                    <ShotsCard />
+                    <ShotsCard fauls={fauls} />
                 </Grid>
                 <Grid
                     item
@@ -42,7 +65,7 @@ export const Stats = ({token, logout}) => {
                     xl={3}
                     xs={12}
                 >
-                    <GoalsCard />
+                    <GoalsCard goalsScored={goalsScored} />
                 </Grid>
                 <Grid
                     item
@@ -51,7 +74,7 @@ export const Stats = ({token, logout}) => {
                     xl={3}
                     xs={12}
                 >
-                    <YellowCardsCard />
+                    <YellowCardsCard yellowCardsReceived={yellowCardsReceived} />
                 </Grid>
                 <Grid
                     item
@@ -60,7 +83,7 @@ export const Stats = ({token, logout}) => {
                     xl={3}
                     xs={12}
                 >
-                    <RedCardsCard />
+                    <RedCardsCard redCardsReceived={redCardsReceived} />
                 </Grid>
                 <Grid
                     item
@@ -69,7 +92,7 @@ export const Stats = ({token, logout}) => {
                     xl={9}
                     xs={12}
                 >
-                    <BarCard />
+                    <BarCard token={token} logout={logout} />
                 </Grid>
                 <Grid
                     item
@@ -78,7 +101,7 @@ export const Stats = ({token, logout}) => {
                     xl={9}
                     xs={12}
                 >
-                    <PieChartCard />
+                    <PieChartCard token={token} logout={logout} />
                 </Grid>
             </Grid>
         </NavDrawer>
