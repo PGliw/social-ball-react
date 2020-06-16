@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 
 import "./FriendsList.css";
-import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
+import {API_METHODS, withTokenFetchFromApi} from  "../../../api/baseFetch";
 import {FriendListItem} from "./FriendListItem";
 
 export const FriendsList = ({token, user, logout, refresher}) => {

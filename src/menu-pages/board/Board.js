@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from "react";
 import MatchCard from "./board/MatchCard";
-import {Avatar, Fab, Grid} from '@material-ui/core';
+import {Fab, Grid} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import NavDrawer from "../NavDrawer";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Redirect} from "react-router-dom";
 import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
-import {MatchProtocol} from "../../forms/match_protocol/MatchProtocol";
-import {withMaterialDialog} from "../../hoc/withMaterialDialog";
 
 const useStyles = makeStyles((theme) => ({
         root: {

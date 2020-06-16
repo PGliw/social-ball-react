@@ -2,10 +2,10 @@ import React, {useEffect, useState} from "react";
 import Button from "@material-ui/core/Button";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Box} from "@material-ui/core";
-import ProfilePlaceholder from "../../assets/profile-placeholder.png";
+import ProfilePlaceholder from "../../../assets/profile-placeholder.png";
 import RoundedImage from "react-rounded-image";
-import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
-import {FRIENDSHIP_STATUS} from "../../api/constants";
+import {API_METHODS, withTokenFetchFromApi} from "../../../api/baseFetch";
+import {FRIENDSHIP_STATUS} from "../../../api/constants";
 
 const useStyles = makeStyles((theme) => ({
     box: {
