@@ -328,6 +328,7 @@ export default function MatchCard(props) {
                         teamId: matchMember.teamId,
                         userId: null,
                         confirmed: false, // TODO ?
+                        footballMatchId: props.footballMatch.id,
                     };
                     setNewMatchMemberDto(dto);
                 };
@@ -349,7 +350,7 @@ export default function MatchCard(props) {
                     />
                 </div>
             </Tooltip>
-        } else if (props.footballMatch && !!props.footballMatch.currentUserPositionName) {
+        } else if (!!props.footballMatch && !!props.footballMatch.currentUserPositionName) {
             return <Tooltip title="Już bierzesz udział w tym meczu. Żeby zmienić pozycje, zrezygnuj z dotychczasowej">
                 <div>
                     {TShirtPlayer({color: team.shirtColours})}
@@ -363,6 +364,7 @@ export default function MatchCard(props) {
                     teamId: matchMember.teamId,
                     userId: props.currentUser.id,
                     confirmed: false, // TODO ?
+                    footballMatchId: props.footballMatch.id,
                 };
                 setNewMatchMemberDto(dto);
             };

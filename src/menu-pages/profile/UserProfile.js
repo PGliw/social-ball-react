@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Box, Button, Dialog, DialogContent, Grid, Link, Paper, Tab, Tabs} from "@material-ui/core";
 import ProfilePlaceholder from "../../assets/profile-placeholder.png";
@@ -201,6 +201,17 @@ export const UserProfile = ({token, logout}) => {
 
         const handleClick = (e) => setOpen(true);
 
+        const renderStats = (statistics) => {
+            return <Fragment>
+                <p>
+                    {!!stats ? stats.matchesPlayed + " rozegranych meczów | " + stats.hoursPlayed + "  godzin na boisku | " + stats.goalsScored + " strzelonych goli" : null}
+                </p>
+                <p>
+                    {!!stats ? stats.yellowCardsReceived + " otrzymanych żółtych kartek | " + stats.redCardsReceived + " otrzymanych czerwonych kartek | " + stats.fauls + "  faulowań" : null}
+                </p>
+            </Fragment>
+        };
+
         return (
             <NavDrawer token={token} logout={logout}>
                 <Grid className={classes.root}>
@@ -218,12 +229,7 @@ export const UserProfile = ({token, logout}) => {
                                 <Box className={classes.paperBox}>
                                     <h2>{user ? user.firstName + " " + user.lastName : null}</h2>
                                     <p className={classes.positions}>{positions && positions[0] ? "Ulubione pozycje: " + positions[0].positionId.side + " " + positions[0].positionId.name : null}</p>
-                                    <p>
-                                        {stats ? stats.matchesPlayed + " rozegranych meczów | " + stats.hoursPlayed + "  godzin na boisku | " + stats.goalsScored + " strzelonych goli" : null}
-                                    </p>
-                                    <p>
-                                        {stats ? stats.yellowCardsReceived + " otrzymanych żółtych kartek | " + stats.redCardsReceived + " otrzymanych czerwonych kartek | " + stats.fauls + "  faulowań" : null}
-                                    </p>
+                                    {renderStats(stats)}
                                     <Button variant="outlined" color="primary" onClick={showUploadWidget}>
                                         Aktualizuj zdjęcie
                                     </Button>
