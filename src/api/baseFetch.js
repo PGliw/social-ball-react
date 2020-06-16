@@ -29,7 +29,6 @@ export const fetchFromApi = (method, pathSuffix, handleLoading, handleError, han
         const initBlock = body === null ? baseInitBlock : {...baseInitBlock, body: JSON.stringify(body)};
         fetch(`${SERVER_URL}/${pathSuffix}`, initBlock)
             .then((response) => {
-                    handleLoading(false);
                     if (ERROR_STATUS_CODES.includes(response.status)) {
                         throw new Error(ERROR_MESSAGE_LOOKUP[response.status]);
                     }
@@ -49,7 +48,9 @@ export const fetchFromApi = (method, pathSuffix, handleLoading, handleError, han
             } else {
                 handleError(defaultErrorMessage);
             }
-        });
+        }).finally(
+            handleLoading(false)
+        );
     }
 ;
 

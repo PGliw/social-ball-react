@@ -6,6 +6,7 @@ import NavDrawer from "../NavDrawer";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {Redirect} from "react-router-dom";
 import {API_METHODS, withTokenFetchFromApi} from "../../api/baseFetch";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
         root: {
@@ -102,20 +103,25 @@ export const Board = ({token, logout}) => {
         return <Redirect to={"/new-match"} push/>
     } else
         return <NavDrawer token={token} logout={logout}>
-            <Grid container direction="column" spacing={3} alignItems="center" style={{marginTop: "30px"}}
-                  className={classes.root}>
-                {filteredMatches.map(footballMatch => (
-                    <Grid item>
-                        <MatchCard
-                            footballMatch={footballMatch}
-                            refreshMatch={() => handleRefreshMatch(footballMatch.id)}
-                            currentUser={user}
-                            token={token}
-                            positions={positions}
-                        />
-                    </Grid>))
-                }
-            </Grid>
+            {
+                loading ?
+                    <CircularProgress/>
+                    :
+                    <Grid container direction="column" spacing={3} alignItems="center" style={{marginTop: "30px"}}
+                          className={classes.root}>
+                        {filteredMatches.map(footballMatch => (
+                            <Grid item>
+                                <MatchCard
+                                    footballMatch={footballMatch}
+                                    refreshMatch={() => handleRefreshMatch(footballMatch.id)}
+                                    currentUser={user}
+                                    token={token}
+                                    positions={positions}
+                                />
+                            </Grid>))
+                        }
+                    </Grid>
+            }
             <Fab variant={"extended"} color="primary" aria-label="add" className={classes.fab}
                  onClick={() => setNewMatchClicked(true)}>
                 <AddIcon/>

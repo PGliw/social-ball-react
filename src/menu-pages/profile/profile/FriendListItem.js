@@ -1,9 +1,10 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Button from "@material-ui/core/Button";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ProfilePlaceholder from "../../../assets/profile-placeholder.png";
 import {withMaterialDialog} from "../../../hoc/withMaterialDialog";
 import {OtherUserProfile} from "./OtherUserProfile";
+import {API_METHODS, withTokenFetchFromApi} from "../../../api/baseFetch";
 
 const useStyles = makeStyles((theme) => ({
     box: {
@@ -28,6 +29,17 @@ export const FriendListItem = ({token, logout, userId}) => {
     const handleUser = (newUser) => {
         setUser(newUser);
     };
+
+    useEffect(() => {
+        const fetchFromApiWithToken = withTokenFetchFromApi(token);
+        fetchFromApiWithToken(
+            API_METHODS.GET,
+            `users/${userId}`,
+            () => {
+            },
+            setError,
+            handleUser)
+    }, [token]);
 
     return <li className='friend'>
         <img className="profile-pic" src={user && user.image ? user.image : ProfilePlaceholder}
