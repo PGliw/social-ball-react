@@ -254,7 +254,8 @@ export const UserProfile = ({token, logout}) => {
                                     <Tab value="five" label="Archiwum meczów" wrapped {...a11yProps('five')} />
                                 </Tabs>
                                 <TabPanel value={value} hidden={value !== "one"} index="one">
-                                    {eventsArray.map((item, index) => Row({index}))}
+                                    {/*{eventsArray.map((item, index) => Row({index}))}*/}
+                                    <FriendsList token={token} user={user} refresher={friendsListRefresher}/>
                                 </TabPanel>
                                 <TabPanel value={value} hidden={value !== "two"} index="two">
                                     <FriendsList token={token} user={user} refresher={friendsListRefresher}/>
