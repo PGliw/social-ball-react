@@ -1,3 +1,16 @@
+# Social ball
+This is a project for "Team engineering project" subject at Wroclaw University of Science and technology. It is an app that helps users in organizing amateur football matches.
+
+The user interface and documentation are written in Polish.
+![presentation](gameplay.gif)
+
+Project documentation: https://github.com/PGliw/social-ball-react/blob/development/Dokumentacja_powykonawcza.pdf
+
+Backend repo: https://github.com/PGliw/social-ball-spring
+_______
+
+
+# React info
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
